@@ -12,3 +12,4 @@ mvnw.cmd
 *.iml
 *.ipr
 rebel.xml
+repository.log
