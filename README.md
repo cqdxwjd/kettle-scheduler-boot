@@ -1,7 +1,7 @@
 # kettle-scheduler-boot
 
 #### 介绍
-基于Spring-boot的kettle调度项目
+基于Spring-boot的kettle调度项目，参考了[zhaxiaodong9860](https://github.com/zhaxiaodong9860)的代码并引用了其中的页面管理，后台代码自行参考了API进行工具化编写，方便使用
 
 #### 软件架构
 软件架构说明
