@@ -38,6 +38,13 @@ function getJobRecordList() {
                 "rows": res.result.content//数据列表
             };
         },
+        rowStyle: function (row, index) {
+            var style = {};
+            if (row.recordStatus === 0) {
+                style =  {css:{'background':'#f27a58'}}
+            }
+            return style;
+        },
         columns: [
             {
                 field: 'id',
