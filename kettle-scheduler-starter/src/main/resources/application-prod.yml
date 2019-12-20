@@ -1,6 +1,6 @@
 spring:
   datasource: # 数据库链接
-    url: jdbc:mysql://192.168.200.247:3306/kettle-db?serverTimezone=UTC&useSSL=false
+    url: jdbc:mysql://192.168.200.247:3306/kettle-scheduler?serverTimezone=UTC&useSSL=false
     username: root
     password: songcw
     driver-class-name: com.mysql.jdbc.Driver
@@ -12,4 +12,4 @@ logging: # 日志记录
   level:
     root: info
     org.kettle.scheduler: info
-  file: /logs/${spring.application.name}.log
+  file: /apps/logs/${spring.application.name}/${spring.application.name}.log

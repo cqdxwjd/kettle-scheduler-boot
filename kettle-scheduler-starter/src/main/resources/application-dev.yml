@@ -15,4 +15,4 @@ logging: # 日志记录
     root: info
     org.kettle.scheduler: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace # 打印sql参数
-  file: /logs/${spring.application.name}.log
+  file: /apps/logs/${spring.application.name}/${spring.application.name}.log
