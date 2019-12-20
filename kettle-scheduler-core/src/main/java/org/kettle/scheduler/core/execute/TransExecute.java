@@ -86,7 +86,7 @@ public class TransExecute {
         // 根据相对目录地址获取ktr所在目录信息
         RepositoryDirectoryInterface rdi = rep.loadRepositoryDirectoryTree().findDirectory(FileUtil.getParentPath(transPath));
         // 在指定资源库的目录下找到要执行的转换
-        TransMeta tm = rep.loadTransformation(FileUtil.getFileName(transName), rdi, new ProgressNullMonitorListener(), true, versionLabel);
+        TransMeta tm = rep.loadTransformation(transName, rdi, new ProgressNullMonitorListener(), true, versionLabel);
         // 设置日志级别
         if (logLevel != null) {
             tm.setLogLevel(logLevel);

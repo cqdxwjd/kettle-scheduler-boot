@@ -87,7 +87,7 @@ public class JobExecute {
         // 根据相对目录地址获取ktr所在目录信息
         RepositoryDirectoryInterface rdi = rep.loadRepositoryDirectoryTree().findDirectory(FileUtil.getParentPath(jobPath));
         // 在指定资源库的目录下找到要执行的转换
-        JobMeta jm = rep.loadJob(FileUtil.getFileName(jobName), rdi, new ProgressNullMonitorListener(), versionLabel);
+        JobMeta jm = rep.loadJob(jobName, rdi, new ProgressNullMonitorListener(), versionLabel);
         // 设置日志级别
         if (logLevel != null) {
             jm.setLogLevel(logLevel);
