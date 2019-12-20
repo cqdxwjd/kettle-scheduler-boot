@@ -439,7 +439,7 @@
     <created_user>-</created_user>
     <created_date>2019/12/17 14:38:37.175</created_date>
     <modified_user>-</modified_user>
-    <modified_date>2019/12/19 11:29:10.985</modified_date>
+    <modified_date>2019/12/20 18:10:10.550</modified_date>
     <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
@@ -723,12 +723,11 @@
 	preset,
 	remark
 FROM authority_organization
-WHERE (create_time >= '${start_time}' AND create_time &lt;= '${end_time}')
 </sql>
     <limit>0</limit>
     <lookup/>
     <execute_each_row>N</execute_each_row>
-    <variables_active>Y</variables_active>
+    <variables_active>N</variables_active>
     <lazy_conversion_active>N</lazy_conversion_active>
     <attributes/>
     <cluster_schema/>
