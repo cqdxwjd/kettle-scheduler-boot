@@ -37,5 +37,5 @@ spring:
       max-file-size: 2MB
       max-request-size: 10MB
 constant:
-  salt: kettle-scw
+  salt: kettle-salt
   hash-iterations: 10
