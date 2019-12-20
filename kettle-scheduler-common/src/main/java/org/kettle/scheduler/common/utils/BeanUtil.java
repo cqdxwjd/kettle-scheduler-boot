@@ -95,11 +95,30 @@ public class BeanUtil extends BeanUtils {
         Set<String> emptyNames = new HashSet<>();
         for (PropertyDescriptor pd : pds) {
             Object srcValue = src.getPropertyValue(pd.getName());
-            if (StringUtil.isEmpty(srcValue)) {
+            if (srcValue == null) {
                 emptyNames.add(pd.getName());
             }
         }
         int size = emptyNames.size();
         return emptyNames.toArray(new String[size]);
     }
+
+	/**
+	 * 获取bean对象中值为空或空字符串的属性名称
+	 * @param source 源数据对象
+	 * @return 值为空的属性名称数组
+	 */
+	public static String[] getBlankPropertyNames(@NotNull Object source) {
+		BeanWrapper src = new BeanWrapperImpl(source);
+		PropertyDescriptor[] pds = src.getPropertyDescriptors();
+		Set<String> emptyNames = new HashSet<>();
+		for (PropertyDescriptor pd : pds) {
+			Object srcValue = src.getPropertyValue(pd.getName());
+			if (StringUtil.isEmpty(srcValue)) {
+				emptyNames.add(pd.getName());
+			}
+		}
+		int size = emptyNames.size();
+		return emptyNames.toArray(new String[size]);
+	}
 }
