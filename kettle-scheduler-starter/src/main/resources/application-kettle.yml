@@ -1,5 +1,5 @@
 kettle:
   log-file-path: /apps/logs/${spring.application.name}
   encoding: utf-8
-  upload-path: /kettle/file-rep/script-file
-  kettle-home: /kettle/file-rep
+  upload-path: /apps/var/file-rep/script-file
+  kettle-home: /apps/var/file-rep
