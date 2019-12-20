@@ -20,7 +20,7 @@
 
 4.  如果需要自定义变量在kettle.properties中编写，并把kettle.properties文件拷贝到kettle-home路径下面的.kettle文件夹下
 
-5.  启动项目使用调度平台
+5.  启动项目使用调度平台(用户名：admin，密码：admin)
 
 6.  如果要使用【文件资源库】需要单独把项目下【file-rep】拷贝到设置好的路径下，并在管理页面配置好文件资源库，因为打包后kettle不能访问到jar中的文件，所以需要单独存放
 
