@@ -23,6 +23,7 @@ public class KettleInit implements InitializingBean {
 	}
 
 	private void environmentInit() {
+		System.out.println("-----------------------"+KettleConfig.kettleHome);
 		System.getProperties().put("KETTLE_HOME", KettleConfig.kettleHome);
 		if (StringUtil.hasText(KettleConfig.kettlePluginPackages)) {
 			System.getProperties().put("KETTLE_PLUGIN_PACKAGES", FileUtil.replaceSeparator(KettleConfig.kettlePluginPackages));
