@@ -107,6 +107,38 @@ public class WebController {
 		return "quartz/edit";
 	}
 
+	//=============================================物化视图=================================================//
+	/**
+	 * 物化视图列表页面
+	 *
+	 * @return /quartz/list
+	 */
+	@RequestMapping("/mview/list.shtml")
+	public String mviewListWeb() {
+		return "mview/list";
+	}
+
+	/**
+	 * 物化视图添加页面
+	 *
+	 * @return /quartz/add
+	 */
+	@RequestMapping("/mview/add.shtml")
+	public String mviewAddWeb() {
+		return "mview/add";
+	}
+
+	/**
+	 * 物化视图编辑页面
+	 *
+	 * @return /quartz/edit
+	 */
+	@RequestMapping("/mview/edit.shtml")
+	public String mviewEditWeb(Integer mviewId, Model model) {
+		model.addAttribute("mviewId", mviewId);
+		return "mview/edit";
+	}
+
 	//=============================================用户管理=================================================//
 	/**
 	 * 用户管理列表页面

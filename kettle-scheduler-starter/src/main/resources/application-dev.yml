@@ -1,8 +1,8 @@
 spring:
   datasource: # 数据库链接
-    url: jdbc:mysql://10.108.8.30:8080/kettle-scheduler?serverTimezone=UTC&useSSL=false
-    username: root
-    password: x5
+    url: jdbc:mysql://120.79.236.37/kettle-scheduler?serverTimezone=UTC&useSSL=false
+    username: kettle-scheduler
+    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     show-sql: true # sql打印
