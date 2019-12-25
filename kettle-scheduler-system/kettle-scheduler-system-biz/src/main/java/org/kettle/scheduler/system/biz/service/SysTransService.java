@@ -170,9 +170,9 @@ public class SysTransService {
 		String selectSql = "SELECT a.*, c.category_name, q.quartz_cron, q.quartz_description ";
 		// from部分sql
 		StringBuilder fromSql = new StringBuilder();
-		fromSql.append("FROM `k_trans` a ");
-		fromSql.append("LEFT JOIN `k_category` c ON a.category_id = c.id ");
-		fromSql.append("LEFT JOIN `k_quartz` q ON a.trans_quartz=q.id ");
+		fromSql.append("FROM k_trans a ");
+		fromSql.append("LEFT JOIN k_category c ON a.category_id = c.id ");
+		fromSql.append("LEFT JOIN k_quartz q ON a.trans_quartz=q.id ");
 		if (query != null) {
 			fromSql.append("WHERE 1=1 ");
 			if (query.getCategoryId() != null) {

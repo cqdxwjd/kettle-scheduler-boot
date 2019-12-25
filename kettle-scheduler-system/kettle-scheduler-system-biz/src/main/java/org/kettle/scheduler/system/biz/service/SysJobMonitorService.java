@@ -52,7 +52,7 @@ public class SysJobMonitorService {
     public PageOut<JobMonitorRes> findJobMonitorListByPage(MonitorQueryReq query, Pageable pageable) {
     	String selectSql = "SELECT a.*,b.job_name,c.category_name ";
 		// 动态拼接sql
-		StringBuilder fromSql = new StringBuilder(" FROM `k_job_monitor` a ");
+		StringBuilder fromSql = new StringBuilder(" FROM k_job_monitor a ");
 		fromSql.append("INNER JOIN k_job b ON a.monitor_job_id=b.id ");
 		fromSql.append("LEFT JOIN k_category c ON b.category_id=c.id ");
 		if (query!=null) {
@@ -126,7 +126,7 @@ public class SysJobMonitorService {
     }
 
 	public TaskCountRes countJob() {
-		String sql = "SELECT count(1) total, IFNULL(sum(monitor_success),0) success, IFNULL(sum(monitor_fail),0) fail FROM `k_job_monitor`";
+		String sql = "SELECT count(1) total, nvl(sum(monitor_success),0) success, nvl(sum(monitor_fail),0) fail FROM k_job_monitor";
 		TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql, TaskCountBO.class);
 		return BeanUtil.copyProperties(result, TaskCountRes.class);
 	}

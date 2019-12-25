@@ -52,7 +52,7 @@ public class SysTransMonitorService {
     public PageOut<TransMonitorRes> findTransMonitorListByPage(MonitorQueryReq query, Pageable pageable) {
     	String selectSql = "SELECT a.*,b.trans_name,c.category_name ";
     	// 动态拼接from部分的sql
-		StringBuilder fromSql = new StringBuilder(" FROM `k_trans_monitor` a ");
+		StringBuilder fromSql = new StringBuilder(" FROM k_trans_monitor a ");
 		fromSql.append("INNER JOIN k_trans b ON a.monitor_trans_id=b.id ");
 		fromSql.append("LEFT JOIN k_category c ON b.category_id=c.id ");
 		if (query!=null) {
@@ -125,7 +125,7 @@ public class SysTransMonitorService {
     }
 
 	public TaskCountRes countTrans() {
-    	String sql = "SELECT count(1) total, IFNULL(sum(monitor_success),0) success, IFNULL(sum(monitor_fail),0) fail FROM `k_trans_monitor`";
+    	String sql = "SELECT count(1) total, nvl(sum(monitor_success),0) success, nvl(sum(monitor_fail),0) fail FROM k_trans_monitor";
 		TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql, TaskCountBO.class);
 		return BeanUtil.copyProperties(result, TaskCountRes.class);
 	}
