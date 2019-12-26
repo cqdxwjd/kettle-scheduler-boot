@@ -100,4 +100,8 @@ public class SysUserService {
     public User getUserByAccount(String account) {
     	return userRepository.findByAccount(account);
 	}
+
+    public static void main(String[] args) {
+        System.out.println(new Sha256Hash("admin","kettle-salt",10).toString());
+    }
 }

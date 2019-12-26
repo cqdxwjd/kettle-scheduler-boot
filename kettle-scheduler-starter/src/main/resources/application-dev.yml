@@ -19,3 +19,8 @@ logging: # 日志记录
     org.kettle.scheduler: debug
     org.hibernate.type.descriptor.sql.BasicBinder: trace # 打印sql参数
   file: /apps/logs/${spring.application.name}/${spring.application.name}.log
+thread:
+  corePoolSize: 10
+  maxPoolSize: 50
+  queueCapacity: 500
+  keepAliveSeconds: 10

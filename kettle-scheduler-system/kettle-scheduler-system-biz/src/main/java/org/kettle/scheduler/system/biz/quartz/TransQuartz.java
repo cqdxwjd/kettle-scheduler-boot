@@ -93,7 +93,7 @@ public class TransQuartz implements Job {
 
         // 输出日志到文件中,返回输出路径
         String logPath = writeStringToFile(String.valueOf(transId), logText);
-
+        
         // 修改监控表数据
         TransMonitor transMonitor = new TransMonitor();
         transMonitor.setMonitorTransId(transId);

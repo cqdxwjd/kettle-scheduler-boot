@@ -16,7 +16,7 @@ public class IdEntity {
      * 主键id
      */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator="SEQ_TRANS",strategy = GenerationType.SEQUENCE)
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 }
