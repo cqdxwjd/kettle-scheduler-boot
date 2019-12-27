@@ -20,4 +20,7 @@ public interface SysMviewTagMapper {
 
     @Update("update k_mview_tag set mview_tag_code=#{mviewTagCode},mview_tag_name=#{mviewTagName},parent_id=#{parentId} where id=#{id}")
     int update(MviewTag mviewTag);
+
+    @Delete("delete k_mview_tag from id=#{id}")
+    int delete(@Param("id") String id);
 }

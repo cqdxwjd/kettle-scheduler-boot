@@ -39,4 +39,13 @@ public class SysMviewTagService {
     public int update(MviewTag mviewTag) {
         return sysMviewTagMapper.update(mviewTag);
     }
+
+    public int delete(String id) {
+        int result = 0;
+        List<MviewTag> mviewTagByParentId = findMviewTagByParentId(id);
+        if (mviewTagByParentId.size() == 0) {
+            result = sysMviewTagMapper.delete(id);
+        }
+        return result;
+    }
 }

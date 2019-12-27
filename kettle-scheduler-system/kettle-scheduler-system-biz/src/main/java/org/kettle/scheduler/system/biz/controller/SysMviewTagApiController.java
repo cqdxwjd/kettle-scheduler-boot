@@ -29,8 +29,15 @@ public class SysMviewTagApiController implements SysMviewTagApi {
     }
 
     @Override
-    public Result delete(Integer id) {
-        return null;
+    public Result delete(String id) {
+        Result<Object> result = null;
+        int delete = sysMviewTagService.delete(id);
+        if (delete > 0) {
+            result = Result.ok();
+        } else {
+            result = Result.error("请先删除下级项目！");
+        }
+        return result;
     }
 
     @Override

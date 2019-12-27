@@ -1,14 +1,11 @@
 package org.kettle.scheduler.system.biz.service;
 
-import org.kettle.scheduler.common.utils.BeanUtil;
-import org.kettle.scheduler.system.api.response.MviewRes;
-import org.kettle.scheduler.system.biz.entity.Mview;
-import org.kettle.scheduler.system.biz.repository.MviewRepository;
-import org.kettle.scheduler.system.biz.repository.QuartzRepository;
+import org.kettle.scheduler.system.api.entity.Mview;
+import org.kettle.scheduler.system.biz.mapper.SysMviewMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @Description
@@ -19,14 +16,14 @@ import java.util.stream.Collectors;
 @Service
 public class SysMviewService {
 
-    private final MviewRepository mviewRepository;
+    @Autowired
+    SysMviewMapper sysMviewMapper;
 
-    public SysMviewService(MviewRepository mviewRepository) {
-        this.mviewRepository = mviewRepository;
+    List<Mview> findMviewByTagId(String tagId) {
+        return sysMviewMapper.findMviewByTagId(tagId);
     }
 
-    public List<MviewRes> findMviewList() {
-        List<Mview> list = mviewRepository.findAll();
-        return list.stream().map(t -> BeanUtil.copyProperties(t, MviewRes.class)).collect(Collectors.toList());
+    public List<Mview> findMviewList() {
+        return sysMviewMapper.findMviewList();
     }
 }

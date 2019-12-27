@@ -4,9 +4,9 @@ import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.system.api.api.SysMviewApi;
-import org.kettle.scheduler.system.api.request.MviewReq;
-import org.kettle.scheduler.system.api.response.MviewRes;
+import org.kettle.scheduler.system.api.entity.Mview;
 import org.kettle.scheduler.system.biz.service.SysMviewService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -14,45 +14,43 @@ import java.util.List;
 @RestController
 public class SysMviewApiController implements SysMviewApi {
 
-    private final SysMviewService sysMviewService;
+    @Autowired
+    SysMviewService sysMviewService;
 
-    public SysMviewApiController(SysMviewService sysMviewService) {
-        this.sysMviewService = sysMviewService;
-    }
 
     @Override
-    public Result add(MviewReq req) {
+    public Result add(Mview req) {
         return null;
     }
 
     @Override
-    public Result delete(Integer id) {
+    public Result delete(String id) {
         return null;
     }
 
     @Override
-    public Result deleteBatch(List<Integer> ids) {
+    public Result deleteBatch(List<String> ids) {
         return null;
     }
 
     @Override
-    public Result update(MviewReq req) {
+    public Result update(Mview req) {
         return null;
     }
 
     @Override
-    public Result<PageOut<MviewRes>> findMviewListByPage(QueryHelper<MviewReq> req) {
+    public Result<PageOut<Mview>> findMviewListByPage(QueryHelper<Mview> req) {
         return null;
     }
 
     @Override
-    public Result<MviewRes> getMviewDetail(Integer id) {
+    public Result<Mview> getMviewDetail(String id) {
         return null;
     }
 
     @Override
-    public Result<List<MviewRes>> findMviewList() {
-        return Result.ok(sysMviewService.findMviewList());
+    public Result<List<Mview>> findMviewList() {
+        return null;
     }
 
     @Override
@@ -63,5 +61,10 @@ public class SysMviewApiController implements SysMviewApi {
     @Override
     public Result<Boolean> updateMview(List<String> mviewList) {
         return null;
+    }
+
+    @Override
+    public Result<List<Mview>> findMviewByTagId(String tagId) {
+        return Result.ok(sysMviewService.findMviewList());
     }
 }

@@ -47,7 +47,7 @@ public interface SysMviewTagApi {
      */
     @ApiOperation(value = "通过id删除物化视图")
     @DeleteMapping("/delete.do")
-    Result delete(@RequestParam("id") Integer id);
+    Result delete(@RequestParam("id") String id);
 
     /**
      * 批量删除物化视图
