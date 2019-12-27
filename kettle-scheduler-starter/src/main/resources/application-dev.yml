@@ -11,6 +11,9 @@ spring:
     #database-platform: org.hibernate.dialect.MySQLDialect # 数据库方言
     open-in-view: false # false关闭懒加载
     database-platform: org.hibernate.dialect.Oracle10gDialect
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   thymeleaf:
     cache: false #开发过程关闭页面缓存
 logging: # 日志记录

@@ -5,7 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.common.povo.Result;
-import org.kettle.scheduler.system.api.request.MviewTagReq;
+import org.kettle.scheduler.system.api.entity.MviewTag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,12 +23,12 @@ public interface SysMviewTagApi {
     /**
      * 添加物化视图
      *
-     * @param req {@link MviewTagReq}
+     * @param req {@link MviewTag}
      * @return {@link Result}
      */
     @ApiOperation(value = "添加物化视图")
     @PostMapping("/add.do")
-    Result add(@RequestBody MviewTagReq req);
+    Result add(@RequestBody MviewTag req);
 
     /**
      * 获取一级物化视图标签
@@ -38,6 +38,7 @@ public interface SysMviewTagApi {
     @ApiOperation(value = "获取一级物化视图标签")
     @GetMapping("/findMviewTagByParentId.do")
     Result findMviewTagByParentId(String parentId);
+
     /**
      * 通过id删除物化视图
      *
@@ -61,12 +62,12 @@ public interface SysMviewTagApi {
     /**
      * 更新物化视图
      *
-     * @param req {@link MviewTagReq}
+     * @param req {@link MviewTag}
      * @return {@link Result}
      */
     @ApiOperation(value = "更新物化视图")
-    @PutMapping("/update.do")
-    Result update(@RequestBody MviewTagReq req);
+    @PostMapping("/update.do")
+    Result update(@RequestBody MviewTag req);
 
     /**
      * 根据条件查询物化视图列表
@@ -76,7 +77,7 @@ public interface SysMviewTagApi {
      */
     @ApiOperation(value = "根据条件查询物化视图列表")
     @PostMapping("/findMviewListByPage.do")
-    Result<PageOut<MviewTagReq>> findMviewListByPage(@RequestBody QueryHelper<MviewTagReq> req);
+    Result<PageOut<MviewTag>> findMviewListByPage(@RequestBody QueryHelper<MviewTag> req);
 
     /**
      * 查询物化视图明细
@@ -86,7 +87,7 @@ public interface SysMviewTagApi {
      */
     @ApiOperation(value = "查询物化视图标签明细")
     @GetMapping("/getMviewDetail.do")
-    Result<MviewTagReq> getMviewDetail(@RequestParam("id") Integer id);
+    Result<MviewTag> getMviewDetail(@RequestParam("id") Integer id);
 
     /**
      * 查询物化视图列表
@@ -95,7 +96,7 @@ public interface SysMviewTagApi {
      */
     @ApiOperation(value = "查询物化视图列表")
     @GetMapping("/findMviewList.do")
-    Result<List<MviewTagReq>> findMviewList();
+    Result<List<MviewTag>> findMviewList();
 
     /**
      * 通过DBLINK获取到所有视图列表，和当前已存储的列表对比
@@ -116,7 +117,4 @@ public interface SysMviewTagApi {
     @GetMapping("/refreshMview.do")
     Result<Boolean> updateMview(@RequestBody List<String> mviewList);
 
-    @ApiOperation(value = "测试")
-    @GetMapping("/test.do")
-    Object test();
 }

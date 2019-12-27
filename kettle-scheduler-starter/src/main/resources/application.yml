@@ -7,7 +7,6 @@ server:
 mybatis:
   configuration:
     map-underscore-to-camel-case: 'true'
-    
 spring:
   application:
     name: kettle-scheduler
