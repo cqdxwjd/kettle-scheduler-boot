@@ -4,6 +4,7 @@ package org.kettle.scheduler;
 import com.spring4all.swagger.EnableSwagger2Doc;
 import org.kettle.scheduler.common.utils.IpUtil;
 import org.kettle.scheduler.core.init.EnableEtlKettle;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -21,6 +22,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableEtlKettle
+@MapperScan("org.kettle.scheduler.system.biz.mapper")
 public class KettleSchedulerApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext applicationContext = SpringApplication.run(KettleSchedulerApplication.class, args);

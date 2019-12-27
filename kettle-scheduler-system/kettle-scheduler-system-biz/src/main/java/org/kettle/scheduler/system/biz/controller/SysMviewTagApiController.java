@@ -5,7 +5,10 @@ import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.system.api.api.SysMviewTagApi;
 import org.kettle.scheduler.system.api.request.MviewTagReq;
+import org.kettle.scheduler.system.biz.entity.MviewTag;
+import org.kettle.scheduler.system.biz.mapper.SysMviewTagMapper;
 import org.kettle.scheduler.system.biz.service.SysMviewTagService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -14,6 +17,9 @@ import java.util.List;
 public class SysMviewTagApiController implements SysMviewTagApi {
 
     private final SysMviewTagService sysMviewTagService;
+
+    @Autowired
+    private SysMviewTagMapper sysMviewTagMapper;
 
     public SysMviewTagApiController(SysMviewTagService sysMviewTagService) {
         this.sysMviewTagService = sysMviewTagService;
@@ -57,9 +63,9 @@ public class SysMviewTagApiController implements SysMviewTagApi {
 
     @Override
     public Result<List<MviewTagReq>> findMviewList() {
-        return Result.ok(sysMviewTagService.findMviewTagList());
+        //return Result.ok(sysMviewTagService.findMviewTagList());
+        return null;
     }
-
     @Override
     public Result<Boolean> synchronizeMview() {
         return null;
@@ -68,5 +74,10 @@ public class SysMviewTagApiController implements SysMviewTagApi {
     @Override
     public Result<Boolean> updateMview(List<String> mviewList) {
         return null;
+    }
+
+    @Override
+    public Obje test() {
+        return Result.ok(sysMviewTagMapper.getMviewListTagList());
     }
 }

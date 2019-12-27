@@ -20,11 +20,11 @@ public class MviewTagReq implements Serializable {
     private String id;
 
     @ApiModelProperty(value = "标签编码")
-    private String mview_Tag_Code;
+    private String mview_tag_code;
 
     @ApiModelProperty(value = "标签名称")
-    private String mview_Tag_Name;
+    private String mview_tag_name;
 
     @ApiModelProperty(value = "父级ID")
-    private String parent_Id;
+    private String parent_id;
 }

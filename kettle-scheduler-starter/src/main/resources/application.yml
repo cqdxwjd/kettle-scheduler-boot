@@ -4,6 +4,10 @@ server:
     context-path: /
   tomcat:
     uri-encoding: UTF-8 # get请求中文乱码配置
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: 'true'
+    
 spring:
   application:
     name: kettle-scheduler

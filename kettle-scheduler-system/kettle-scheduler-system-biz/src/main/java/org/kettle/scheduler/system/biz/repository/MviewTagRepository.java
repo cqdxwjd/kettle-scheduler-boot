@@ -13,5 +13,5 @@ import java.util.List;
  */
 public interface MviewTagRepository extends JpaRepository<MviewTag, Integer>, JpaSpecificationExecutor<MviewTag> {
 
-    List<MviewTag> findByparentId(String parent_Id);
+    List<MviewTag> findByparentid(String parent_Id);
 }

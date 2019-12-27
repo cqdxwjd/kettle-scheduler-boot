@@ -8,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 描述:
@@ -27,12 +26,12 @@ public class MviewTag implements Serializable {
     @Column(name = "id")
     private String id;
 
-    @Column(name = "mview_Tag_Code")
-    private String mview_Tag_Code;
+    @Column(name = "mview_tag_code")
+    private String mview_tag_code;
 
-    @Column(name = "mview_Tag_Name")
-    private String mview_Tag_Name;
+    @Column(name = "mview_tag_name")
+    private String mview_tag_name;
 
-    @Column(name =  "parent_Id")
-    private String parentId;
+    @Column(name =  "parent_id")
+    private String parentid;
 }

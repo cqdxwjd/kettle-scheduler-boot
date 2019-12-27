@@ -115,4 +115,8 @@ public interface SysMviewTagApi {
     @ApiOperation(value = "刷新物化视图")
     @GetMapping("/refreshMview.do")
     Result<Boolean> updateMview(@RequestBody List<String> mviewList);
+
+    @ApiOperation(value = "测试")
+    @GetMapping("/test.do")
+    Object test();
 }
