@@ -1,11 +1,13 @@
 package org.kettle.scheduler.system.biz.controller;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.system.api.api.SysMviewApi;
 import org.kettle.scheduler.system.api.entity.Mview;
 import org.kettle.scheduler.system.biz.service.SysMviewService;
+import org.kettle.scheduler.system.biz.thread.RefreshMviewThread;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -17,6 +19,8 @@ public class SysMviewApiController implements SysMviewApi {
     @Autowired
     SysMviewService sysMviewService;
 
+    @Autowired
+    RefreshMviewThread refreshMviewThread;
 
     @Override
     public Result add(Mview req) {
@@ -50,7 +54,7 @@ public class SysMviewApiController implements SysMviewApi {
 
     @Override
     public Result<List<Mview>> findMviewList() {
-        return null;
+        return Result.ok(sysMviewService.findMviewList());
     }
 
     @Override
@@ -66,5 +70,11 @@ public class SysMviewApiController implements SysMviewApi {
     @Override
     public Result<List<Mview>> findMviewByTagId(String tagId) {
         return Result.ok(sysMviewService.findMviewList());
+    }
+
+    @Override
+    public Result<Boolean> refreshMview(String keyword){
+        refreshMviewThread.refreshMview(keyword);
+        return Result.ok(true);
     }
 }

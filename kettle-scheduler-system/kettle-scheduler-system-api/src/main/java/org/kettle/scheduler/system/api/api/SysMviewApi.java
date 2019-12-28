@@ -109,4 +109,14 @@ public interface SysMviewApi {
     @ApiOperation(value = "通过Mview_tag_id查询所有视图")
     @GetMapping("/findMviewByTagId.do")
     Result<List<Mview>> findMviewByTagId(@RequestParam("tagId") String tagId);
+
+    /**
+     * 根据关键词刷新物化视图
+     *
+     * @param keyword
+     * @return
+     */
+    @ApiOperation(value = "刷新物化视图")
+    @PostMapping("/refreshMview")
+    Result<Boolean> refreshMview(String keyword);
 }
