@@ -24,6 +24,6 @@ public class RefreshMviewThread {
      */
     @Async("refreshMviewTaskExecutor")
     public void refreshMview(String keyword) {
-        boolean b = sysMviewService.refreshMview(keyword,new String());
+        sysMviewService.refreshMview(keyword,new String());
     }
 }

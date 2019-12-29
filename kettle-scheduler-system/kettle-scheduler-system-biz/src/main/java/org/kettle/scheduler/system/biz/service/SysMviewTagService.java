@@ -48,4 +48,8 @@ public class SysMviewTagService {
         }
         return result;
     }
+
+    public MviewTag getMviewTagByCode(String mviewTagCode){
+        return sysMviewTagMapper.getMviewTagByCode(mviewTagCode);
+    }
 }

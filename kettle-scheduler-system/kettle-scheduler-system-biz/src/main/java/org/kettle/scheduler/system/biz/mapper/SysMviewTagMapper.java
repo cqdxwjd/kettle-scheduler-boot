@@ -23,4 +23,7 @@ public interface SysMviewTagMapper {
 
     @Delete("delete k_mview_tag from id=#{id}")
     int delete(@Param("id") String id);
+
+    @Select("select * from k_mview_tag where mview_tag_code=upper(#{mviewTagCode})")
+    MviewTag getMviewTagByCode(@Param("mviewTagCode") String mviewTagCode);
 }

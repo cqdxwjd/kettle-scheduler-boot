@@ -13,13 +13,18 @@ import org.kettle.scheduler.system.biz.entity.Job;
 import org.kettle.scheduler.system.biz.entity.JobMonitor;
 import org.kettle.scheduler.system.biz.entity.JobRecord;
 import org.kettle.scheduler.system.biz.entity.Repository;
+import org.kettle.scheduler.system.biz.mapper.SysMviewTagMapper;
 import org.kettle.scheduler.system.biz.repository.RepositoryRepository;
 import org.kettle.scheduler.system.biz.service.SysJobMonitorService;
 import org.kettle.scheduler.system.biz.service.SysJobService;
+import org.kettle.scheduler.system.biz.service.SysMviewTagService;
+import org.kettle.scheduler.system.biz.thread.RefreshMviewThread;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.repository.AbstractRepository;
 import org.quartz.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,17 +36,21 @@ import java.util.Optional;
 /**
  * 作业定时任务执行器
  * 因为定时器的job类和kettle的job类名一样，因此这里采用继承{@code org.quartz。InterruptableJob}类
+ *
  * @author lyf
  */
 @Slf4j
 @DisallowConcurrentExecution
 public class JobQuartz implements InterruptableJob {
+
+    private final Logger logger = LoggerFactory.getLogger(JobQuartz.class);
+
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         // 此处无法使用常规注入方式注入bean
         SysJobMonitorService monitorService = SpringContextUtil.getBean(SysJobMonitorService.class);
         SysJobService jobService = SpringContextUtil.getBean(SysJobService.class);
-
+        RefreshMviewThread refreshMviewThread = SpringContextUtil.getBean(RefreshMviewThread.class);
         // 本次执行时间
         Date lastExecuteTime = jobExecutionContext.getFireTime();
         // 下一次任务时间
@@ -54,13 +63,13 @@ public class JobQuartz implements InterruptableJob {
         // 获取作业
         Job job = jobService.getJobById(jobId);
         // 设置执行参数
-		Map<String, String> params = new HashMap<>(2);
-		if (StringUtil.hasText(job.getSyncStrategy())) {
-			Integer day = Integer.valueOf(job.getSyncStrategy().substring(2, job.getSyncStrategy().length()));
+        Map<String, String> params = new HashMap<>(2);
+        if (StringUtil.hasText(job.getSyncStrategy())) {
+            Integer day = Integer.valueOf(job.getSyncStrategy().substring(2, job.getSyncStrategy().length()));
 
-			params.put("start_time", DateUtil.getDateTimeStr(DateUtil.addDays(DateUtil.getTodayStartTime(), -day)));
-			params.put("end_time", DateUtil.getDateTimeStr(DateUtil.addDays(DateUtil.getTodayEndTime(), -day)));
-		}
+            params.put("start_time", DateUtil.getDateTimeStr(DateUtil.addDays(DateUtil.getTodayStartTime(), -day)));
+            params.put("end_time", DateUtil.getDateTimeStr(DateUtil.addDays(DateUtil.getTodayEndTime(), -day)));
+        }
         // 执行作业并返回日志
         String logText = "";
         try {
@@ -90,7 +99,11 @@ public class JobQuartz implements InterruptableJob {
 
         // 输出日志到文件中,返回输出路径
         String logPath = writeStringToFile(String.valueOf(jobId), logText);
-
+        if (runStatus) {
+            SysMviewTagService sysMviewTagService = SpringContextUtil.getBean(SysMviewTagService.class);
+            logger.info("任务执行成功，刷新物化视图");
+            refreshMviewThread.refreshMview(sysMviewTagService.getMviewTagByCode(job.getJobName()).getId());
+        }
         // 修改监控表数据
         JobMonitor jobMonitor = new JobMonitor();
         jobMonitor.setMonitorJobId(jobId);
@@ -110,14 +123,15 @@ public class JobQuartz implements InterruptableJob {
 
     /**
      * 获取资源库
+     *
      * @param transRepositoryId 资源库id
      * @return {@link AbstractRepository}
      */
     private AbstractRepository getAbstractRepository(Integer transRepositoryId) {
-		AbstractRepository repository = RepositoryUtil.getRepository(transRepositoryId);
-		if (repository == null) {
-			RepositoryRepository repRepository = SpringContextUtil.getBean(RepositoryRepository.class);
-			Optional<Repository> optionalRepository = repRepository.findById(transRepositoryId);
+        AbstractRepository repository = RepositoryUtil.getRepository(transRepositoryId);
+        if (repository == null) {
+            RepositoryRepository repRepository = SpringContextUtil.getBean(RepositoryRepository.class);
+            Optional<Repository> optionalRepository = repRepository.findById(transRepositoryId);
             if (!optionalRepository.isPresent()) {
                 throw new MyMessageException("资源库不存在");
             }
@@ -131,7 +145,8 @@ public class JobQuartz implements InterruptableJob {
 
     /**
      * 输出日志到文件
-     * @param jobId 作业ID
+     *
+     * @param jobId   作业ID
      * @param logText 日志内容
      * @return 日志输出路径
      */
