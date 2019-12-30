@@ -600,7 +600,7 @@ public class FtpClientUtil {
         //ftpCli.listFileNames("/gkdata/");
         //ftpCli.changeWorkingDirectory(new String("南昌市".getBytes("GBK"), "gb2312"));
         List<FtpFile> fileList = new ArrayList<>();
-        fileList = ftpCli.listFileNames("/gkdata/", fileList);
+        fileList = ftpCli.listFileNames("/", fileList);
         //strings.stream().forEach(str-> System.out.println("文件结尾："+str.endsWith("dmp")));
         //String dmp = strings.stream().filter(str -> str.endsWith("dmp") == true).sorted(Comparator.reverseOrder()).findFirst().get();//forEach(System.out::println);
         //ftpCli.download(filePath, new File("D:\\archives\\"+dmp));
