@@ -19,27 +19,48 @@ import java.util.concurrent.Executor;
 @EnableAsync
 public class AsyncConfiguration {
 
-    @Value("${thread.corePoolSize}")
-    private int corePoolSize;
-    @Value("${thread.maxPoolSize}")
-    private int maxPoolSize;
-    @Value("${thread.queueCapacity}")
-    private int queueCapacity;
-    @Value("${thread.keepAliveSeconds}")
-    private int keepAliveSeconds;
+    //刷新物化视图线程池配置
+    @Value("${thread.refreshMview.corePoolSize}")
+    private int refreshMviewCorePoolSize;
+    @Value("${thread.refreshMview.maxPoolSize}")
+    private int refreshMviewMaxPoolSize;
+    @Value("${thread.refreshMview.queueCapacity}")
+    private int refreshMviewQueueCapacity;
+    @Value("${thread.refreshMview.keepAliveSeconds}")
+    private int refreshMviewKeepAliveSeconds;
+
+    //文件下载线程池配置
+    @Value("${thread.downloadFtpFile.corePoolSize}")
+    private int downloadFtpFileCorePoolSize;
+    @Value("${thread.downloadFtpFile.maxPoolSize}")
+    private int downloadFtpFileMaxPoolSize;
+    @Value("${thread.downloadFtpFile.queueCapacity}")
+    private int downloadFtpFileQueueCapacity;
+    @Value("${thread.downloadFtpFile.keepAliveSeconds}")
+    private int downloadFtpFileKeepAliveSeconds;
+
+    //导入数据库线程池配置
+    @Value("${thread.implDb.corePoolSize}")
+    private int implDbCorePoolSize;
+    @Value("${thread.implDb.maxPoolSize}")
+    private int implDbMaxPoolSize;
+    @Value("${thread.implDb.queueCapacity}")
+    private int implDbQueueCapacity;
+    @Value("${thread.implDb.keepAliveSeconds}")
+    private int implDbKeepAliveSeconds;
 
     // 声明一个线程池(并指定线程池的名字)
     @Bean("refreshMviewTaskExecutor")
     public Executor refreshMviewTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         //核心线程数10：线程池创建时候初始化的线程数
-        executor.setCorePoolSize(corePoolSize);
+        executor.setCorePoolSize(refreshMviewCorePoolSize);
         //最大线程数50：线程池最大的线程数，只有在缓冲队列满了之后才会申请超过核心线程数的线程
-        executor.setMaxPoolSize(maxPoolSize);
+        executor.setMaxPoolSize(refreshMviewMaxPoolSize);
         //缓冲队列500：用来缓冲执行任务的队列
-        executor.setQueueCapacity(queueCapacity);
+        executor.setQueueCapacity(refreshMviewQueueCapacity);
         //允许线程的空闲时间60秒：当超过了核心线程出之外的线程在空闲时间到达之后会被销毁
-        executor.setKeepAliveSeconds(keepAliveSeconds);
+        executor.setKeepAliveSeconds(refreshMviewKeepAliveSeconds);
         //线程池名的前缀：设置好了之后可以方便我们定位处理任务所在的线程池
         executor.setThreadNamePrefix("RefreshMviewAsync-");
         executor.initialize();
@@ -51,13 +72,13 @@ public class AsyncConfiguration {
     public Executor downloadFtpFileExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         //核心线程数10：线程池创建时候初始化的线程数
-        executor.setCorePoolSize(2);
+        executor.setCorePoolSize(downloadFtpFileCorePoolSize);
         //最大线程数50：线程池最大的线程数，只有在缓冲队列满了之后才会申请超过核心线程数的线程
-        executor.setMaxPoolSize(2);
+        executor.setMaxPoolSize(downloadFtpFileMaxPoolSize);
         //缓冲队列500：用来缓冲执行任务的队列
-        executor.setQueueCapacity(2);
+        executor.setQueueCapacity(downloadFtpFileQueueCapacity);
         //允许线程的空闲时间60秒：当超过了核心线程出之外的线程在空闲时间到达之后会被销毁
-        executor.setKeepAliveSeconds(keepAliveSeconds);
+        executor.setKeepAliveSeconds(downloadFtpFileKeepAliveSeconds);
         //线程池名的前缀：设置好了之后可以方便我们定位处理任务所在的线程池
         executor.setThreadNamePrefix("downloadFtpFileAsync-");
         executor.initialize();
@@ -70,13 +91,13 @@ public class AsyncConfiguration {
     public Executor implDbThread() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         //核心线程数10：线程池创建时候初始化的线程数
-        executor.setCorePoolSize(2);
+        executor.setCorePoolSize(implDbCorePoolSize);
         //最大线程数50：线程池最大的线程数，只有在缓冲队列满了之后才会申请超过核心线程数的线程
-        executor.setMaxPoolSize(2);
+        executor.setMaxPoolSize(implDbMaxPoolSize);
         //缓冲队列500：用来缓冲执行任务的队列
-        executor.setQueueCapacity(2);
+        executor.setQueueCapacity(implDbQueueCapacity);
         //允许线程的空闲时间60秒：当超过了核心线程出之外的线程在空闲时间到达之后会被销毁
-        executor.setKeepAliveSeconds(keepAliveSeconds);
+        executor.setKeepAliveSeconds(implDbKeepAliveSeconds);
         //线程池名的前缀：设置好了之后可以方便我们定位处理任务所在的线程池
         executor.setThreadNamePrefix("implDbExecutorAsync-");
         executor.initialize();

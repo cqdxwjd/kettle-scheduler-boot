@@ -113,6 +113,7 @@ public class OracleBackUpUtil {
             //address = address + "\\";
             imp.append(address);
         }
+        imp.append(" log=" + address + ".log");
         imp.append(" full=y ignore=y;");
         //imp.append(".dmp");
         File file = new File(address);
@@ -125,16 +126,23 @@ public class OracleBackUpUtil {
                 BufferedReader br = new BufferedReader(isr);
                 String line = null;
                 while ((line = br.readLine()) != null) {
-                    //logger.info(line);
-                    if (line.indexOf("错误") != -1 || line.indexOf("IMP") != -1) {
+                    //logger.info(line);/*|| line.indexOf("IMP") != -1*/
+                    if (line.indexOf("错误") != -1) {
                         errorMessage = "导入失败，区划：" + datasourceUser.getAdmdivcode() + "；账号：" + datasourceUser.getUsername() + "；错误信息：" + line;
                         logger.error(errorMessage);
                         break;
+                    } else if (line.indexOf("成功中止导入") != -1) {
+
                     }
                 }
                 p.destroy();
-                if(errorMessage.length()==0){
+                if (errorMessage.length() == 0) {
                     logger.info("导入成功，区划：" + datasourceUser.getAdmdivcode() + "；账号：" + datasourceUser.getUsername());
+                    if (new File(address).delete()) {
+                        logger.info(file.getName() + " 文件已被删除！");
+                    } else {
+                        logger.info(file.getName() + "文件删除失败！");
+                    }
                     DataSourceUserService dataSourceUserService = SpringContextUtil.getBean(DataSourceUserService.class);
                     datasourceUser.setLastImplDate(new Date());
                     dataSourceUserService.updateDatasourceUser(datasourceUser);

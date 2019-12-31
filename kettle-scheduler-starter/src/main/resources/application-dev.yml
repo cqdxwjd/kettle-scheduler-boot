@@ -23,7 +23,18 @@ logging: # 日志记录
     org.hibernate.type.descriptor.sql.BasicBinder: trace # 打印sql参数
   file: /apps/logs/${spring.application.name}/${spring.application.name}.log
 thread:
-  corePoolSize: 10
-  maxPoolSize: 50
-  queueCapacity: 500
-  keepAliveSeconds: 10
+  refreshMview:
+    corePoolSize: 10
+    maxPoolSize: 50
+    queueCapacity: 500
+    keepAliveSeconds: 10
+  downloadFtpFile:
+    corePoolSize: 2
+    maxPoolSize: 4
+    queueCapacity: 200
+    keepAliveSeconds: 10
+  implDb:
+    corePoolSize: 4
+    maxPoolSize: 6
+    queueCapacity: 200
+    keepAliveSeconds: 10
