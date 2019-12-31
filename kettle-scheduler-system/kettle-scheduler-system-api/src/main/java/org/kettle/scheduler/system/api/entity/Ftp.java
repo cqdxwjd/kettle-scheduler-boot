@@ -24,6 +24,7 @@ public class Ftp {
     private String dir;
     private String systemId;
     private String fileType;
-    private String impl_type;
+    private String implType;
     private String fileNameRegular;
+    private String localFilePath;
 }

@@ -5,10 +5,21 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
+import org.kettle.scheduler.common.utils.SpringContextUtil;
+import org.kettle.scheduler.system.api.entity.DatasourceUser;
+import org.kettle.scheduler.system.api.entity.TaskLog;
+import org.kettle.scheduler.system.api.enums.TaskLogEnum;
+import org.kettle.scheduler.system.biz.component.DirectSender;
 import org.kettle.scheduler.system.biz.entity.FtpFile;
+import org.kettle.scheduler.system.biz.service.DataSourceUserService;
+import org.kettle.scheduler.system.biz.service.SysDatabaseTypeService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.io.*;
 import java.net.UnknownHostException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Stream;
@@ -21,28 +32,31 @@ import java.util.stream.Stream;
  * @version 1.0
  */
 public class FtpClientUtil {
-    private static final String DEFAULT_CHARSET = "UTF-8";
+    private static final String DEFAULT_CHARSET = "GBK";
     private static final int DEFAULT_TIMEOUT = 60 * 1000;
     private static final String DAILY_FILE_PATH = "dailyFilePath";
     private String host;
     private int port;
     private String username;
     private String password;
+    private String localFilePath;
     private FTPClient ftpClient;
     private volatile String ftpBasePath;
+    private Logger logger = LoggerFactory.getLogger(FtpClientUtil.class);
 
-    private FtpClientUtil(String host, String username, String password) {
-        this(host, 21, username, password, DEFAULT_CHARSET);
+    private FtpClientUtil(String host, String username, String password, String localFilePath) {
+        this(host, 21, username, password, DEFAULT_CHARSET, localFilePath);
         setTimeout(DEFAULT_TIMEOUT, DEFAULT_TIMEOUT, DEFAULT_TIMEOUT);
     }
 
-    private FtpClientUtil(String host, int port, String username, String password, String charset) {
+    private FtpClientUtil(String host, int port, String username, String password, String charset, String localFilePath) {
         ftpClient = new FTPClient();
         ftpClient.setControlEncoding(charset);
         this.host = StringUtils.isEmpty(host) ? "localhost" : host;
         this.port = (port <= 0) ? 21 : port;
         this.username = StringUtils.isEmpty(username) ? "anonymous" : username;
         this.password = password;
+        this.localFilePath = localFilePath;
     }
 
     public FtpClientUtil(String username) {
@@ -59,8 +73,8 @@ public class FtpClientUtil {
      * @return com.moy.demo.common.utils.FtpCli
      * @author 叶向阳
      */
-    public static FtpClientUtil createFtpCli(String host, String username, String password) {
-        return new FtpClientUtil(host, username, password);
+    public static FtpClientUtil createFtpCli(String host, String username, String password, String localFilePath) {
+        return new FtpClientUtil(host, username, password, localFilePath);
     }
 
     /**
@@ -75,8 +89,8 @@ public class FtpClientUtil {
      * @return com.moy.demo.common.utils.FtpCli
      * @author 叶向阳
      */
-    public static FtpClientUtil createFtpCli(String host, int port, String username, String password, String charset) {
-        return new FtpClientUtil(host, port, username, password, charset);
+    public static FtpClientUtil createFtpCli(String host, int port, String username, String password, String charset, String localFilePath) {
+        return new FtpClientUtil(host, port, username, password, charset, localFilePath);
     }
 
     /**
@@ -102,6 +116,7 @@ public class FtpClientUtil {
      */
     public void connect() throws IOException {
         try {
+            logger.info("连接FTP");
             ftpClient.connect(host, port);
         } catch (UnknownHostException e) {
             throw new IOException("Can't find FTP server :" + host);
@@ -401,7 +416,7 @@ public class FtpClientUtil {
                     fileLists.add(new FtpFile(ftpFile.getName(), filePath + ftpFile.getName(), ftpFile.getSize() / 1024, ftpFile.getTimestamp().getTime()));
                 } else if (ftpFile.isDirectory()) {
                     try {
-                        listFileNames(filePath + ftpFile.getName() + "/", fileList);
+                        listFileNames(filePath + "/" + ftpFile.getName() + "/", fileList);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -414,11 +429,28 @@ public class FtpClientUtil {
             FtpFile file = dmpStream.findFirst().get();
             //System.out.println("文件名：" + file.getFileName() + ";时间：" + file.getTime() + ";路径：" + file.getFilePath() + "大小(KB)" + file.getSize());
             fileList.add(file);
-            System.out.println("执行异步线程");
-            System.out.println("正在下载文件："+file.getFilePath());
-            download(new String(file.getFilePath().getBytes("GBK"), "gb2312"),new File("D:\\archives\\"+file.getFileName()));
-            new Thread(()->{
-            });
+            String fileName = file.getFileName();
+            String admdivcode = fileName.substring(0, fileName.indexOf("."));
+            DataSourceUserService dataSourceUserService = SpringContextUtil.getBean(DataSourceUserService.class);
+            DatasourceUser datasourceUser = dataSourceUserService.getDatasourceUserByAdmdivcode(admdivcode);
+
+            //最后更新时间不为空，且在当前读取的文件时间之前
+            //判断文件是否是最新，不为最新文件则跳过
+            if (null != datasourceUser && null != datasourceUser.getLastImplDate() || datasourceUser.getLastImplDate().before(file.getTime())) {
+                logger.info("正在下载文件：" + file.getFilePath());
+
+                download(new String(file.getFilePath().getBytes(DEFAULT_CHARSET), "gb2312"), new File(localFilePath + file.getFileName()));
+                //发送MQ消息，执行数据还原操作
+                DirectSender directSender = SpringContextUtil.getBean(DirectSender.class);
+                //OracleBackUpUtil.resumeDataBaseOracle(datasourceUser, localFilePath + file.getFileName());
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("datasourceUser", datasourceUser);
+                map.put("address", localFilePath + file.getFileName());
+                TaskLog taskLog = new TaskLog(TaskLogEnum.getEnumDesc("IMPL_DB"), "0", "数据库文件：" + file.getFilePath() + "下载成功", new Date(), map);
+                directSender.sendDirectMessage(taskLog);
+                //datasourceUser.setLastImplDate(file.getTime());
+                //dataSourceUserService.updateDatasourceUser(datasourceUser);
+            }
         } catch (NoSuchElementException e) {
 
         }
@@ -589,8 +621,9 @@ public class FtpClientUtil {
         }
     }
 
+
     public static void main(String[] args) throws IOException {
-        FtpClientUtil ftpCli = FtpClientUtil.createFtpCli("10.108.12.6", 21, "rjyf", "ftp@1234", "GBK");
+        FtpClientUtil ftpCli = FtpClientUtil.createFtpCli("10.108.12.6", 21, "rjyf", "ftp@1234", "GBK", "D:\\archives\\");
         try {
             ftpCli.connect();
         } catch (IOException e) {

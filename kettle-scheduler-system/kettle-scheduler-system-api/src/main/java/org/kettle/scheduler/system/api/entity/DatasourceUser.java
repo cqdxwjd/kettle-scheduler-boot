@@ -2,6 +2,9 @@ package org.kettle.scheduler.system.api.entity;
 
 import lombok.Data;
 
+import java.io.Serializable;
+import java.util.Date;
+
 /**
  * 描述:
  *
@@ -10,8 +13,9 @@ import lombok.Data;
  */
 
 @Data
-public class DatasourceUser {
+public class DatasourceUser implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     private String id;
     private String username;
     private String password;
@@ -19,4 +23,8 @@ public class DatasourceUser {
     private String admdivcode;
     private String dbType;
     private String systemId;
+    private String databaseName;
+    private String databasePort;
+    private String databaseHost;
+    private Date lastImplDate;
 }

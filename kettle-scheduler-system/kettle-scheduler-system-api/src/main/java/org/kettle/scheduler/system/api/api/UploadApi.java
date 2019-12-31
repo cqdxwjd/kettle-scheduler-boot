@@ -16,7 +16,7 @@ import java.io.IOException;
  * @author leo
  * @create 2019-12-30 18:00
  */
-@Api(value = "文件上传")
+@Api(tags = "文件上传")
 @RequestMapping("/sys/upload")
 public interface UploadApi {
 

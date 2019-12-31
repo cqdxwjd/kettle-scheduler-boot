@@ -1,12 +1,14 @@
 package org.kettle.scheduler.system.biz.quartz;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.net.ftp.FTP;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.utils.*;
 import org.kettle.scheduler.core.constant.KettleConfig;
 import org.kettle.scheduler.core.dto.RepositoryDTO;
 import org.kettle.scheduler.core.execute.JobExecute;
 import org.kettle.scheduler.core.repository.RepositoryUtil;
+import org.kettle.scheduler.system.api.entity.Ftp;
 import org.kettle.scheduler.system.api.enums.RunResultEnum;
 import org.kettle.scheduler.system.api.enums.RunTypeEnum;
 import org.kettle.scheduler.system.biz.entity.Job;
@@ -15,9 +17,11 @@ import org.kettle.scheduler.system.biz.entity.JobRecord;
 import org.kettle.scheduler.system.biz.entity.Repository;
 import org.kettle.scheduler.system.biz.mapper.SysMviewTagMapper;
 import org.kettle.scheduler.system.biz.repository.RepositoryRepository;
+import org.kettle.scheduler.system.biz.service.FtpService;
 import org.kettle.scheduler.system.biz.service.SysJobMonitorService;
 import org.kettle.scheduler.system.biz.service.SysJobService;
 import org.kettle.scheduler.system.biz.service.SysMviewTagService;
+import org.kettle.scheduler.system.biz.thread.DownloadFtpFileThread;
 import org.kettle.scheduler.system.biz.thread.RefreshMviewThread;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogLevel;
@@ -85,6 +89,17 @@ public class JobQuartz implements InterruptableJob {
                     logText = JobExecute.run(job.getJobPath(), null
                             , LogLevel.getLogLevelForCode(job.getJobLogLevel()));
                     break;
+                case FTP:
+                    DownloadFtpFileThread downloadFtpFileThread = SpringContextUtil.getBean(DownloadFtpFileThread.class);
+                    FtpService ftpService = SpringContextUtil.getBean(FtpService.class);
+                    String ftpId = job.getFtpId();
+                    Ftp ftp = ftpService.getFtpById(ftpId);
+                    try {
+                        downloadFtpFileThread.run(ftp);
+                    } catch (IOException e) {
+                        logger.error("FTP连接异常");
+                    }
+                    break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + RunTypeEnum.getEnum(job.getJobType()));
             }
@@ -99,7 +114,11 @@ public class JobQuartz implements InterruptableJob {
 
         // 输出日志到文件中,返回输出路径
         String logPath = writeStringToFile(String.valueOf(jobId), logText);
-        if (runStatus) {
+
+        /**
+         * 后续将调用物化视图刷新更改为消息队列通信
+         */
+        if (runStatus==true&&job.getJobType()!="ftp"&&!job.getJobType().equals("ftp")) {
             SysMviewTagService sysMviewTagService = SpringContextUtil.getBean(SysMviewTagService.class);
             logger.info("任务执行成功，刷新物化视图");
             refreshMviewThread.refreshMview(sysMviewTagService.getMviewTagByCode(job.getJobName()).getId());

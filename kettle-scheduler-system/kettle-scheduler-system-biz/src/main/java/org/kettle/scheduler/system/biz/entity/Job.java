@@ -81,5 +81,10 @@ public class Job extends BasicEntity implements Serializable {
     @Column(name = "job_status")
     private Integer jobStatus;
 
+    /**
+     * 由于资源库ID只能使用int类型，故增加一个ftp关联id
+     */
+    @Column(name = "ftp_id")
+    private String ftpId;
 
 }
