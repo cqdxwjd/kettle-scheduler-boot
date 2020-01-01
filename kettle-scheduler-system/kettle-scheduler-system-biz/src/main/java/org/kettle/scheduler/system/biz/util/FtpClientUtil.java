@@ -1,5 +1,6 @@
 package org.kettle.scheduler.system.biz.util;
 
+import com.ctjsoft.util.StringUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -325,7 +326,11 @@ public class FtpClientUtil {
      * @param localFile   本地文件路径名称
      * @author 叶向阳
      */
-    public void download(String ftpFileName, File localFile) throws IOException {
+    public void download(String ftpFileName, String fileDir, File localFile) throws IOException {
+        if (!StringUtil.isEmpty(fileDir)) {
+            File file = new File(fileDir);
+            if (!file.exists()) file.mkdirs();
+        }
         OutputStream out = null;
         try {
             ftpClient.changeWorkingDirectory(ftpFileName);
@@ -392,7 +397,7 @@ public class FtpClientUtil {
             if (ftpFile.isDirectory() && !ftpFile.getName().equals(".") && !ftpFile.getName().equals("..")) {
                 downloadDir(remotePath + "/" + ftpFile.getName(), localPath + "/" + ftpFile.getName());
             } else {
-                download(remotePath + "/" + ftpFile.getName(), new File(localPath + "/" + ftpFile.getName()));
+                download(remotePath + "/" + ftpFile.getName(), localPath,new File(localPath + "/" + ftpFile.getName()));
             }
         }
     }
@@ -413,7 +418,7 @@ public class FtpClientUtil {
         if (ftpFiles != null) {
             Arrays.stream(ftpFiles).forEach(ftpFile -> {
                 if (ftpFile.isFile()) {
-                    fileLists.add(new FtpFile(ftpFile.getName(), filePath + ftpFile.getName(), ftpFile.getSize() / 1024, ftpFile.getTimestamp().getTime()));
+                    fileLists.add(new FtpFile(ftpFile.getName(), filePath, filePath + ftpFile.getName(), ftpFile.getSize() / 1024, ftpFile.getTimestamp().getTime()));
                 } else if (ftpFile.isDirectory()) {
                     try {
                         listFileNames(filePath + "/" + ftpFile.getName() + "/", fileList);
@@ -431,15 +436,17 @@ public class FtpClientUtil {
             fileList.add(file);
             String fileName = file.getFileName();
             String admdivcode = fileName.substring(0, fileName.indexOf("."));
-            DataSourceUserService dataSourceUserService = SpringContextUtil.getBean(DataSourceUserService.class);
-            DatasourceUser datasourceUser = dataSourceUserService.getDatasourceUserByAdmdivcode(admdivcode);
-
+            DataSourceUserService dataSourceUserService = null;
+            DatasourceUser datasourceUser = null;
+            if (!StringUtil.isEmpty(admdivcode)) {
+                dataSourceUserService = SpringContextUtil.getBean(DataSourceUserService.class);
+                datasourceUser = dataSourceUserService.getDatasourceUserByAdmdivcode(admdivcode);
+            }
             //最后更新时间不为空，且在当前读取的文件时间之前
             //判断文件是否是最新，不为最新文件则跳过
-            if (null != datasourceUser && null != datasourceUser.getLastImplDate() || datasourceUser.getLastImplDate().before(file.getTime())) {
+            if (null != datasourceUser && (null != datasourceUser.getLastImplDate() || datasourceUser.getLastImplDate().before(file.getTime()))) {
                 logger.info("正在下载文件：" + file.getFilePath());
-
-                download(new String(file.getFilePath().getBytes(DEFAULT_CHARSET), "gb2312"), new File(localFilePath + file.getFileName()));
+                download(new String(file.getFilePath().getBytes(DEFAULT_CHARSET), "gb2312"), file.getFileDir(), new File(localFilePath + file.getFilePath()));
                 //发送MQ消息，执行数据还原操作
                 DirectSender directSender = SpringContextUtil.getBean(DirectSender.class);
                 //OracleBackUpUtil.resumeDataBaseOracle(datasourceUser, localFilePath + file.getFileName());
@@ -623,7 +630,7 @@ public class FtpClientUtil {
 
 
     public static void main(String[] args) throws IOException {
-        FtpClientUtil ftpCli = FtpClientUtil.createFtpCli("10.108.12.6", 21, "rjyf", "ftp@1234", "GBK", "D:\\archives\\");
+        FtpClientUtil ftpCli = FtpClientUtil.createFtpCli("127.0.0.1", 21, "admin", "admin", "GBK", "D:\\archives\\");
         try {
             ftpCli.connect();
         } catch (IOException e) {
@@ -639,6 +646,14 @@ public class FtpClientUtil {
         //ftpCli.download(filePath, new File("D:\\archives\\"+dmp));
         //strings.sort(String.CASE_INSENSITIVE_ORDER);
         //strings.forEach(str -> System.out.println("fileName:" + str));
-        new File("D:\\archives\\361129000.2019-12-15.dmp").delete();
+        System.out.println(ftpCli.printWorkingDirectory());
+        ;
+        List<FtpFile> fileList = new ArrayList<>();
+        fileList = ftpCli.listFileNames("gkdata/", fileList);
+       /* File file = new File("D:\\archives\\南昌市\\南昌市\\361129000.2019-12-15.dmp");
+        if(!file.exists()){
+            file.mkdirs();
+        }*/
+
     }
 }

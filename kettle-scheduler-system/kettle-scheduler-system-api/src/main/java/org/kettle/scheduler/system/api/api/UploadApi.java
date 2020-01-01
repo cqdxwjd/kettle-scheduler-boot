@@ -1,6 +1,7 @@
 package org.kettle.scheduler.system.api.api;
 
 import io.swagger.annotations.Api;
+import oracle.jdbc.proxy.annotation.Post;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,4 +24,7 @@ public interface UploadApi {
     @PostMapping("/uploadExcel")
     @ResponseBody
     String uploadExcel(MultipartFile file, @RequestParam String fileType) throws IOException, ClassNotFoundException;
+
+    @PostMapping("/test")
+    String test();
 }

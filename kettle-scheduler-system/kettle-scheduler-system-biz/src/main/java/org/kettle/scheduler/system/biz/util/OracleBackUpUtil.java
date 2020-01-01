@@ -126,7 +126,7 @@ public class OracleBackUpUtil {
                 BufferedReader br = new BufferedReader(isr);
                 String line = null;
                 while ((line = br.readLine()) != null) {
-                    //logger.info(line);/*|| line.indexOf("IMP") != -1*/
+                    //logger.info(line);/*|| line.indexOf("IMP") ! 33= -1*/
                     if (line.indexOf("错误") != -1) {
                         errorMessage = "导入失败，区划：" + datasourceUser.getAdmdivcode() + "；账号：" + datasourceUser.getUsername() + "；错误信息：" + line;
                         logger.error(errorMessage);

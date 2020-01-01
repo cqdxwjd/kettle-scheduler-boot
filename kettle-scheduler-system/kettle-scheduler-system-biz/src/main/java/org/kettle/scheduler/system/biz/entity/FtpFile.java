@@ -12,18 +12,20 @@ import java.util.Date;
  * @create 2019-12-29 16:39
  */
 @Data
-public class FtpFile implements Comparable<FtpFile>{
+public class FtpFile implements Comparable<FtpFile> {
 
     String id;
     String fileName;
+    String fileDir;
     String filePath;
     long size;
     Date time;
     String errorMessage;
     String status;
 
-    public FtpFile(String fileName, String filePath, long size, Date time) {
+    public FtpFile(String fileName, String fileDir, String filePath, long size, Date time) {
         this.fileName = fileName;
+        this.fileDir = fileDir;
         this.filePath = filePath;
         this.size = size;
         this.time = time;
