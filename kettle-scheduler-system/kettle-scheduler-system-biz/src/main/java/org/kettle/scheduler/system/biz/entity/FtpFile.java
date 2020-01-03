@@ -18,17 +18,19 @@ public class FtpFile implements Comparable<FtpFile> {
     String fileName;
     String fileDir;
     String filePath;
-    long size;
-    Date time;
+    long fileSize;
+    Date fileTime;
     String errorMessage;
     String status;
+    String batchNo;
 
-    public FtpFile(String fileName, String fileDir, String filePath, long size, Date time) {
+    public FtpFile(String fileName, String fileDir, String filePath, long fileSize, Date fileTime,String batchNo) {
         this.fileName = fileName;
         this.fileDir = fileDir;
         this.filePath = filePath;
-        this.size = size;
-        this.time = time;
+        this.fileSize = fileSize;
+        this.fileTime = fileTime;
+        this.batchNo = batchNo;
     }
 
     public FtpFile() {

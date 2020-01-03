@@ -13,17 +13,16 @@ import org.kettle.scheduler.system.api.enums.TaskLogEnum;
 import org.kettle.scheduler.system.biz.component.DirectSender;
 import org.kettle.scheduler.system.biz.entity.FtpFile;
 import org.kettle.scheduler.system.biz.service.DataSourceUserService;
-import org.kettle.scheduler.system.biz.service.SysDatabaseTypeService;
+import org.kettle.scheduler.system.biz.service.FtpFileService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import java.io.*;
 import java.net.UnknownHostException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Stream;
+
 
 /**
  * <p>Description: [ftp工具类]</p>
@@ -36,6 +35,7 @@ public class FtpClientUtil {
     private static final String DEFAULT_CHARSET = "GBK";
     private static final int DEFAULT_TIMEOUT = 60 * 1000;
     private static final String DAILY_FILE_PATH = "dailyFilePath";
+    private String batchNo;
     private String host;
     private int port;
     private String username;
@@ -62,6 +62,14 @@ public class FtpClientUtil {
 
     public FtpClientUtil(String username) {
         this.username = username;
+    }
+
+    public String getBatchNo() {
+        return batchNo;
+    }
+
+    public void setBatchNo(String batchNo) {
+        this.batchNo = batchNo;
     }
 
     /**
@@ -418,7 +426,7 @@ public class FtpClientUtil {
         if (ftpFiles != null) {
             Arrays.stream(ftpFiles).forEach(ftpFile -> {
                 if (ftpFile.isFile()) {
-                    fileLists.add(new FtpFile(ftpFile.getName(), filePath, filePath + ftpFile.getName(), ftpFile.getSize() / 1024, ftpFile.getTimestamp().getTime()));
+                    fileLists.add(new FtpFile(ftpFile.getName(), localFilePath+filePath, filePath + ftpFile.getName(), ftpFile.getSize() / 1048576, ftpFile.getTimestamp().getTime(),batchNo));
                 } else if (ftpFile.isDirectory()) {
                     try {
                         listFileNames(filePath + "/" + ftpFile.getName() + "/", fileList);
@@ -444,15 +452,25 @@ public class FtpClientUtil {
             }
             //最后更新时间不为空，且在当前读取的文件时间之前
             //判断文件是否是最新，不为最新文件则跳过
-            if (null != datasourceUser && (null != datasourceUser.getLastImplDate() || datasourceUser.getLastImplDate().before(file.getTime()))) {
-                logger.info("正在下载文件：" + file.getFilePath());
-                download(new String(file.getFilePath().getBytes(DEFAULT_CHARSET), "gb2312"), file.getFileDir(), new File(localFilePath + file.getFilePath()));
+            if (null != datasourceUser && null != datasourceUser.getLastImplDate() && datasourceUser.getLastImplDate().before(file.getFileTime())) {
+                File localFile = new File(localFilePath + file.getFilePath());
+                //判断文件是否存在
+                if(!localFile.exists()&&file.getFileSize()!=localFile.length()/1048576){
+                    logger.info("正在下载文件：" + file.getFilePath());
+                    download(new String(file.getFilePath().getBytes(DEFAULT_CHARSET), "gb2312"), file.getFileDir(), new File(localFilePath + file.getFilePath()));
+                }
+                logger.info("文件已存在，调用导入");
+                FtpFileService ftpFileService = SpringContextUtil.getBean(FtpFileService.class);
+                if(ftpFileService.getFtpFileByBatchNoAndFileName(batchNo, fileName)==null){
+                    ftpFileService.addFtpFile(file);
+                }
                 //发送MQ消息，执行数据还原操作
                 DirectSender directSender = SpringContextUtil.getBean(DirectSender.class);
                 //OracleBackUpUtil.resumeDataBaseOracle(datasourceUser, localFilePath + file.getFileName());
                 HashMap<String, Object> map = new HashMap<>();
                 map.put("datasourceUser", datasourceUser);
-                map.put("address", localFilePath + file.getFileName());
+                map.put("address", localFilePath + file.getFilePath());
+                map.put("batchNo",batchNo);
                 TaskLog taskLog = new TaskLog(TaskLogEnum.getEnumDesc("IMPL_DB"), "0", "数据库文件：" + file.getFilePath() + "下载成功", new Date(), map);
                 directSender.sendDirectMessage(taskLog);
                 //datasourceUser.setLastImplDate(file.getTime());

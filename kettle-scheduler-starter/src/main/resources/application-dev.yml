@@ -34,7 +34,7 @@ thread:
     queueCapacity: 200
     keepAliveSeconds: 10
   implDb:
-    corePoolSize: 4
-    maxPoolSize: 6
+    corePoolSize: 1
+    maxPoolSize: 2
     queueCapacity: 200
     keepAliveSeconds: 10

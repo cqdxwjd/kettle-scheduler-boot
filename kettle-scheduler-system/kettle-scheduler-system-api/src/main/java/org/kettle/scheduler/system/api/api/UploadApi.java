@@ -25,6 +25,4 @@ public interface UploadApi {
     @ResponseBody
     String uploadExcel(MultipartFile file, @RequestParam String fileType) throws IOException, ClassNotFoundException;
 
-    @PostMapping("/test")
-    String test();
 }

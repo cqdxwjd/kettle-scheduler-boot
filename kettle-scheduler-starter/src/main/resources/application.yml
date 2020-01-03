@@ -18,6 +18,18 @@ spring:
       - kettle
   aop: # 设置动态代理方式为cglib，否在shiro代理会失败
     proxy-target-class: true
+  redis:
+    database: 0
+    host: 120.79.236.37
+    password: sms123
+    port: 6379
+    timeout: 1000
+    jedis:
+      pool:
+        max-active: 100
+        max-idle: 3
+        max-wait: -1
+        min-idle: 0
   rabbitmq:
     password: 123456
     username: admin

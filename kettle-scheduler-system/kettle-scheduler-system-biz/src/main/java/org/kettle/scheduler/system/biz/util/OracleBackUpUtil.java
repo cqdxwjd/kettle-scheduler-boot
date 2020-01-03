@@ -124,8 +124,10 @@ public class OracleBackUpUtil {
                 Process p = Runtime.getRuntime().exec(imp.toString());
                 InputStreamReader isr = new InputStreamReader(p.getErrorStream(), "GBK");
                 BufferedReader br = new BufferedReader(isr);
+                StringBuilder implLog = new StringBuilder();
                 String line = null;
                 while ((line = br.readLine()) != null) {
+                    implLog.append(line);
                     //logger.info(line);/*|| line.indexOf("IMP") ! 33= -1*/
                     if (line.indexOf("错误") != -1) {
                         errorMessage = "导入失败，区划：" + datasourceUser.getAdmdivcode() + "；账号：" + datasourceUser.getUsername() + "；错误信息：" + line;
