@@ -12,6 +12,9 @@ public interface SysMviewTagMapper {
     @Select("select * from k_mview_tag")
     List<MviewTag> getMviewListTagList();
 
+    @Select("select * from k_mview_tag where id=#{id}")
+    MviewTag getMviewTagById(@Param("id") String id);
+
     @Insert("insert into (mview_tag_code,mview_tag_name,parent_id) values(#{mviewTagCode},#{mviewTagName})")
     int add(MviewTag mviewTag);
 

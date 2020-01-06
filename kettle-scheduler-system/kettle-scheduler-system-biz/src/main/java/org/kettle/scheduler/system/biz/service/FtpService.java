@@ -43,4 +43,7 @@ public class FtpService {
     public int deleteFtp(String id) {
         return ftpMappr.deleteFtp(id);
     }
+    public List<Ftp> searchFtp(String keyword){
+        return ftpMappr.searchFtp(keyword);
+    }
 }

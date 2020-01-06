@@ -1,10 +1,13 @@
 package org.kettle.scheduler.system.biz.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.system.api.api.SysSystemApi;
 import org.kettle.scheduler.system.api.entity.System;
 import org.kettle.scheduler.system.biz.service.SysSystemService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -22,8 +25,10 @@ public class SysSystemApiController implements SysSystemApi {
     SysSystemService sysSystemService;
 
     @Override
-    public Result<List<System>> getSystemList() {
-        return Result.ok(sysSystemService.getSystemList());
+    public Result<PageInfo> getSystemList(int page, int rows) {
+        PageHelper.startPage(page, rows);
+        PageInfo<System> pageInfo = new PageInfo<>(sysSystemService.getSystemList());
+        return Result.ok(pageInfo);
     }
 
     @Override
@@ -48,8 +53,10 @@ public class SysSystemApiController implements SysSystemApi {
     }
 
     @Override
-    public Result<List<System>> searchSystem(String keyword) {
-        return Result.ok(sysSystemService.searchSystem(keyword));
+    public Result<PageInfo> searchSystem(int page, int rows, String keyword) {
+        PageHelper.startPage(page, rows);
+        PageInfo<System> pageInfo = new PageInfo<>(sysSystemService.searchSystem(keyword));
+        return Result.ok(pageInfo);
     }
 
 }

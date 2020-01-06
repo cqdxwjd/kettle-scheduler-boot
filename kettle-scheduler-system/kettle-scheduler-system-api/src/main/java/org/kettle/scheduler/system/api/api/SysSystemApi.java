@@ -1,5 +1,6 @@
 package org.kettle.scheduler.system.api.api;
 
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.kettle.scheduler.common.povo.Result;
@@ -20,7 +21,8 @@ public interface SysSystemApi {
 
     @ApiOperation(value = "获取系统列表")
     @GetMapping("/getSystemList.do")
-    Result<List<System>> getSystemList();
+    Result<PageInfo> getSystemList(@RequestParam(required = false, defaultValue = "1") int page,
+                                   @RequestParam(required = false, defaultValue = "10") int rows);
 
     @ApiOperation(value = "根据ID查询系统列表")
     @PostMapping("/getSystemById.do")
@@ -40,5 +42,7 @@ public interface SysSystemApi {
 
     @ApiOperation(value = "搜索系统")
     @GetMapping("/searchSystem")
-    Result<List<System>> searchSystem(@RequestParam String keyword);
+    Result<PageInfo> searchSystem(@RequestParam(required = false, defaultValue = "1") int page,
+                                      @RequestParam(required = false, defaultValue = "10") int rows,
+                                      @RequestParam String keyword);
 }

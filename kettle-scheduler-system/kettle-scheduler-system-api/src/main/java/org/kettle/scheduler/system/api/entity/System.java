@@ -25,4 +25,6 @@ public class System {
 
     @ExcelProperty("备注")
     private String remark;
+
+    private MviewTag mviewTag;
 }

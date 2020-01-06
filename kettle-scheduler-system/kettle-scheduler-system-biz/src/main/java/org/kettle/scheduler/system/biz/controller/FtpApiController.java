@@ -1,12 +1,16 @@
 package org.kettle.scheduler.system.biz.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.system.api.api.FtpApi;
 import org.kettle.scheduler.system.api.entity.Ftp;
 import org.kettle.scheduler.system.biz.service.FtpService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.awt.peer.FramePeer;
@@ -30,8 +34,10 @@ public class FtpApiController implements FtpApi {
     FtpService ftpService;
 
     @Override
-    public Result<List<Ftp>> getFtpList() {
-        return Result.ok(ftpService.getFtpList());
+    public Result<PageInfo> getFtpList(int page, int rows) {
+        PageHelper.startPage(page, rows);
+        PageInfo<Ftp> pageinfo = new PageInfo<>(ftpService.getFtpList());
+        return Result.ok(pageinfo);
     }
 
     @Override
@@ -57,5 +63,12 @@ public class FtpApiController implements FtpApi {
     @Override
     public Result deleteFtp(String id) {
         return Result.ok(ftpService.deleteFtp(id));
+    }
+
+    @Override
+    public Result<PageInfo> searchFtp(int page, int rows, String keyword) {
+        PageHelper.startPage(page, rows);
+        PageInfo<Ftp> pageInfo = new PageInfo<>(ftpService.searchFtp(keyword));
+        return Result.ok(pageInfo);
     }
 }

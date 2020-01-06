@@ -1,5 +1,6 @@
 package org.kettle.scheduler.system.api.api;
 
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import oracle.jdbc.proxy.annotation.Post;
@@ -22,7 +23,8 @@ public interface FtpApi {
 
     @GetMapping("/getFtpList")
     @ApiOperation(value = "获取FTP列表")
-    Result<List<Ftp>> getFtpList();
+    Result<PageInfo> getFtpList(@RequestParam(required = false, defaultValue = "1") int page,
+                                @RequestParam(required = false, defaultValue = "10") int rows);
 
     @GetMapping("/getFtpById")
     @ApiOperation(value = "根据ID获取FTP信息")
@@ -43,4 +45,10 @@ public interface FtpApi {
     @PostMapping("/deleteFtp")
     @ApiOperation(value = "删除FTP")
     Result deleteFtp(@RequestParam String id);
+
+    @GetMapping("/searchFtp")
+    @ApiOperation(value = "搜索Ftp")
+    Result<PageInfo> searchFtp(@RequestParam(required = false, defaultValue = "1") int page,
+                               @RequestParam(required = false, defaultValue = "10") int rows,
+                               @RequestParam String keyword);
 }

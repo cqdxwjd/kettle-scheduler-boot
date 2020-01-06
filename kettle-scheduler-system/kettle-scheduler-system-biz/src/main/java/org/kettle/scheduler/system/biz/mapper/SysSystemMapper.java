@@ -15,7 +15,10 @@ import java.util.List;
 @Mapper
 public interface SysSystemMapper {
 
-    @Select("select * from k_system")
+    @Select("select id,system_name,tag_id,datasource,remark from k_system")
+    @Results({
+            @Result(property = "mviewTag", column = "tag_id", one = @One(select = "org.kettle.scheduler.system.biz.mapper.SysMviewTagMapper.getMviewTagById")),
+    })
     List<System> getSystemList();
 
     @Select("select * from k_system where id=#{id}")

@@ -31,4 +31,7 @@ public interface FtpMappr {
 
     @Delete("delete k_ftp where id=#{id}")
     int deleteFtp(String id);
+
+    @Select("select * from k_ftp where host like CONCAT(CONCAT('%',#{keyword}),'%') or username like CONCAT(CONCAT('%',#{keyword}),'%')")
+    List<Ftp> searchFtp(@Param("keyword") String keyword);
 }
