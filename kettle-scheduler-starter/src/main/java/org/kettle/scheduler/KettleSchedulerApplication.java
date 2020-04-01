@@ -1,8 +1,6 @@
 package org.kettle.scheduler;
 
 
-import com.ctjsoft.taskScheduler.init.EnableTaskScheduler;
-import com.ctjsoft.taskScheduler.thread.TaskThread;
 import com.spring4all.swagger.EnableSwagger2Doc;
 import org.kettle.scheduler.common.utils.IpUtil;
 import org.kettle.scheduler.core.init.EnableEtlKettle;
@@ -12,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 启动类
@@ -24,8 +23,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 @EnableJpaAuditing
 @EnableEtlKettle
-@EnableTaskScheduler
-@TaskThread
+@EnableScheduling
 @MapperScan("org.kettle.scheduler.system.biz.mapper")
 public class KettleSchedulerApplication {
     public static void main(String[] args) {

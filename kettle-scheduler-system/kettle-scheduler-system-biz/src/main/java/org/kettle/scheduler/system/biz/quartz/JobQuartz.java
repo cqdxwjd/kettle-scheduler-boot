@@ -95,7 +95,8 @@ public class JobQuartz implements InterruptableJob {
                     String ftpId = job.getFtpId();
                     Ftp ftp = ftpService.getFtpById(ftpId);
                     try {
-                        downloadFtpFileThread.run(ftp);
+                        //downloadFtpFileThread.run(ftp);
+                        downloadFtpFileThread.run("");
                     } catch (IOException e) {
                         logger.error("FTP连接异常");
                     }
