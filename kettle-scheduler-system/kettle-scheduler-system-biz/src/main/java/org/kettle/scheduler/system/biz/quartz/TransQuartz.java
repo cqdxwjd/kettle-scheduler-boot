@@ -1,5 +1,7 @@
 package org.kettle.scheduler.system.biz.quartz;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.utils.*;
@@ -58,9 +60,11 @@ public class TransQuartz implements Job {
         Trans trans = transService.getTransById(transId);
 		// 设置执行参数
 		Map<String, String> params = new HashMap<>(2);
-		if (StringUtil.hasText(trans.getSyncStrategy())) {
+        String transParams = trans.getTransParams();
+        Map jsonToMap = JSON.parseObject(transParams);
+        params.putAll(jsonToMap);
+        if (StringUtil.hasText(trans.getSyncStrategy())) {
 			Integer day = Integer.valueOf(trans.getSyncStrategy().substring(2, trans.getSyncStrategy().length()));
-
 			params.put("start_time", DateUtil.getDateTimeStr(DateUtil.addDays(DateUtil.getTodayStartTime(), -day)));
 			params.put("end_time", DateUtil.getDateTimeStr(DateUtil.addDays(DateUtil.getTodayEndTime(), -day)));
 		}

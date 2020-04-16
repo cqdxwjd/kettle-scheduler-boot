@@ -1,5 +1,6 @@
 package org.kettle.scheduler.system.biz.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.kettle.scheduler.system.biz.entity.basic.BasicEntity;
@@ -7,6 +8,7 @@ import org.kettle.scheduler.system.biz.entity.basic.BasicEntity;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 /**
@@ -81,5 +83,9 @@ public class Trans extends BasicEntity implements Serializable {
     @Column(name = "trans_status")
     private Integer transStatus;
 
-
+    /**
+     * 转换中使用到的参数信息，JSON格式
+     */
+    @Column(name = "trans_params")
+    private String transParams;
 }

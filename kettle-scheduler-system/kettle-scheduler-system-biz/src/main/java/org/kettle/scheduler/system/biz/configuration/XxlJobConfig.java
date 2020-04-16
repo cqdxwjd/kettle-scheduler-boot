@@ -32,7 +32,7 @@ import java.util.concurrent.ConcurrentMap;
  * @create 2020-01-06 17:31
  */
 
-@Configuration
+//@Configuration
 public class XxlJobConfig {
     private Logger logger = LoggerFactory.getLogger(XxlJobConfig.class);
     @Value("${xxl.job.admin.addresses}")

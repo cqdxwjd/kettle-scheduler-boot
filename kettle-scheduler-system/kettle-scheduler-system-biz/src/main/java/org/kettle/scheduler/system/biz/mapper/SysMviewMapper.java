@@ -28,7 +28,6 @@ public interface SysMviewMapper {
      * 调用数据库
      *
      * @param keyword
-     * @param results
      * @return
      */
     @Select("{call REFRESH_MVIEW(#{keyword,mode=IN,jdbcType=VARCHAR})}")

@@ -81,8 +81,15 @@ public class TransReq extends BasicVO implements Serializable {
      * 日志级别(Basic，Detailed，Error，Debug，Minimal，Rowlevel）
      */
     @ApiModelProperty(value = "日志级别")
-	@NotBlank(message = "日志级别不能为空")
+    @NotBlank(message = "日志级别不能为空")
     private String transLogLevel;
+
+    /**
+     * 转换中使用到的参数信息，JSON格式
+     */
+    @ApiModelProperty(value = "转换参数")
+    //@NotBlank(message = "转换参数")
+    private String transParams;
 
     /**
      * 状态（1：正在运行；2：已停止）
