@@ -1,7 +1,7 @@
 # kettle-scheduler-boot
 
 #### 介绍
-基于Spring-boot的kettle调度项目，参考了[zhaxiaodong9860](https://github.com/zhaxiaodong9860)的代码并引用了其中的页面管理，后台代码自行参考了API进行工具化编写，方便使用
+基于Spring-boot的kettle调度项目，参考了[zhaxiaodong9860](https://github.com/zhaxiaodong9860)的代码并引用了其中的页面管理，后台代码自行参考了API进行工具化编写，方便使用   
 在原代码的基础上加入以下功能   
 1、修改数据库为oracle   
 2、增加mybatis相关依赖，陆续将jpa替换为mybatis   
