@@ -20,17 +20,23 @@ import java.util.Date;
 public class TransMonitorBO extends BasicEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
-	/**
-	 * 分类名称
-	 */
-	@Column(name = "category_name")
-	private String categoryName;
+    /**
+     * 分类名称
+     */
+    @Column(name = "category_name")
+    private String categoryName;
 
-	/**
-	 * 转换名称
-	 */
-	@Column(name = "trans_name")
-	private String transName;
+    /**
+     * 转换名称
+     */
+    @Column(name = "trans_name")
+    private String transName;
+
+    /**
+     * 转换描述
+     */
+    @Column(name = "trans_description")
+    private String transDescription;
 
     /**
      * 监控的转换的ID

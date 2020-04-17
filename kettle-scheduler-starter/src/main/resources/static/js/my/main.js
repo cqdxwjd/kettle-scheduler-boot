@@ -155,6 +155,9 @@ function monitorTrans() {
                 field: 'transName',
                 title: '转换名'
             }, {
+                field: 'transDescription',
+                title: '转换描述'
+            }, {
                 field: 'monitorSuccess',
                 title: '成功次数'
             }, {

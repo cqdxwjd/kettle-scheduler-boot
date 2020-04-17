@@ -112,6 +112,9 @@ function getTransMonitorList() {
                 field: 'transName',
                 title: '转换名称'
             }, {
+                field: 'transDescription',
+                title: '转换描述'
+            }, {
                 field: 'categoryName',
                 title: '任务分类'
             }, {

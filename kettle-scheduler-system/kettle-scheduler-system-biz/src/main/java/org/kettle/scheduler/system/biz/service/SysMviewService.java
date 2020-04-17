@@ -37,9 +37,16 @@ public class SysMviewService {
         return sysMviewMapper.findMviewList();
     }
 
-    public void refreshMview(String keyword, String result) {
+    public void refreshMview(String keyword, String type, String result) {
         logger.info("刷新物化视图，关键词：" + keyword);
-        List<Mview> mviewByNameOrTag = sysMviewMapper.findMviewByNameOrTag(keyword);
+        List<Mview> mviewByNameOrTag = new ArrayList<>();
+        if(type.equals("1")){
+            mviewByNameOrTag = sysMviewMapper.findMviewByNameOrTag(keyword);
+        }else{
+            //直接通过Dblink从源库中获取物化视图列表
+            mviewByNameOrTag = sysMviewMapper.findMviewByDbLink(keyword);
+        }
+
         mviewByNameOrTag.forEach(
                 mview -> {
                     String mviewNmae = mview.getMviewName();

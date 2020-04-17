@@ -50,7 +50,7 @@ public class SysTransMonitorService {
 	}
 
     public PageOut<TransMonitorRes> findTransMonitorListByPage(MonitorQueryReq query, Pageable pageable) {
-    	String selectSql = "SELECT a.*,b.trans_name,c.category_name ";
+    	String selectSql = "SELECT a.*,b.trans_name,c.category_name,b.trans_description ";
     	// 动态拼接from部分的sql
 		StringBuilder fromSql = new StringBuilder(" FROM k_trans_monitor a ");
 		fromSql.append("INNER JOIN k_trans b ON a.monitor_trans_id=b.id ");
@@ -85,13 +85,16 @@ public class SysTransMonitorService {
         // 查询trans信息
         Optional<Trans> transOptional = transRepository.findById(transId);
         String transName = "";
+        String transDescription="";
         if (transOptional.isPresent()) {
-            transName = transOptional.get().getTransName();
+            //transName = transOptional.get().getTransName();
+            transDescription = transOptional.get().getTransDescription();
         }
         // 分页查询执行记录
         Page<TransRecord> page = recordRepository.findByRecordTransId(transId, pageable);
         // 封装数据
-        String finalTransName = transName;
+        String finalTransName = transDescription;
+
         List<TransRecordRes> collect = page.get().map(t -> {
             TransRecordRes res = BeanUtil.copyProperties(t, TransRecordRes.class);
             res.setTransName(finalTransName);

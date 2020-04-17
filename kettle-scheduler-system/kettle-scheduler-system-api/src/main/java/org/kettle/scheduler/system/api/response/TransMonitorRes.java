@@ -34,6 +34,12 @@ public class TransMonitorRes extends BasicVO implements Serializable {
     private String transName;
 
     /**
+     * 转换描述
+     */
+    @ApiModelProperty(value = "转换描述")
+    private String transDescription;
+
+    /**
      * 监控的转换的ID
      */
     @ApiModelProperty(value = "监控的转换的ID")

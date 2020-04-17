@@ -21,8 +21,11 @@ public interface SysMviewMapper {
     @Select("select * from k_mview where mview_tag_id=#{tagId}")
     List<Mview> findMviewByTagId(@Param("tagId") String tagId);
 
-    @Select("select * from k_mview where mview_name like CONCAT(CONCAT('%',#{keyword}),'%') or mview_tag_id like CONCAT(CONCAT('%',#{keyword}),'%')")
+    @Select("<script>select * from k_mview <if test=\"keyword!=null and keyword!=''\">where mview_name like CONCAT(CONCAT('%',#{keyword}),'%') or mview_tag_id like CONCAT(CONCAT('%',#{keyword}),'%')</if></script>")
     List<Mview> findMviewByNameOrTag(@Param("keyword") String keyword);
+
+    @Select("<script>SELECT OWNER, MVIEW_NAME, LAST_REFRESH_DATE, REFRESH_METHOD, INVALID, QUERY FROM USER_MVIEW_ANALYSIS@dc_edw2020_link <if test=\"keyword!=null and keyword!=''\">where mview_name like CONCAT(CONCAT('%',#{keyword}),'%') or mview_tag_id like CONCAT(CONCAT('%',#{keyword}),'%')</if> ORDER BY LAST_REFRESH_DATE DESC</script>")
+    List<Mview> findMviewByDbLink(@Param("keyword") String keyword);
 
     /**
      * 调用数据库

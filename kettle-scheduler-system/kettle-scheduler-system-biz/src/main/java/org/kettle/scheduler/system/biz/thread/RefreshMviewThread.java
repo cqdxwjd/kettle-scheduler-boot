@@ -19,11 +19,11 @@ public class RefreshMviewThread {
 
     /**
      * 批量刷新物化视图
-     *
-     * @param mviewTag
+     * @param keyword   查询关键词
+     * @param type      刷新类别，1通过K_MVIEW表获取物化视图，0直接从源库获取
      */
     @Async("refreshMviewTaskExecutor")
-    public void refreshMview(String keyword) {
-        sysMviewService.refreshMview(keyword,new String());
+    public void refreshMview(String keyword, String type) {
+        sysMviewService.refreshMview(keyword, type, new String());
     }
 }

@@ -118,5 +118,5 @@ public interface SysMviewApi {
      */
     @ApiOperation(value = "刷新物化视图")
     @PostMapping("/refreshMview")
-    Result<Boolean> refreshMview(String keyword);
+    Result<Boolean> refreshMview(@RequestParam(value = "keyword", required = false) String keyword, @RequestParam(value = "type", required = false, defaultValue = "1") String type);
 }

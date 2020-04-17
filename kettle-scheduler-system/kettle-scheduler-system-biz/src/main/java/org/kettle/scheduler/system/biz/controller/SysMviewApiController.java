@@ -73,8 +73,8 @@ public class SysMviewApiController implements SysMviewApi {
     }
 
     @Override
-    public Result<Boolean> refreshMview(String keyword){
-        refreshMviewThread.refreshMview(keyword);
+    public Result<Boolean> refreshMview(String keyword,String type){
+        refreshMviewThread.refreshMview(keyword,type);
         return Result.ok(true);
     }
 }

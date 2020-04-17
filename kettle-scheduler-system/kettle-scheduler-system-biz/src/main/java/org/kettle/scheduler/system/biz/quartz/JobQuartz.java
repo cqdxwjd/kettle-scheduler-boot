@@ -122,7 +122,7 @@ public class JobQuartz implements InterruptableJob {
         if (runStatus==true&&job.getJobType()!="ftp"&&!job.getJobType().equals("ftp")) {
             SysMviewTagService sysMviewTagService = SpringContextUtil.getBean(SysMviewTagService.class);
             logger.info("任务执行成功，刷新物化视图");
-            refreshMviewThread.refreshMview(sysMviewTagService.getMviewTagByCode(job.getJobName()).getId());
+            refreshMviewThread.refreshMview(sysMviewTagService.getMviewTagByCode(job.getJobName()).getId(),"1");
         }
         // 修改监控表数据
         JobMonitor jobMonitor = new JobMonitor();

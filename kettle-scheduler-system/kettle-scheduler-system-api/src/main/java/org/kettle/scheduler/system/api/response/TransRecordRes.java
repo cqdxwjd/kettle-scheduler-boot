@@ -34,6 +34,11 @@ public class TransRecordRes extends BasicVO implements Serializable {
     private String transName;
 
     /**
+     * 转换描述
+     */
+    @ApiModelProperty(value = "转换描述")
+    private String transDescription;
+    /**
      * 启动时间
      */
     @ApiModelProperty(value = "启动时间")
@@ -51,12 +56,12 @@ public class TransRecordRes extends BasicVO implements Serializable {
     @ApiModelProperty(value = "任务执行结果（1：成功；0：失败）")
     private Integer recordStatus;
 
-	@ApiModelProperty(value = "任务执行结果显示值")
-	public String getRecordStatusStr() {
-		return RunResultEnum.getEnumDesc(recordStatus);
-	}
+    @ApiModelProperty(value = "任务执行结果显示值")
+    public String getRecordStatusStr() {
+        return RunResultEnum.getEnumDesc(recordStatus);
+    }
 
-	/**
+    /**
      * 转换日志记录文件保存位置
      */
     @ApiModelProperty(value = "转换日志记录文件保存位置")
