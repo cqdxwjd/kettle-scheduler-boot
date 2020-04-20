@@ -40,11 +40,17 @@ public class TransRes extends BasicVO implements Serializable {
     @ApiModelProperty(value = "转换名称")
     private String transName;
 
-    /**
-     * 转换描述
-     */
-    @ApiModelProperty(value = "转换描述")
-    private String transDescription;
+	/**
+	 * 转换描述
+	 */
+	@ApiModelProperty(value = "转换描述")
+	private String transDescription;
+
+	/**
+	 * 转换描述
+	 */
+	@ApiModelProperty(value = "转换参数")
+	private String transParams;
 
     /**
      * 执行类型（rep：资源库；file：文件）

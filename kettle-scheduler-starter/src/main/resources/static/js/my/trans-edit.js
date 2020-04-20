@@ -177,6 +177,7 @@ function initData(){
                     $("#transLogLevel").find("option[value=" + Trans.transLogLevel + "]").prop("selected",true);
                     $("#transDescription").val(Trans.transDescription);
                     $("#syncStrategy").val(Trans.syncStrategy);
+                    $("#transParams").val(Trans.transParams);
                 } else {
                     layer.msg(data.message, {icon: 2});
                 }
