@@ -1,6 +1,5 @@
 package org.kettle.scheduler.system.biz.service;
 
-import org.kettle.scheduler.system.api.entity.System;
 import org.kettle.scheduler.system.biz.mapper.SysSystemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

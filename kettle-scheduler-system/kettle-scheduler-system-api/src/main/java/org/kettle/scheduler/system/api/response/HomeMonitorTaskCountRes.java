@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 @ApiModel(value = "首页监控任务统计-出参")
-public class HomeMonitorTaskCountRes {
+public class  HomeMonitorTaskCountRes {
 
     @ApiModelProperty(value = "总任务数")
     private Integer totalTaskNum;

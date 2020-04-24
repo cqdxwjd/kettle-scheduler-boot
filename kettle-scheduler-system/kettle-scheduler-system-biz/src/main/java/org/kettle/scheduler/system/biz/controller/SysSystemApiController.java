@@ -4,13 +4,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.system.api.api.SysSystemApi;
-import org.kettle.scheduler.system.api.entity.System;
 import org.kettle.scheduler.system.biz.service.SysSystemService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * 描述:

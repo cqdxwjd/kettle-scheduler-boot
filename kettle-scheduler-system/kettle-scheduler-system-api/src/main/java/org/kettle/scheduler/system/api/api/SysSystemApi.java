@@ -4,10 +4,7 @@ import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.kettle.scheduler.common.povo.Result;
-import org.kettle.scheduler.system.api.entity.System;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * 描述:

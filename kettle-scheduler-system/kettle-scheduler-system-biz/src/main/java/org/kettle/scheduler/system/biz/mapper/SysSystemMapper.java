@@ -1,7 +1,6 @@
 package org.kettle.scheduler.system.biz.mapper;
 
 import org.apache.ibatis.annotations.*;
-import org.kettle.scheduler.system.api.entity.System;
 
 import java.util.List;
 
