@@ -51,6 +51,11 @@ public class TransRecord extends BasicEntity implements Serializable {
      */
     @Column(name = "log_file_path")
     private String logFilePath;
+    /**
+     * 分类ID
+     */
+    @Column(name = "category_id")
+    private Integer categoryId;
 
 
 }

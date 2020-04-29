@@ -286,4 +286,6 @@ public class SysTransService {
 	public Integer countRunTrans() {
 		return transRepository.countByTransStatus(RunStatusEnum.RUN.getCode());
 	}
+    public Integer countByCategoryId(Integer CategoryId) { return transRepository.countByCategoryId(CategoryId);}
+
 }

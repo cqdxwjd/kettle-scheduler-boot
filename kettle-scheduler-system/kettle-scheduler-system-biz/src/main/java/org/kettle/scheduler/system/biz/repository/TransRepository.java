@@ -31,4 +31,11 @@ public interface TransRepository extends JpaRepository<Trans, Integer>, JpaSpeci
 	 * @return {@link Integer}
 	 */
 	Integer countByTransStatus(Integer transStatus);
+
+	/**
+	 * 根据分类查询转换
+	 * @param CategoryId
+	 * @return
+	 */
+	Integer countByCategoryId(Integer CategoryId);
 }

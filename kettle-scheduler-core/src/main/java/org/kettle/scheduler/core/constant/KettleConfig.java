@@ -41,6 +41,11 @@ public class KettleConfig {
 	 */
 	public static String kettlePluginPackages;
 
+	/**
+	 * 刷新视图接口路径
+	 */
+	public static String vmUrl;
+
 	public void setLogFilePath(String logFilePath) {
         KettleConfig.logFilePath = FileUtil.replaceSeparator(logFilePath);;
     }
@@ -59,5 +64,8 @@ public class KettleConfig {
 
 	public void setKettlePluginPackages(String kettlePluginPackages) {
 		KettleConfig.kettlePluginPackages = kettlePluginPackages;
+	}
+
+	public void setVmUrl(String vmUrl) { KettleConfig.vmUrl = vmUrl;
 	}
 }

@@ -132,4 +132,9 @@ public class SysTransMonitorService {
 		TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql, TaskCountBO.class);
 		return BeanUtil.copyProperties(result, TaskCountRes.class);
 	}
+    public TaskCountRes countTransByToday(Integer categoryid) {
+        String sql = "SELECT count(1) total，nvl(sum(case when RECORD_STATUS = 1 then 1 else 0 end),0) success,nvl(sum(case when RECORD_STATUS = 0 then 1 else 0 end),0) fail from K_TRANS_RECORD WHERE TO_CHAR(stop_time, 'YYYYMMDD' ) = TO_CHAR(SYSDATE, 'YYYYMMDD') and category_id="+categoryid;
+        TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql,TaskCountBO.class);
+        return BeanUtil.copyProperties(result, TaskCountRes.class);
+    }
 }

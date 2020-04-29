@@ -2,7 +2,12 @@ package org.kettle.scheduler.system.biz.quartz;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
+import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.utils.*;
 import org.kettle.scheduler.core.constant.KettleConfig;
@@ -11,13 +16,16 @@ import org.kettle.scheduler.core.execute.TransExecute;
 import org.kettle.scheduler.core.repository.RepositoryUtil;
 import org.kettle.scheduler.system.api.enums.RunResultEnum;
 import org.kettle.scheduler.system.api.enums.RunTypeEnum;
+import org.kettle.scheduler.system.api.response.TaskCountRes;
 import org.kettle.scheduler.system.biz.entity.Repository;
 import org.kettle.scheduler.system.biz.entity.Trans;
 import org.kettle.scheduler.system.biz.entity.TransMonitor;
 import org.kettle.scheduler.system.biz.entity.TransRecord;
 import org.kettle.scheduler.system.biz.repository.RepositoryRepository;
+import org.kettle.scheduler.system.biz.service.SysCategoryService;
 import org.kettle.scheduler.system.biz.service.SysTransMonitorService;
 import org.kettle.scheduler.system.biz.service.SysTransService;
+import org.kettle.scheduler.system.biz.util.HttpAsyncUtils;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.repository.AbstractRepository;
@@ -25,13 +33,13 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.Future;
 
 /**
  * 转换定时任务执行器
@@ -46,7 +54,6 @@ public class TransQuartz implements Job {
         // 此处无法使用常规注入方式注入bean
         SysTransMonitorService monitorService = SpringContextUtil.getBean(SysTransMonitorService.class);
         SysTransService transService = SpringContextUtil.getBean(SysTransService.class);
-
         // 本次执行时间
         Date lastExecuteTime = jobExecutionContext.getFireTime();
         // 下一次任务时间
@@ -112,7 +119,26 @@ public class TransQuartz implements Job {
         transRecord.setRecordTransId(transId);
         transRecord.setStartTime(lastExecuteTime);
         transRecord.setStopTime(stopDate);
+        transRecord.setCategoryId(trans.getCategoryId());
         monitorService.addTransRecord(transRecord);
+        if(trans.getCategoryId()!=null) {
+            //查询分类下转换数量
+            Integer size = transService.countByCategoryId(trans.getCategoryId());
+            //查询该分类下今天执行数量
+            TaskCountRes taskCountRes = monitorService.countTransByToday(trans.getCategoryId());
+            if (taskCountRes.getTotal() >= size) {
+                try {
+                    String requestPath =KettleConfig.vmUrl+trans.getCategoryId();
+                    HttpAsyncUtils.get(requestPath);
+                    log.info("刷新物化视图"+trans.getCategoryId());;
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+
     }
 
     /**

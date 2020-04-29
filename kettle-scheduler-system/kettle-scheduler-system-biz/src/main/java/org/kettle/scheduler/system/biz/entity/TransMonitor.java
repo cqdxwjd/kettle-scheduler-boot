@@ -28,6 +28,7 @@ public class TransMonitor extends BasicEntity implements Serializable {
     @Column(name = "monitor_trans_id")
     private Integer monitorTransId;
 
+
     /**
      * 成功次数
      */
