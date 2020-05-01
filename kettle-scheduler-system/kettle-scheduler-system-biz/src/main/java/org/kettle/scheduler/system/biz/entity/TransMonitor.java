@@ -22,6 +22,8 @@ import java.util.Date;
 public class TransMonitor extends BasicEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    @Column(name="id")
+    private String id;
     /**
      * 监控的转换的ID
      */
