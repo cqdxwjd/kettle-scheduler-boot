@@ -16,11 +16,10 @@ import java.util.Date;
  *
  * @author lyf
  */
-@EqualsAndHashCode(callSuper = true)
 @MappedSuperclass
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class BasicEntity extends IdEntity {
+public class BasicEntity/* extends IdEntity*/ {
     /**
      * 添加者
      */

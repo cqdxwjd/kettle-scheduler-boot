@@ -104,7 +104,6 @@ public class SysTransService {
 			}
 		}
 		transMonitor.setMonitorStatus(statusEnum.getCode());
-        transMonitor.setId(com.ctjsoft.util.StringUtil.getUUID());
 		monitorRepository.save(transMonitor);
 	}
 

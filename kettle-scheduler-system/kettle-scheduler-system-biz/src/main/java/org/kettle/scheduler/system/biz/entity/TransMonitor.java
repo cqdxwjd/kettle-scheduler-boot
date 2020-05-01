@@ -6,10 +6,7 @@ import org.kettle.scheduler.system.biz.entity.basic.BasicEntity;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -20,14 +17,17 @@ import java.util.Date;
  */
 @Data
 @Entity
+@EqualsAndHashCode(callSuper = true)
 @Table(name = "k_trans_monitor")
-public class TransMonitor implements Serializable {
+public class TransMonitor extends BasicEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-
-
+    /**
+     * 主键id
+     */
     @Id
-    @Column(name = "id")
-    private String id;
+    @GeneratedValue(generator = "SEQ_TRANS_MONITOR", strategy = GenerationType.SEQUENCE)
+    @Column(name = "id", insertable = false, nullable = false)
+    private Integer id;
     /**
      * 监控的转换的ID
      */
@@ -71,37 +71,5 @@ public class TransMonitor implements Serializable {
     @Column(name = "next_execute_time")
     private Date nextExecuteTime;
 
-
-    /**
-     * 添加者
-     */
-    @Column(name = "add_user")
-    private Integer addUser;
-
-    /**
-     * 添加时间, 添加{@code @CreatedDate}注解后, 系统会自动添加日期
-     */
-    @CreatedDate
-    @Column(name = "add_time")
-    private Date addTime;
-
-    /**
-     * 编辑者
-     */
-    @Column(name = "edit_user")
-    private Integer editUser;
-
-    /**
-     * 编辑时间, 添加{@code @LastModifiedDate}注解后, 系统会自动更新日期
-     */
-    @LastModifiedDate
-    @Column(name = "edit_time")
-    private Date editTime;
-
-    /**
-     * 是否删除（1：删除；0：存在）
-     */
-    @Column(name = "del_flag")
-    private Integer delFlag = 0;
 
 }

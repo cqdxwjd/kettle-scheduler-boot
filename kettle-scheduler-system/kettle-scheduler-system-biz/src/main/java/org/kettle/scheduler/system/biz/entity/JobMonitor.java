@@ -4,9 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.kettle.scheduler.system.biz.entity.basic.BasicEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -15,13 +13,16 @@ import java.util.Date;
  *
  * @author lyf
  */
-@Table(name = "k_job_monitor")
+@Table(name = "K_JOB_MONITOR")
 @Entity
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class JobMonitor extends BasicEntity implements Serializable {
     private static final long serialVersionUID = 1L;
-
+    @Id
+    @GeneratedValue(generator = "SEQ_JOB_MONITOR", strategy = GenerationType.SEQUENCE)
+    @Column(name = "id", insertable = false, nullable = false)
+    private Integer id;
     /**
      * 监控的作业ID
      */

@@ -4,9 +4,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.kettle.scheduler.system.biz.entity.basic.BasicEntity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,11 +14,16 @@ import java.util.Date;
  * @author lyf
  */
 @Data
-@Table(name = "k_job_record")
+@Table(name = "K_JOB_RECORD")
 @Entity
 @EqualsAndHashCode(callSuper = true)
 public class JobRecord extends BasicEntity implements Serializable {
     private static final long serialVersionUID = 1L;
+
+    @Id
+    @GeneratedValue(generator = "SEQ_JOB_RECORD", strategy = GenerationType.SEQUENCE)
+    @Column(name = "id", insertable = false, nullable = false)
+    private Integer id;
 
     /**
      * 作业ID
