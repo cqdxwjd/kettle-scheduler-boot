@@ -8,6 +8,7 @@ import org.kettle.scheduler.core.log.KettleLogUtil;
 import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogLevel;
+import org.pentaho.di.core.parameters.UnknownParamException;
 import org.pentaho.di.repository.AbstractRepository;
 import org.pentaho.di.repository.RepositoryDirectoryInterface;
 import org.pentaho.di.trans.Trans;
@@ -36,9 +37,16 @@ public class TransExecute {
         // 传入ktr需要的变量
         if (CollectionUtil.isNotEmpty(params)) {
 			log.info("传入kettle的参数：{}", JsonUtil.toJsonString(params));
-            for (Map.Entry<String, String> entry : params.entrySet()) {
+			params.forEach((String k,Object v)->{
+                try {
+                    trans.setParameterValue(k, v.toString());
+                } catch (UnknownParamException e) {
+                    e.printStackTrace();
+                }
+            });
+            /*for (Map.Entry<String, String> entry : params.entrySet()) {
                 trans.setParameterValue(entry.getKey(), entry.getValue());
-            }
+            }*/
         }
         // 开始执行ktr，该方法还可以传入命令行参数args
         trans.execute(args);
