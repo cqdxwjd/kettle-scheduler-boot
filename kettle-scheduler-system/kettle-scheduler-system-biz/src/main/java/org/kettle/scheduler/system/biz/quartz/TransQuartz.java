@@ -35,6 +35,8 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -47,6 +49,7 @@ import java.util.concurrent.Future;
  */
 @Slf4j
 @DisallowConcurrentExecution
+@Component
 public class TransQuartz implements Job {
 
     @Override
