@@ -11,7 +11,7 @@
 6、增加redis，rabbitmq等中间件，用于调度抽取任务   
 7、增加了一些扩展功能
 
-2020-05-13 重要更新说明   
+** 2020-05-13 重要更新说明  **    
 由于原代码数据库使用的是mysql，所有ID使用的是数据库自增长ID，迁移到oracle后，将自增长ID修改为触发器，目前根据使用到的实体类，创建了相应的序列及触发器，按照SEQ_TRANS及TRANS_TRIGGER去创建即可。   
 | 序列列表 | 触发器列表 |   
 | ------ | ------ |   
@@ -26,7 +26,25 @@
 | SEQ_TRANS_RECORD | TRANS_RECORD_TRIGGER |   
 | SEQ_TRANS | TRANS_TRIGGER |   
 | SEQ_USER | USER_TRIGGER |   
-
+** 序列创建语句 **
+-- ----------------------------
+ Sequence structure for SEQ_TRANS
+ ```sql
+DROP SEQUENCE "KETTLE_SCHEDULER"."SEQ_TRANS";
+ CREATE SEQUENCE "KETTLE_SCHEDULER"."SEQ_TRANS" MINVALUE 1 MAXVALUE 99999999 INCREMENT BY 1 CACHE 20;
+ ```
+-- ----------------------------
+** 触发器创建语句 **
+-- ----------------------------
+Triggers structure for table K_TRANS
+```sql
+CREATE TRIGGER "KETTLE_SCHEDULER"."TRANS_TRIGGER" BEFORE INSERT ON "KETTLE_SCHEDULER"."K_TRANS" REFERENCING OLD AS "OLD" NEW AS "NEW" FOR EACH ROW 
+begin
+select  SEQ_TRANS.Nextval into:new.id from dual;
+end;
+/
+```
+-- ----------------------------
 
 #### 项目截图
 
