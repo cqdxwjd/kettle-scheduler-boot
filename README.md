@@ -25,8 +25,9 @@
 | SEQ_TRANS_MONITOR | TRANS_MONITOR_TRIGGER |   
 | SEQ_TRANS_RECORD | TRANS_RECORD_TRIGGER |   
 | SEQ_TRANS | TRANS_TRIGGER |   
-| SEQ_USER | USER_TRIGGER |   
-** 序列创建语句 **
+| SEQ_USER | USER_TRIGGER |  
+ 
+**序列创建语句**
 -- ----------------------------
  Sequence structure for SEQ_TRANS
  ```sql
@@ -34,7 +35,7 @@ DROP SEQUENCE "KETTLE_SCHEDULER"."SEQ_TRANS";
  CREATE SEQUENCE "KETTLE_SCHEDULER"."SEQ_TRANS" MINVALUE 1 MAXVALUE 99999999 INCREMENT BY 1 CACHE 20;
  ```
 -- ----------------------------
-** 触发器创建语句 **
+**触发器创建语句**
 -- ----------------------------
 Triggers structure for table K_TRANS
 ```sql
