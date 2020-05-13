@@ -282,33 +282,41 @@ function submitListener() {
         submitHandler:function(form){
             // 获取表单数据
             var data= new FormData($("#RepositoryTransForm")[0]);
-            // 保存数据
-            $.ajax({
-                type: 'POST',
-                async: false,
-                url: '/sys/trans/add.do',
-                data: data,
-                processData: false,
-                contentType: false,
-                success: function (res) {
-                    if (res.success){
-                        layer.msg('添加成功',{
-                            time: 1000,
-                            icon: 6
-                        });
-                        // 成功后跳转到列表页面
-                        setTimeout(function(){
-                            location.href = "/web/trans/list.shtml";
-                        },1000);
-                    }else {
-                        layer.msg(res.message, {icon: 2});
-                    }
-                },
-                error: function () {
-                    layer.msg(res.message, {icon: 5});
-                },
-                dataType: 'json'
-            });
+            //校验参数格式是否是json
+            var transParams = data.get('transParams');
+            var isJson = isJSON(transParams);
+            if(isJson){
+                // 保存数据
+                $.ajax({
+                    type: 'POST',
+                    async: false,
+                    url: '/sys/trans/add.do',
+                    data: data,
+                    processData: false,
+                    contentType: false,
+                    success: function (res) {
+                        if (res.success){
+                            layer.msg('添加成功',{
+                                time: 1000,
+                                icon: 6
+                            });
+                            // 成功后跳转到列表页面
+                            setTimeout(function(){
+                                location.href = "/web/trans/list.shtml";
+                            },1000);
+                        }else {
+                            layer.msg(res.message, {icon: 2});
+                        }
+                    },
+                    error: function () {
+                        layer.msg(res.message, {icon: 5});
+                    },
+                    dataType: 'json'
+                });
+            }else{
+                alert("转换参数格式有误");
+            }
+
         }
     });
 }
@@ -353,7 +361,23 @@ function getFileType(filePath) {
     var fileNameArr=fileArr[fileArr.length-1].toLowerCase().split(".");
     return  fileNameArr[fileNameArr.length-1];
 }
+function isJSON(str) {
+    if (typeof str == 'string') {
+        try {
+            var obj=JSON.parse(str);
+            if(typeof obj == 'object' && obj ){
+                return true;
+            }else{
+                return false;
+            }
 
+        } catch(e) {
+            console.log('error：'+str+'!!!'+e);
+            return false;
+        }
+    }
+    console.log('It is not a string!')
+}
 // 自定义校验
 $.validator.addMethod("checkFileType", function (file, element, param) {
     return getFileType(file) === param

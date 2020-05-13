@@ -22,7 +22,7 @@ public class Trans extends BasicEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(generator = "SEQ_TRANDS", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(generator = "SEQ_TRANS", strategy = GenerationType.SEQUENCE)
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 
