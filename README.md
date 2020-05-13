@@ -11,6 +11,23 @@
 6、增加redis，rabbitmq等中间件，用于调度抽取任务   
 7、增加了一些扩展功能
 
+2020-05-13 重要更新说明   
+由于原代码数据库使用的是mysql，所有ID使用的是数据库自增长ID，迁移到oracle后，将自增长ID修改为触发器，目前根据使用到的实体类，创建了相应的序列及触发器，按照SEQ_TRANS及TRANS_TRIGGER去创建即可。   
+| 序列列表 | 触发器列表 |   
+| ------ | ------ |   
+| SEQ_CATEGORY | CATEGORY_TRIGGER |   
+| SEQ_DATABASE_TYPE | DATABASE_TYPE_TRIGGER |   
+| SEQ_JOB_MONITOR | JOB_MONITOR_TRIGGER |   
+| SEQ_JOB_RECORD | JOB_RECORD_TRIGGER |   
+| SEQ_JOB | JOB_TRIGGER |   
+| SEQ_QUARTZ | QUARTZ_TRIGGER |   
+| SEQ_REPOSITORY | REPOSITORY_TRIGGER |   
+| SEQ_TRANS_MONITOR | TRANS_MONITOR_TRIGGER |   
+| SEQ_TRANS_RECORD | TRANS_RECORD_TRIGGER |   
+| SEQ_TRANS | TRANS_TRIGGER |   
+| SEQ_USER | USER_TRIGGER |   
+
+
 #### 项目截图
 
 ![avatar](./docs/img/login.png)
