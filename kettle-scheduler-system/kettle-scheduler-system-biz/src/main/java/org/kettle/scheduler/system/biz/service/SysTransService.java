@@ -1,6 +1,8 @@
 package org.kettle.scheduler.system.biz.service;
 
 import com.google.common.collect.ImmutableMap;
+import com.sun.corba.se.spi.ior.ObjectKey;
+import io.swagger.models.auth.In;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
@@ -11,12 +13,14 @@ import org.kettle.scheduler.quartz.manage.QuartzManage;
 import org.kettle.scheduler.system.api.enums.RunStatusEnum;
 import org.kettle.scheduler.system.api.enums.RunTypeEnum;
 import org.kettle.scheduler.system.api.request.TransReq;
+import org.kettle.scheduler.system.api.response.TaskCountRes;
 import org.kettle.scheduler.system.api.response.TransRes;
 import org.kettle.scheduler.system.biz.component.EntityManagerUtil;
 import org.kettle.scheduler.system.biz.entity.Quartz;
 import org.kettle.scheduler.system.biz.entity.Trans;
 import org.kettle.scheduler.system.biz.entity.TransMonitor;
 import org.kettle.scheduler.system.biz.entity.bo.NativeQueryResultBO;
+import org.kettle.scheduler.system.biz.entity.bo.TaskCountBO;
 import org.kettle.scheduler.system.biz.entity.bo.TransBO;
 import org.kettle.scheduler.system.biz.quartz.TransQuartz;
 import org.kettle.scheduler.system.biz.repository.QuartzRepository;
@@ -29,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -45,67 +50,69 @@ public class SysTransService {
     private final EntityManagerUtil entityManagerUtil;
 
     public SysTransService(TransRepository transRepository, QuartzRepository quartzRepository,
-			TransMonitorRepository monitorRepository, EntityManagerUtil entityManagerUtil) {
+                           TransMonitorRepository monitorRepository, EntityManagerUtil entityManagerUtil) {
         this.transRepository = transRepository;
         this.quartzRepository = quartzRepository;
         this.monitorRepository = monitorRepository;
-		this.entityManagerUtil = entityManagerUtil;
-	}
+        this.entityManagerUtil = entityManagerUtil;
+    }
 
-	/**
-	 * 根据定时策略和转换组装执行参数
-	 * @param trans 转换信息
-	 * @param cron 定时策略
-	 * @return {@link QuartzDTO}
-	 */
-	private QuartzDTO getQuartzDTO(Trans trans, String cron) {
-		String categoryId = trans.getCategoryId()==null ? "-" : String.valueOf(trans.getCategoryId());
+    /**
+     * 根据定时策略和转换组装执行参数
+     *
+     * @param trans 转换信息
+     * @param cron  定时策略
+     * @return {@link QuartzDTO}
+     */
+    private QuartzDTO getQuartzDTO(Trans trans, String cron) {
+        String categoryId = trans.getCategoryId() == null ? "-" : String.valueOf(trans.getCategoryId());
 
-		QuartzDTO dto = new QuartzDTO();
-		dto.setJobName("TRANS@" + trans.getId());
-		dto.setJobGroupName("TRANS_GROUP@" + categoryId + "@" + trans.getId());
-		dto.setTriggerName("TRANS_TRIGGER@" + trans.getId());
-		dto.setTriggerGroupName("TRANS_TRIGGER_GROUP@" + categoryId + "@" + trans.getId());
-		if (StringUtil.hasText(cron)) {
-			dto.setCron(cron);
-		}
-		dto.setJobClass(TransQuartz.class);
-		dto.setJobDataMap(new JobDataMap(ImmutableMap.of("id", trans.getId())));
-		return dto;
-	}
+        QuartzDTO dto = new QuartzDTO();
+        dto.setJobName("TRANS@" + trans.getId());
+        dto.setJobGroupName("TRANS_GROUP@" + categoryId + "@" + trans.getId());
+        dto.setTriggerName("TRANS_TRIGGER@" + trans.getId());
+        dto.setTriggerGroupName("TRANS_TRIGGER_GROUP@" + categoryId + "@" + trans.getId());
+        if (StringUtil.hasText(cron)) {
+            dto.setCron(cron);
+        }
+        dto.setJobClass(TransQuartz.class);
+        dto.setJobDataMap(new JobDataMap(ImmutableMap.of("id", trans.getId())));
+        return dto;
+    }
 
-	/**
-	 * 修改监控信息状态
-	 * @param transId 转换ID
-	 * @param statusEnum 状态枚举
-	 */
-	private void updateTransMonitorStatus(Integer transId, RunStatusEnum statusEnum) {
-		TransMonitor transMonitor = monitorRepository.findByMonitorTransId(transId);
-		if (transMonitor == null) {
-			transMonitor = new TransMonitor();
-			transMonitor.setMonitorFail(0);
-			transMonitor.setMonitorSuccess(0);
-			transMonitor.setMonitorTransId(transId);
-			transMonitor.setRunStatus(System.currentTimeMillis() + "-");
-		} else {
-			switch (statusEnum) {
-				case RUN:
-					String runStatus = transMonitor.getRunStatus();
-					if (runStatus.endsWith("-")) {
-						runStatus = runStatus.concat(String.valueOf(System.currentTimeMillis()));
-					}
-					transMonitor.setRunStatus(runStatus.concat(",").concat(System.currentTimeMillis() + "-"));
-					break;
-				case STOP:
-					transMonitor.setRunStatus(transMonitor.getRunStatus().concat(String.valueOf(System.currentTimeMillis())));
-					break;
-				default:
-					throw new IllegalStateException("Unexpected value: " + statusEnum);
-			}
-		}
-		transMonitor.setMonitorStatus(statusEnum.getCode());
-		monitorRepository.save(transMonitor);
-	}
+    /**
+     * 修改监控信息状态
+     *
+     * @param transId    转换ID
+     * @param statusEnum 状态枚举
+     */
+    private void updateTransMonitorStatus(Integer transId, RunStatusEnum statusEnum) {
+        TransMonitor transMonitor = monitorRepository.findByMonitorTransId(transId);
+        if (transMonitor == null) {
+            transMonitor = new TransMonitor();
+            transMonitor.setMonitorFail(0);
+            transMonitor.setMonitorSuccess(0);
+            transMonitor.setMonitorTransId(transId);
+            transMonitor.setRunStatus(System.currentTimeMillis() + "-");
+        } else {
+            switch (statusEnum) {
+                case RUN:
+                    String runStatus = transMonitor.getRunStatus();
+                    if (runStatus.endsWith("-")) {
+                        runStatus = runStatus.concat(String.valueOf(System.currentTimeMillis()));
+                    }
+                    transMonitor.setRunStatus(runStatus.concat(",").concat(System.currentTimeMillis() + "-"));
+                    break;
+                case STOP:
+                    transMonitor.setRunStatus(transMonitor.getRunStatus().concat(String.valueOf(System.currentTimeMillis())));
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + statusEnum);
+            }
+        }
+        transMonitor.setMonitorStatus(statusEnum.getCode());
+        monitorRepository.save(transMonitor);
+    }
 
     /**
      * 因程序中断后所有的定时会中断，因此在程序启动的时候需要初始化类调用该方法重新恢复定时任务
@@ -121,7 +128,7 @@ public class SysTransService {
     @Transactional(rollbackFor = Exception.class)
     public void add(TransReq req) {
         Trans trans = BeanUtil.copyProperties(req, Trans.class);
-		trans.setTransStatus(RunStatusEnum.STOP.getCode());
+        trans.setTransStatus(RunStatusEnum.STOP.getCode());
         transRepository.save(trans);
     }
 
@@ -138,15 +145,15 @@ public class SysTransService {
             stopTrans(id);
         }
 
-		// 删除监控数据
-		TransMonitor monitorTrans = monitorRepository.findByMonitorTransId(trans.getId());
-		if (monitorTrans != null) {
-			monitorRepository.delete(monitorTrans);
-		}
+        // 删除监控数据
+        TransMonitor monitorTrans = monitorRepository.findByMonitorTransId(trans.getId());
+        if (monitorTrans != null) {
+            monitorRepository.delete(monitorTrans);
+        }
 
-		if (RunTypeEnum.FILE.getCode().equals(trans.getTransType())) {
-			FileUtil.deleteFile(trans.getTransPath());
-		}
+        if (RunTypeEnum.FILE.getCode().equals(trans.getTransType())) {
+            FileUtil.deleteFile(trans.getTransPath());
+        }
         transRepository.delete(trans);
     }
 
@@ -166,35 +173,35 @@ public class SysTransService {
     }
 
     public PageOut<TransRes> findTransListByPage(TransReq query, Pageable pageable) {
-		// select 部分sql
-		String selectSql = "SELECT a.*, c.category_name, q.quartz_cron, q.quartz_description ";
-		// from部分sql
-		StringBuilder fromSql = new StringBuilder();
-		fromSql.append("FROM k_trans a ");
-		fromSql.append("LEFT JOIN k_category c ON a.category_id = c.id ");
-		fromSql.append("LEFT JOIN k_quartz q ON a.trans_quartz=q.id ");
-		if (query != null) {
-			fromSql.append("WHERE 1=1 ");
-			if (query.getCategoryId() != null) {
-				fromSql.append("AND a.category_id = ").append(query.getCategoryId()).append(" ");
-			}
-			if (!StringUtil.isEmpty(query.getTransName())) {
-				fromSql.append("AND a.trans_name like '%").append(query.getTransName()).append("%'").append(" ");
-			}
-		}
-		// order by 部分sql
-		String orderSql = "order by a.add_time desc ";
+        // select 部分sql
+        String selectSql = "SELECT a.*, c.category_name, q.quartz_cron, q.quartz_description ";
+        // from部分sql
+        StringBuilder fromSql = new StringBuilder();
+        fromSql.append("FROM k_trans a ");
+        fromSql.append("LEFT JOIN k_category c ON a.category_id = c.id ");
+        fromSql.append("LEFT JOIN k_quartz q ON a.trans_quartz=q.id ");
+        if (query != null) {
+            fromSql.append("WHERE 1=1 ");
+            if (query.getCategoryId() != null) {
+                fromSql.append("AND a.category_id = ").append(query.getCategoryId()).append(" ");
+            }
+            if (!StringUtil.isEmpty(query.getTransName())) {
+                fromSql.append("AND a.trans_name like '%").append(query.getTransName()).append("%'").append(" ");
+            }
+        }
+        // order by 部分sql
+        String orderSql = "order by a.add_time desc ";
 
-		// 执行sql
-		NativeQueryResultBO result = entityManagerUtil.executeNativeQueryForList(selectSql, fromSql.toString(), orderSql, pageable, TransBO.class);
+        // 执行sql
+        NativeQueryResultBO result = entityManagerUtil.executeNativeQueryForList(selectSql, fromSql.toString(), orderSql, pageable, TransBO.class);
 
-		List<TransRes> list = new ArrayList<>();
-		for (Object o : result.getResultList()) {
-			list.add(BeanUtil.copyProperties(o, TransRes.class));
-		}
+        List<TransRes> list = new ArrayList<>();
+        for (Object o : result.getResultList()) {
+            list.add(BeanUtil.copyProperties(o, TransRes.class));
+        }
 
-		// 封装数据
-		return new PageOut<>(list, pageable.getPageNumber(), pageable.getPageSize(), result.getTotal());
+        // 封装数据
+        return new PageOut<>(list, pageable.getPageNumber(), pageable.getPageSize(), result.getTotal());
     }
 
     public TransRes getTransDetail(Integer id) {
@@ -279,13 +286,21 @@ public class SysTransService {
         QuartzManage.removeJob(getQuartzDTO(trans, null));
     }
 
-	public Trans getByTransName(String transName) {
-		return transRepository.getByTransName(transName);
-	}
+    public Trans getByTransName(String transName) {
+        return transRepository.getByTransName(transName);
+    }
 
-	public Integer countRunTrans() {
-		return transRepository.countByTransStatus(RunStatusEnum.RUN.getCode());
-	}
-    public Integer countByCategoryId(Integer CategoryId) { return transRepository.countByCategoryId(CategoryId);}
+    public Integer countRunTrans() {
+        return transRepository.countByTransStatus(RunStatusEnum.RUN.getCode());
+    }
 
+    public Integer countByCategoryId(Integer CategoryId) {
+        return transRepository.countByCategoryId(CategoryId);
+    }
+
+    public Integer countByCategoryIdAndstatus(Integer CategoryId) {
+        String selectSql = "select count(1) as count from k_trans where category_id='" + CategoryId + "' and trans_status=1 and trans_quartz!=1";
+        Map<String, Object> map = entityManagerUtil.executeNativeQueryForOne(selectSql, Map.class);
+        return Integer.valueOf(map.get("count").toString());
+    }
 }

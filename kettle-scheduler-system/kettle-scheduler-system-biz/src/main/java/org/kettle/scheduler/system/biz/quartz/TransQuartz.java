@@ -124,23 +124,6 @@ public class TransQuartz implements Job {
         transRecord.setStopTime(stopDate);
         transRecord.setCategoryId(trans.getCategoryId());
         monitorService.addTransRecord(transRecord);
-        if(trans.getCategoryId()!=null) {
-            //查询分类下转换数量
-            Integer size = transService.countByCategoryId(trans.getCategoryId());
-            //查询该分类下今天执行数量
-            TaskCountRes taskCountRes = monitorService.countTransByToday(trans.getCategoryId());
-            if (taskCountRes.getTotal() >= size) {
-                try {
-                    String requestPath =KettleConfig.vmUrl+trans.getCategoryId();
-                    HttpAsyncUtils.get(requestPath);
-                    log.info("刷新物化视图"+trans.getCategoryId());;
-                }catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-
 
     }
 
