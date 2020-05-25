@@ -68,8 +68,8 @@ public class SysTransService {
         String categoryId = trans.getCategoryId() == null ? "-" : String.valueOf(trans.getCategoryId());
 
         QuartzDTO dto = new QuartzDTO();
-        dto.setJobName("TRANS@" + trans.getId());
         dto.setJobGroupName("TRANS_GROUP@" + categoryId + "@" + trans.getId());
+        dto.setJobName("TRANS@" + trans.getId());
         dto.setTriggerName("TRANS_TRIGGER@" + trans.getId());
         dto.setTriggerGroupName("TRANS_TRIGGER_GROUP@" + categoryId + "@" + trans.getId());
         if (StringUtil.hasText(cron)) {

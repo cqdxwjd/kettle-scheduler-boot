@@ -3,11 +3,9 @@ package org.kettle.scheduler.system.biz.aspect;
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.After;
-import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.annotation.*;
 import org.kettle.scheduler.core.constant.KettleConfig;
+import org.kettle.scheduler.core.init.KettleInit;
 import org.kettle.scheduler.system.api.response.TaskCountRes;
 import org.kettle.scheduler.system.biz.entity.TransRecord;
 import org.kettle.scheduler.system.biz.service.SysTransMonitorService;
@@ -32,7 +30,7 @@ public class TransAspect {
     @Autowired
     SysTransMonitorService monitorService;
 
-    @After("pointCut()")
+    @Before("pointCut()")
     public void afterRefreshMview(JoinPoint joinPoint) {
         log.info("检查物化视图刷新");
         Object[] args = joinPoint.getArgs();
@@ -46,7 +44,7 @@ public class TransAspect {
             if (taskCountRes.getTotal() >= size) {
                 String api = KettleConfig.vmUrl + categoryId;
                 try {
-                    String requestPath = KettleConfig.vmUrl + categoryId;
+                    String requestPath = KettleConfig.vmUrl + categoryId+"&type="+ KettleConfig.refreshType;
                     HttpAsyncUtils.get(requestPath);
                     log.info("刷新物化视图" + categoryId);
                 } catch (Exception e) {

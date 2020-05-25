@@ -4,4 +4,5 @@ kettle:
   upload-path: /apps/var/kettle-script-file
   kettle-home: /apps/var/file-rep
   vm-url: http://10.108.8.33:8081/sqlManager/mv/refresh?tagId=
+  refreshType: 0
   kettlePluginPackages: /apps/var/file-rep/plugin
