@@ -6,7 +6,9 @@ import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.system.api.basic.IdVO;
+import org.kettle.scheduler.system.api.request.JobMonitorReq;
 import org.kettle.scheduler.system.api.request.MonitorQueryReq;
+import org.kettle.scheduler.system.api.request.TransMonitorReq;
 import org.kettle.scheduler.system.api.response.JobMonitorRes;
 import org.kettle.scheduler.system.api.response.JobRecordRes;
 import org.kettle.scheduler.system.api.response.TaskCountRes;
@@ -71,4 +73,8 @@ public interface SysJobMonitorApi {
 	@ApiOperation(value = "对作业任务执行结果统计")
 	@GetMapping("/countJob.do")
 	Result<TaskCountRes> countJob();
-}
+    @ApiOperation(value = "错误作业记录")
+    @PostMapping("/findjobByError.do")
+    Result<PageOut<JobRecordRes>>  findJobRecordListError(@RequestBody  QueryHelper<MonitorQueryReq> req);
+
+    }

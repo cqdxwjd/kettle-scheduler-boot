@@ -32,7 +32,16 @@ public class JobRecordRes extends BasicVO implements Serializable {
      */
     @ApiModelProperty(value = "作业名称")
     private String jobName;
-
+    /**
+     * 作业描述
+     */
+    @ApiModelProperty(value = "作业描述")
+    private String jobDescription;
+    /**
+     * 作业描述
+     */
+    @ApiModelProperty(value = "作业分类")
+    private String categoryName;
     /**
      * 启动时间
      */

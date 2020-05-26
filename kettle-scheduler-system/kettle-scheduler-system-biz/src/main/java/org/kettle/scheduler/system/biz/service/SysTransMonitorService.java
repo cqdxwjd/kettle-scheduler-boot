@@ -6,6 +6,7 @@ import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.system.api.request.MonitorQueryReq;
+import org.kettle.scheduler.system.api.request.TransRecordReq;
 import org.kettle.scheduler.system.api.response.TaskCountRes;
 import org.kettle.scheduler.system.api.response.TransMonitorRes;
 import org.kettle.scheduler.system.api.response.TransRecordRes;
@@ -16,6 +17,7 @@ import org.kettle.scheduler.system.biz.entity.TransRecord;
 import org.kettle.scheduler.system.biz.entity.bo.NativeQueryResultBO;
 import org.kettle.scheduler.system.biz.entity.bo.TaskCountBO;
 import org.kettle.scheduler.system.biz.entity.bo.TransMonitorBO;
+import org.kettle.scheduler.system.biz.entity.bo.TransRecordBO;
 import org.kettle.scheduler.system.biz.repository.TransMonitorRepository;
 import org.kettle.scheduler.system.biz.repository.TransRecordRepository;
 import org.kettle.scheduler.system.biz.repository.TransRepository;
@@ -24,9 +26,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -81,7 +81,7 @@ public class SysTransMonitorService {
 
     public PageOut<TransRecordRes> findTransRecordList(Integer transId, PageHelper pageHelper) {
         // 默认排序
-		Pageable pageable = pageHelper.getPageable(Sort.by(Sort.Direction.DESC, "addTime"));
+        Pageable pageable = pageHelper.getPageable(Sort.by(Sort.Direction.DESC, "addTime"));
         // 查询trans信息
         Optional<Trans> transOptional = transRepository.findById(transId);
         String transName = "";
@@ -101,6 +101,28 @@ public class SysTransMonitorService {
             return res;
         }).collect(Collectors.toList());
         return new PageOut<>(collect, page.getNumber(), page.getSize(), page.getTotalElements());
+    }
+    public PageOut<TransRecordRes> findTransRecordListByerror(MonitorQueryReq query, Pageable pageable) {
+        String selectSql = "SELECT a.*,b.trans_name,c.category_name,b.trans_description ";
+        // 动态拼接from部分的sql
+        StringBuilder fromSql = new StringBuilder(" FROM K_TRANS_RECORD a ");
+        fromSql.append("INNER JOIN k_trans b ON a.RECORD_TRANS_ID=b.id ");
+        fromSql.append("LEFT JOIN k_category c ON b.category_id=c.id WHERE 1=1 AND A.RECORD_STATUS=0");
+        if (query!=null) {
+            if (query.getCategoryId() != null) {
+                fromSql.append("AND b.category_id = ").append(query.getCategoryId()).append(" ");
+            }
+        }
+        // order by 部分的sql
+        String orderSql = "order by a.stop_time desc ";
+        // 初始化sql语句
+        NativeQueryResultBO resultBo = entityManagerUtil.executeNativeQueryForList(selectSql, fromSql.toString(), orderSql, pageable, TransRecordBO.class);
+        List<TransRecordRes> list = new ArrayList<>();
+        for (Object o : resultBo.getResultList()) {
+            list.add(BeanUtil.copyProperties(o, TransRecordRes.class));
+        }
+        // 封装数据
+        return new PageOut<>(list, pageable.getPageNumber(), pageable.getPageSize(), resultBo.getTotal());
     }
 
     public TransRecord getTransRecord(Integer transRecordId) {

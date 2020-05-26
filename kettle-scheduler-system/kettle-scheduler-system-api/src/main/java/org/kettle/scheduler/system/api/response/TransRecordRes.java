@@ -39,6 +39,11 @@ public class TransRecordRes extends BasicVO implements Serializable {
     @ApiModelProperty(value = "转换描述")
     private String transDescription;
     /**
+     * 转换分类
+     */
+    @ApiModelProperty(value = "转换分类")
+    private String categoryName;
+    /**
      * 启动时间
      */
     @ApiModelProperty(value = "启动时间")

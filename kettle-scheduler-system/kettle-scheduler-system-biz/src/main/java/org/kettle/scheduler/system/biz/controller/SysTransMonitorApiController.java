@@ -39,6 +39,8 @@ public class SysTransMonitorApiController implements SysTransMonitorApi {
      */
     @Override
     public Result<PageOut<TransMonitorRes>> findTransMonitorListByPage(QueryHelper<MonitorQueryReq> req) {
+        System.out.println("number:"+req.getPage().getPageable().getPageNumber());
+        System.out.println("size: "+req.getPage().getPageable().getPageSize());
         return Result.ok(transMonitorService.findTransMonitorListByPage(req.getQuery(), req.getPage().getPageable()));
     }
 
@@ -91,5 +93,14 @@ public class SysTransMonitorApiController implements SysTransMonitorApi {
 	@Override
 	public Result<TaskCountRes> countTrans() {
 		return Result.ok(transMonitorService.countTrans());
+	}
+    /**
+     * 错误转换统计
+     *
+     * @return {@link Result}
+     */
+    @Override
+	public  Result<PageOut<TransRecordRes>>  findTransRecordListError(QueryHelper<MonitorQueryReq> req) {
+        return  Result.ok(transMonitorService.findTransRecordListByerror(req.getQuery(), req.getPage().getPageable()));
 	}
 }

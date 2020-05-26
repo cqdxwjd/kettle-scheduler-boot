@@ -105,6 +105,85 @@
         </div>
     </div>
     <div class="row">
+    <div class="ibox float-e-margins">
+        <div class="ibox-title">
+            <h5>转换错误记录</h5>
+            <!--<div class="col-sm-5">-->
+            <!--<a th:href="@{/web/trans/monitor/list.shtml}" href="/web/trans/monitor/list.shtml" class="btn btn-w-m btn-info" type="button">-->
+            <!--<i class="fa fa-reply" aria-hidden="true"></i>&nbsp;返回-->
+            <!--</a>-->
+            <!--</div>-->
+            <div class="ibox-tools">
+                <a class="collapse-link">
+                    <i class="fa fa-chevron-up"></i>
+                </a>
+                <a class="close-link">
+                    <i class="fa fa-times"></i>
+                </a>
+            </div>
+        </div>
+        <div class="ibox-content">
+
+            <div class="col-sm-12">
+                <div class="form-inline text-right">
+                    <div class="form-group ">
+                        <label class="control-label m-b-xs" for="categoryId">分类：</label>
+                        <select id="categoryId" name="categoryId" class="form-control m-b-xs" aria-required="true">
+                            <option value="" selected>请选择分类</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button onclick="search()" class="right btn btn-w-m btn-info" type="button">
+                            <i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;刷新
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="transId" name="transId" th:value="${transId}">
+            <table id="transerrorList">
+            </table>
+
+        </div>
+    </div>
+</div>
+    <div class="row">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>作业错误记录</h5>
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="ibox-content">
+
+                <div class="col-sm-12">
+                    <div class="form-inline text-right">
+                        <div class="form-group ">
+                            <label class="control-label m-b-xs" for="categoryId">分类：</label>
+                            <select id="categoryIdj" name="categoryIdj" class="form-control m-b-xs" aria-required="true">
+                                <option value="" selected>请选择分类</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button onclick="search2()" class="right btn btn-w-m btn-info" type="button">
+                                <i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;刷新
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!--<input type="hidden" id="transId" name="transId" th:value="${transId}">-->
+                <table id="joberrorList">
+                </table>
+
+            </div>
+        </div>
+    </div>
+    <div class="row">
         <div class="ibox float-e-margins">
             <div class="ibox-title">
                 <h5>监控状况</h5>
@@ -141,5 +220,9 @@
 <script th:src="@{/js/content.js}" src="../static/js/content.js?v=1.0.0"></script>
 <!-- customer -->
 <script th:src="@{/js/my/main.js}" src="../static/js/my/main.js" type="text/javascript"></script>
+<script th:src="@{/js/my/error-trans-list.js}" src="../static/js/my/error-trans-list.js"></script>
+<script th:src="@{/js/my/error-job-list.js}" src="../static/js/my/error-job-list.js"></script>
+
+
 </body>
 </html>

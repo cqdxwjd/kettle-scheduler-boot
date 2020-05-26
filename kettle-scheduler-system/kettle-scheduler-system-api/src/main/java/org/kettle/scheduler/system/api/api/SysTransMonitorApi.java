@@ -71,4 +71,8 @@ public interface SysTransMonitorApi {
 	@ApiOperation(value = "对转换任务执行结果统计")
 	@GetMapping("/countTrans.do")
 	Result<TaskCountRes> countTrans();
+	@ApiOperation(value = "查询错误纪录")
+    @PostMapping("/findErrorRecordList.do")
+    Result<PageOut<TransRecordRes>> findTransRecordListError(@RequestBody QueryHelper<MonitorQueryReq> req);
+
 }

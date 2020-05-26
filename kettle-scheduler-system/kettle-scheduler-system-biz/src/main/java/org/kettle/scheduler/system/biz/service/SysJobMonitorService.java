@@ -5,17 +5,18 @@ import org.kettle.scheduler.common.povo.PageHelper;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.common.utils.StringUtil;
+import org.kettle.scheduler.system.api.request.JobMonitorReq;
 import org.kettle.scheduler.system.api.request.MonitorQueryReq;
+import org.kettle.scheduler.system.api.request.TransMonitorReq;
 import org.kettle.scheduler.system.api.response.JobMonitorRes;
 import org.kettle.scheduler.system.api.response.JobRecordRes;
 import org.kettle.scheduler.system.api.response.TaskCountRes;
+import org.kettle.scheduler.system.api.response.TransRecordRes;
 import org.kettle.scheduler.system.biz.component.EntityManagerUtil;
 import org.kettle.scheduler.system.biz.entity.Job;
 import org.kettle.scheduler.system.biz.entity.JobMonitor;
 import org.kettle.scheduler.system.biz.entity.JobRecord;
-import org.kettle.scheduler.system.biz.entity.bo.JobMonitorBO;
-import org.kettle.scheduler.system.biz.entity.bo.NativeQueryResultBO;
-import org.kettle.scheduler.system.biz.entity.bo.TaskCountBO;
+import org.kettle.scheduler.system.biz.entity.bo.*;
 import org.kettle.scheduler.system.biz.repository.JobMonitorRepository;
 import org.kettle.scheduler.system.biz.repository.JobRecordRepository;
 import org.kettle.scheduler.system.biz.repository.JobRepository;
@@ -130,4 +131,26 @@ public class SysJobMonitorService {
 		TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql, TaskCountBO.class);
 		return BeanUtil.copyProperties(result, TaskCountRes.class);
 	}
+    public PageOut<JobRecordRes> findJobRecordListByerror(MonitorQueryReq query, Pageable pageable) {
+        String selectSql = "SELECT a.*,b.job_name,c.category_name,b.job_description ";
+        // 动态拼接from部分的sql
+        StringBuilder fromSql = new StringBuilder(" FROM K_JOB_RECORD a ");
+        fromSql.append("INNER JOIN k_JOB b ON a.RECORD_JOB_ID=b.id ");
+        fromSql.append("LEFT JOIN k_category c ON b.category_id=c.id WHERE 1=1 AND A.RECORD_STATUS=0");
+        if (query!=null) {
+            if (query.getCategoryId() != null) {
+                fromSql.append("AND b.category_id = ").append(query.getCategoryId()).append(" ");
+            }
+        }
+        // order by 部分的sql
+        String orderSql = "order by a.stop_time desc ";
+        // 初始化sql语句
+        NativeQueryResultBO resultBo = entityManagerUtil.executeNativeQueryForList(selectSql, fromSql.toString(), orderSql, pageable, JobRecordBo.class);
+        List<JobRecordRes> list = new ArrayList<>();
+        for (Object o : resultBo.getResultList()) {
+            list.add(BeanUtil.copyProperties(o, JobRecordRes.class));
+        }
+        // 封装数据
+        return new PageOut<>(list, pageable.getPageNumber(), pageable.getPageSize(), resultBo.getTotal());
+    }
 }

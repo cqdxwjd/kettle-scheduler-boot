@@ -8,10 +8,13 @@ import org.kettle.scheduler.common.povo.Result;
 import org.kettle.scheduler.common.utils.FileUtil;
 import org.kettle.scheduler.system.api.api.SysJobMonitorApi;
 import org.kettle.scheduler.system.api.basic.IdVO;
+import org.kettle.scheduler.system.api.request.JobMonitorReq;
 import org.kettle.scheduler.system.api.request.MonitorQueryReq;
+import org.kettle.scheduler.system.api.request.TransMonitorReq;
 import org.kettle.scheduler.system.api.response.JobMonitorRes;
 import org.kettle.scheduler.system.api.response.JobRecordRes;
 import org.kettle.scheduler.system.api.response.TaskCountRes;
+import org.kettle.scheduler.system.api.response.TransRecordRes;
 import org.kettle.scheduler.system.biz.entity.JobRecord;
 import org.kettle.scheduler.system.biz.service.SysJobMonitorService;
 import org.springframework.web.bind.annotation.RestController;
@@ -93,4 +96,13 @@ public class SysJobMonitorApiController implements SysJobMonitorApi {
 	public Result<TaskCountRes> countJob() {
 		return Result.ok(jobMonitorService.countJob());
 	}
+    /**
+     * 错误作业记录
+     *
+     *
+     */
+    @Override
+    public  Result<PageOut<JobRecordRes>>  findJobRecordListError(QueryHelper<MonitorQueryReq> req) {
+        return  Result.ok(jobMonitorService.findJobRecordListByerror(req.getQuery(), req.getPage().getPageable()));
+    }
 }
