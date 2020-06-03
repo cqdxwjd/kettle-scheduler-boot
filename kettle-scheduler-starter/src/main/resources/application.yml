@@ -77,3 +77,5 @@ spring:
 constant:
   salt: kettle-salt
   hash-iterations: 10
+refreshMviewApi: http://10.108.8.33:28081/sqlManager/mv/refresh
+cleanPageCacheApi: http://10.108.8.33:8081/sqlManager/sqlExec/cleanCache

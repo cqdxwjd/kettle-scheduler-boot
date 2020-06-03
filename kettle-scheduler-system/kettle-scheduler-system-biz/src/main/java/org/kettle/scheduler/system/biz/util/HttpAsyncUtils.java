@@ -2,7 +2,6 @@ package org.kettle.scheduler.system.biz.util;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -24,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
+
 public class HttpAsyncUtils {
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -69,24 +69,26 @@ public class HttpAsyncUtils {
         return httpAsyncClient.execute(post, new FutureCallback<HttpResponse>() {
             @Override
             public void completed(HttpResponse response) {
-                System.out.println("执行接口completed:"+post.getRequestLine() + "->" + response.getStatusLine());
+                System.out.println("执行接口completed:" + post.getRequestLine() + "->" + response.getStatusLine());
             }
 
             @Override
             public void failed(Exception ex) {
-                System.out.println("执行接口failed"+post.getRequestLine() + "->" + ex);
+                System.out.println("执行接口failed" + post.getRequestLine() + "->" + ex);
             }
 
             @Override
             public void cancelled() {
-                System.out.println("执行接口cancelled:"+post.getRequestLine() + " cancelled");
+                System.out.println("执行接口cancelled:" + post.getRequestLine() + " cancelled");
             }
         });
     }
-    public static void get(String url) {
+
+    public static Future<HttpResponse> get(String url) {
         final HttpGet get = new HttpGet(url);        //创建get请求
         //发送请求并返回future
-        httpAsyncClient.execute(get,null);
+        Future<HttpResponse> execute = httpAsyncClient.execute(get, null);
+        return execute;
     }
 
 }
