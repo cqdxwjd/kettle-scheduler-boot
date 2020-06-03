@@ -10,98 +10,160 @@
     <link th:href="@{/css/font-awesome.min.css}" href="../static/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
     <link th:href="@{/css/animate.css}" href="../static/css/animate.css" rel="stylesheet">
     <link th:href="@{/css/style.css}" href="../static/css/style.css?v=4.1.0" rel="stylesheet">
+	<style type="text/css">
+		.layui-bg-primary {
+			background: #2667DF;
+		}
+		
+		.layui-logo a{
+			color: #FFFFFF;
+			font-size: 20px;
+			font-weight: bold;
+			line-height: 57px;
+			margin-left: 20px;
+		}
+		.layuiNavFirst{
+			background: #2667DF;
+		}
+		.layuiNavFirst li a {
+			font-size: 16px;
+			color: #FFFFFF !important;
+		}
+		/* 修改导航栏的选中样式 */
+		.layuiNavFirst .layui-nav-bar {
+			background-color: #FFFFFF;
+		}
+		
+		.layuiNavColor .layui-nav-item a:hover {
+			font-weight: bold;
+		}
+		
+		.layuiNavColorA{
+			font-weight: bold;
+		}
+		/* 二级导航条 */
+		.header-header {
+			background: #FFFFFF;
+			height: 45px;
+			line-height: 45px;
+			border-top: 1px solid #E4E4E4;
+			border-bottom: 1px solid #E4E4E4;
+			padding: 0px 10px 0px 25px;
+		}
+		.layuiNavSectend li a {
+			font-size: 14px !important;
+			height: 45px;
+			line-height: 45px;
+			display: block;
+			float: left;
+			padding: 0px 20px;
+			color: #333333;
+			margin-left: 10px;
+		}
+		.layuiNavSectend li a:hover {
+			color: #2667DF;
+			border-bottom: 3px solid #2667DF !important;
+		}
+		.layuiNavSectendLiA{
+			color: #2667DF !important;
+			border-bottom: 3px solid #2667DF !important;
+		}
+		
+		
+		#page-wrapper{
+			margin: 0 0 0 0;
+			height: auto;
+			min-height: 100%;
+			background: #F5F6FA;
+		}
+		#content-main {
+		    height: calc(100% - 150px);
+			overflow-x: hidden;
+			overflow-y: auto;
+		}
+		.content-tabs {
+		    border-bottom: solid 1px #E4E4E4;
+			height: 0px;
+			line-height: 0px;
+		}
+		.page-tabs a.active{
+			background: #2667DF !important;
+			color: #FFFFFF;
+		}
+		.page-tabs a.active:hover {
+		    background: #1530df !important;
+		}
+	</style>
 </head>
 <body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
-<div id="wrapper">
-    <!--左侧导航开始-->
-    <nav class="navbar-default navbar-static-side" role="navigation">
-        <div class="nav-close">
-            <i class="fa fa-times-circle"></i>
-        </div>
-        <div class="sidebar-collapse">
-            <ul class="nav" id="side-menu">
-                <li class="nav-header">
-                    <div class="dropdown profile-element">
-                        <span><img alt="image" th:src="@{/img/logo.jpg}" src="../static/img/logo.jpg"></span>
-                    </div>
-                    <div class="logo-element">Data</div>
-                </li>
-                <li>
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-database" aria-hidden="true"></i>
-                        <span class="nav-label">资源库管理</span>
-                        <span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a class="J_menuItem" th:href="@{/web/repository/list.shtml}" href="/web/repository/list.shtml">&nbsp;资源库管理</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-calendar" aria-hidden="true"></i>
-                        <span class="nav-label">定时策略</span>
-                        <span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a class="J_menuItem" th:href="@{/web/quartz/list.shtml}" href="/web/quartz/list.shtml">&nbsp;定时策略</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-tasks" aria-hidden="true"></i>
-                        <span class="nav-label">任务管理</span>
-                        <span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a class="J_menuItem" th:href="@{/web/category/list.shtml}" href="/web/category/list.shtml">&nbsp;任务分类</a>
-                        </li>
-                        <li>
-                            <a class="J_menuItem" th:href="@{/web/job/list.shtml}" href="/web/job/list.shtml">&nbsp;作业管理</a>
-                        </li>
-                        <li>
-                            <a class="J_menuItem" th:href="@{/web/trans/list.shtml}" href="/web/trans/list.shtml">&nbsp;转换管理</a>
-                        </li>
-                    </ul>
-                </li>
-                <li>
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-desktop" aria-hidden="true"></i>
-                        <span class="nav-label">监控管理</span>
-                        <span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a class="J_menuItem" th:href="@{/web/job/monitor/list.shtml}" href="/web/job/monitor/list.shtml">&nbsp;作业监控</a>
-                        </li>
-                        <li>
-                            <a class="J_menuItem" th:href="@{/web/trans/monitor/list.shtml}" href="/web/trans/monitor/list.shtml">&nbsp;转换监控</a>
-                        </li>
-                    </ul>
-                </li>
-                <li id="isAdmin">
-                    <a href="javascript:void(0)">
-                        <i class="fa fa-users" aria-hidden="true"></i>
-                        <span class="nav-label">用户管理</span>
-                        <span class="fa arrow"></span>
-                    </a>
-                    <ul class="nav nav-second-level">
-                        <li>
-                            <a class="J_menuItem" th:href="@{/web/user/list.shtml}" href="/web/user/list.shtml">&nbsp;用户列表</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </nav>
-    <!--左侧导航结束-->
+<div style="overflow: hidden;" id="wrapper">
+    <!--导航开始-->
+    <div class="layui-header layui-bg-primary">
+    	<div class="layui-logo">
+			<a href=""><img alt="image" th:src="@{/img/logo.jpg}" src="../static/img/logo.jpg" class="layui-nav-img">数据采集平台</a>
+		</div>
+    	<!-- 头部区域（可配合layui已有的水平导航） -->
+    	<ul class="layui-nav layui-layout-left layuiNavFirst layuiNavColor">
+    		<li class="layui-nav-item" lay-unselect><a id="1" class="layuiNavColorA" href="javascript:;">资源库管理</a></li>
+    		<li class="layui-nav-item" lay-unselect><a id="2" href="javascript:;">定时策略</a></li>
+    		<li class="layui-nav-item" lay-unselect>
+    			<a id="3" href="javascript:;">任务管理</a>
+    		</li>
+    		<li class="layui-nav-item" lay-unselect>
+    			<a id="4" href="javascript:;">监控管理</a>
+    		</li>
+			<li class="layui-nav-item" lay-unselect>
+    			<a id="5" href="javascript:;">用户管理</a>
+    		</li>
+    	</ul>
+		<ul style="height: 60px;" class="layui-nav layui-layout-right layuiNavFirst">
+			<li class="layui-nav-item">
+				<a onclick="logout()" class=""><i class="fa fa fa-sign-out"></i> 退出</a>
+			</li>
+		</ul>
+    </div>
+	<div class="header-header">
+		<ul class="layuiNavSectend">
+			<div class="headerNav" id="headerNav1">
+				<li>
+					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/repository/list.shtml}" href="/web/repository/list.shtml">&nbsp;资源库管理</a>
+				</li>
+			</div>
+			<div class="headerNav" style="display: none;" id="headerNav2">
+				<li>
+					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/quartz/list.shtml}" href="/web/quartz/list.shtml">&nbsp;定时策略</a>
+				</li>
+			</div>
+			<div class="headerNav" style="display: none;" id="headerNav3">
+				<li>
+					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/category/list.shtml}" href="/web/category/list.shtml">&nbsp;任务分类</a>
+				</li>
+				<li>
+					<a class="J_menuItem" th:href="@{/web/job/list.shtml}" href="/web/job/list.shtml">&nbsp;作业管理</a>
+				</li>
+				<li>
+					<a class="J_menuItem" th:href="@{/web/trans/list.shtml}" href="/web/trans/list.shtml">&nbsp;转换管理</a>
+				</li>
+			</div>
+			<div class="headerNav" style="display: none;" id="headerNav4">
+				<li>
+					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/job/monitor/list.shtml}" href="/web/job/monitor/list.shtml">&nbsp;作业监控</a>
+				</li>
+				<li>
+					<a class="J_menuItem" th:href="@{/web/trans/monitor/list.shtml}" href="/web/trans/monitor/list.shtml">&nbsp;转换监控</a>
+				</li>
+			</div>
+			<div class="headerNav" style="display: none;" id="headerNav5">
+				<li>
+					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/user/list.shtml}" href="/web/user/list.shtml">&nbsp;用户列表</a>
+				</li>
+			</div>
+		</ul>
+	</div>
+    <!--导航结束-->
     <!--右侧部分开始-->
     <div id="page-wrapper" class="gray-bg dashbard-1">
-        <div class="row border-bottom">
+        <!-- <div class="row border-bottom">
             <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
                 <div class="navbar-header">
                     <a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="javascript:void(0)"><i class="fa fa-bars"></i></a>
@@ -109,9 +171,9 @@
                 </div>
                 <div class="navbar-user"></div>
             </nav>
-        </div>
+        </div> -->
         <div class="row content-tabs">
-            <button class="roll-nav roll-left J_tabLeft"><i class="fa fa-backward"></i></button>
+            <!-- <button class="roll-nav roll-left J_tabLeft"><i class="fa fa-backward"></i></button>
             <nav class="page-tabs J_menuTabs">
                 <div class="page-tabs-content">
                     <a th:href="@{/web/main.shtml}" href="/web/main.shtml" class="active J_menuTab" data-id="web/main.shtml">首页</a>
@@ -132,8 +194,8 @@
                         <a>关闭其他选项卡</a>
                     </li>
                 </ul>
-            </div>
-            <a onclick="logout()" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
+            </div> -->
+            <!-- <a onclick="logout()" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a> -->
         </div>
         <div class="row J_mainContent" id="content-main">
             <iframe class="J_iframe" name="iframe0" width="100%" height="100%" th:src="@{/web/main.shtml}" src="/web/main.shtml" frameborder="0" seamless></iframe>
@@ -159,6 +221,18 @@
 <script type="text/javascript" th:src="@{/js/contabs.js}" src="../static/js/contabs.js"></script>
 <script>
 $(document).ready(function () {
+	$('.layuiNavColor li a').hover(function() {
+		$(this).addClass("layuiNavColorA").closest("li").siblings("li:has(a.layuiNavColorA)").children("a").removeClass(
+			"layuiNavColorA");
+		var id = $(this).attr("id");
+		$('#headerNav' + id).show().siblings().hide();
+	});
+	
+	$('.headerNav li a').click(function() {
+		$(this).addClass("layuiNavSectendLiA").closest("li").siblings("li:has(a.layuiNavSectendLiA)").children("a").removeClass(
+			"layuiNavSectendLiA");
+	});
+	
     // 根据用户名查询用户信息显示
     getUserInfo();
     /*判断是否为管理员*/
