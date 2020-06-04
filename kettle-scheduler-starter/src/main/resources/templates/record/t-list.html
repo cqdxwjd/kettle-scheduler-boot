@@ -26,26 +26,26 @@
             </div>
         </div>
         <div class="ibox-content">
-            <div class="row">
-                <div class="col-sm-5">
-                    <a th:href="@{/web/trans/monitor/list.shtml}" href="/web/trans/monitor/list.shtml" class="btn btn-w-m btn-info" type="button">
-                        <i class="fa fa-reply" aria-hidden="true"></i>&nbsp;返回
-                    </a>
-                </div>
-                <div class="col-sm-7">
-                    <div class="form-inline text-right">
-                        <div class="form-group">
-                            <button onclick="refresh()" class="right btn btn-w-m btn-info" type="button">
-                                <i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;刷新
-                            </button>
-                        </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <a th:href="@{/web/trans/monitor/list.shtml}" href="/web/trans/monitor/list.shtml" class="btn btn-w-m btn-info" type="button">
+                    <i class="fa fa-reply" aria-hidden="true"></i>&nbsp;返回
+                </a>
+            </div>
+            <div class="col-sm-7">
+                <div class="form-inline text-right">
+                    <div class="form-group">
+                        <button onclick="refresh()" class="right btn btn-w-m btn-info" type="button">
+                            <i class="fa fa-refresh" aria-hidden="true"></i>&nbsp;刷新
+                        </button>
                     </div>
                 </div>
             </div>
-            <input type="hidden" id="transId" name="transId" th:value="${transId}">
-            <table id="transRecordList">
-            </table>
         </div>
+        <input type="hidden" id="transId" name="transId" th:value="${transId}">
+        <table id="transRecordList">
+        </table>
+    </div>
     </div>
 </div>
 <!-- 全局js -->
