@@ -27,23 +27,32 @@ public class RefreshMviewConfiguartion {
     String cleanPageCacheApi;
 
     //3.添加定时任务
-    @Scheduled(cron = "0 0 4 * * ? ")
+    @Scheduled(cron = "0 25 9 * * ? ")
+    //@Scheduled(fixedRate=5000)
+    //@Scheduled(cron = "0 05 * * * ? ")
+    private void refreshMviewTasksByEdw() throws ExecutionException, InterruptedException {
+        String edwUrl = url + "?charCterName=edw_db&dbLink=edw_db_link&type=0";
+        HttpAsyncUtils httpAsyncUtils = new HttpAsyncUtils();
+        HttpAsyncUtils.get(edwUrl);
+        //Future<HttpResponse> httpResponseFuture = HttpAsyncUtils.get("http://www.baidu.com");
+        log.info("执行edw_db物化视图刷新，时间：" + LocalDateTime.now());
+    }
+
+    @Scheduled(cron = "0 40 9 * * ? ")
     //@Scheduled(fixedRate=5000)
     //@Scheduled(cron = "0 05 * * * ? ")
     private void refreshMviewTasks() throws ExecutionException, InterruptedException {
-        String edwUrl = url + "?charCterName=edw_db&dbLink=edw_db_link&type=0";
         String dcEdwUrl = url + "?charCterName=zczl_sgjf_2020&dbLink=dc_edw2020_link&type=0";
         HttpAsyncUtils httpAsyncUtils = new HttpAsyncUtils();
-        HttpAsyncUtils.get(edwUrl);
         HttpAsyncUtils.get(dcEdwUrl);
         //Future<HttpResponse> httpResponseFuture = HttpAsyncUtils.get("http://www.baidu.com");
-        log.info("执行物化视图刷新，时间：" + LocalDateTime.now());
+        log.info("执行dc_edw物化视图刷新，时间：" + LocalDateTime.now());
     }
 
     /**
      * 每天5点清理页面缓存
      */
-    @Scheduled(cron = "0 0 5 * * ?")
+    @Scheduled(cron = "0 0 10 * * ?")
     private void cleanPageCache() {
         HttpAsyncUtils httpAsyncUtils = new HttpAsyncUtils();
         HttpAsyncUtils.get(cleanPageCacheApi);
