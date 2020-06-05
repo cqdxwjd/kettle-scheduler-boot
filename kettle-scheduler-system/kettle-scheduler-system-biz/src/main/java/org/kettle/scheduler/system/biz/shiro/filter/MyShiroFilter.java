@@ -39,6 +39,8 @@ public class MyShiroFilter {
 		chainDefinition.addPathDefinition("/sys/user/getUserByUsername.do", "authc");
 		chainDefinition.addPathDefinition("/sys/user/**", "authc,roles[admin]");
 
+		//去除登录
+		//chainDefinition.addPathDefinition("/**","anon");
         /* roles[python]中定义需要当前角色才能具有访问权限, 自定义Filter中的Object o就是roles["角色1","角色2"]中的数据
         chainDefinition.addPathDefinition("/my/python", "authc,roles[python]");*/
 

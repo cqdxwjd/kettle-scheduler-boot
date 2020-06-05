@@ -100,20 +100,21 @@
     <!--导航开始-->
     <div class="layui-header layui-bg-primary">
     	<div class="layui-logo">
-			<a href=""><img alt="image" th:src="@{/img/logo.jpg}" src="../static/img/logo.jpg" class="layui-nav-img">数据采集平台</a>
+			<a href=""><img src="../img/logo.jpg" class="layui-nav-img">数据采集平台</a>
 		</div>
     	<!-- 头部区域（可配合layui已有的水平导航） -->
     	<ul class="layui-nav layui-layout-left layuiNavFirst layuiNavColor">
-    		<li class="layui-nav-item" lay-unselect><a id="1" class="layuiNavColorA" href="javascript:;">资源库管理</a></li>
-    		<li class="layui-nav-item" lay-unselect><a id="2" href="javascript:;">定时策略</a></li>
+			<li class="layui-nav-item" lay-unselect><a id="1" class="layuiNavColorA" href="javascript:;">首页</a></li>
+    		<li class="layui-nav-item" lay-unselect><a id="2" href="javascript:;">资源库管理</a></li>
+    		<li class="layui-nav-item" lay-unselect><a id="3" href="javascript:;">定时策略</a></li>
     		<li class="layui-nav-item" lay-unselect>
-    			<a id="3" href="javascript:;">任务管理</a>
+    			<a id="4" href="javascript:;">任务管理</a>
     		</li>
     		<li class="layui-nav-item" lay-unselect>
-    			<a id="4" href="javascript:;">监控管理</a>
+    			<a id="5" href="javascript:;">监控管理</a>
     		</li>
 			<li class="layui-nav-item" lay-unselect>
-    			<a id="5" href="javascript:;">用户管理</a>
+    			<a id="6" href="javascript:;">用户管理</a>
     		</li>
     	</ul>
 		<ul style="height: 60px;" class="layui-nav layui-layout-right layuiNavFirst">
@@ -126,15 +127,20 @@
 		<ul class="layuiNavSectend">
 			<div class="headerNav" id="headerNav1">
 				<li>
-					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/repository/list.shtml}" href="/web/repository/list.shtml">&nbsp;资源库管理</a>
+					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/main.shtml}" href="/web/main.shtml">&nbsp;首页</a>
 				</li>
 			</div>
 			<div class="headerNav" style="display: none;" id="headerNav2">
 				<li>
-					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/quartz/list.shtml}" href="/web/quartz/list.shtml">&nbsp;定时策略</a>
+					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/repository/list.shtml}" href="/web/repository/list.shtml">&nbsp;资源库管理</a>
 				</li>
 			</div>
 			<div class="headerNav" style="display: none;" id="headerNav3">
+				<li>
+					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/quartz/list.shtml}" href="/web/quartz/list.shtml">&nbsp;定时策略</a>
+				</li>
+			</div>
+			<div class="headerNav" style="display: none;" id="headerNav4">
 				<li>
 					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/category/list.shtml}" href="/web/category/list.shtml">&nbsp;任务分类</a>
 				</li>
@@ -145,7 +151,7 @@
 					<a class="J_menuItem" th:href="@{/web/trans/list.shtml}" href="/web/trans/list.shtml">&nbsp;转换管理</a>
 				</li>
 			</div>
-			<div class="headerNav" style="display: none;" id="headerNav4">
+			<div class="headerNav" style="display: none;" id="headerNav5">
 				<li>
 					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/job/monitor/list.shtml}" href="/web/job/monitor/list.shtml">&nbsp;作业监控</a>
 				</li>
@@ -153,7 +159,7 @@
 					<a class="J_menuItem" th:href="@{/web/trans/monitor/list.shtml}" href="/web/trans/monitor/list.shtml">&nbsp;转换监控</a>
 				</li>
 			</div>
-			<div class="headerNav" style="display: none;" id="headerNav5">
+			<div class="headerNav" style="display: none;" id="headerNav6">
 				<li>
 					<a class="J_menuItem layuiNavSectendLiA" th:href="@{/web/user/list.shtml}" href="/web/user/list.shtml">&nbsp;用户列表</a>
 				</li>
