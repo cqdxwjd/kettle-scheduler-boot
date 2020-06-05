@@ -62,11 +62,11 @@ end;
 
 
 ![avatar](./docs/img/index.png)
-<centeer>首页截图</center>
+<centeer>首页截图(已更新风格)</center>
 
 
 ![avatar](./docs/img/trans.png)
-<centeer>新增转换任务</center>   
+<centeer>新增转换任务(已更新风格)</center>   
 转换任务增加页面传递参数，手动写json格式的数据 
 数据库k_trans表中增加trans_params字段，对应的实体类中也需要增加，通过执行任务时，从trans中获取参数，并设置到相应的脚本中
  
