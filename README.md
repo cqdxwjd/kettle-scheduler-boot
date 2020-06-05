@@ -14,11 +14,11 @@
  **2020-06-05 重要更新说明**   
  修改页面风格   
  ![avatar](./docs/img/index_new.png)
- ** <centeer>首页截图</center>** 
+<centeer> **首页截图** </center>
  
  
  ![avatar](./docs/img/trans_new.png)
- ** <centeer>转换任务页面</center>  **  
+<centeer> **转换任务页面** </center>   
  **2020-05-13 重要更新说明**    
 由于原代码数据库使用的是mysql，所有ID使用的是数据库自增长ID，迁移到oracle后，将自增长ID修改为触发器，目前根据使用到的实体类，创建了相应的序列及触发器，按照SEQ_TRANS及TRANS_TRIGGER去创建即可。   
 | 序列列表 | 触发器列表 |   
