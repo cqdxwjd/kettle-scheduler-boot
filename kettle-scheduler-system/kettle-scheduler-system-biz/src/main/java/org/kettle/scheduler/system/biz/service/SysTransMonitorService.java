@@ -210,11 +210,13 @@ public class SysTransMonitorService {
     }
     public CountSumRes count(CountSumReq countSumReq,Pageable pageable) {
         CountSumRes countSumRes=new CountSumRes();
-        String selectSql1="select nvl(sum(w),0) as total,1 as success,2 as fail ";
+        String selectSql1="select nvl(sum(w),0) as SUM";
         String selectSql2="select ID,ADMDIVCODE,TYPE,TRANSNAME,STEPNAME,I,O,R,W,U,E,TIME,CATEGORY_ID ";
         StringBuffer fromSql=new StringBuffer(" from k_log where type=2 ");
         if (countSumReq.getTime()==null){
             fromSql.append(" and TO_CHAR(time, 'YYYYMMDD' ) = TO_CHAR(SYSDATE, 'YYYYMMDD')");
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+            countSumRes.setTime(df.format(new Date()));
         }else{
             fromSql.append(" and TO_CHAR(time, 'YYYY-MM-DD' ) = '"+countSumReq.getTime()+"'");
             countSumRes.setTime(countSumReq.getTime());
@@ -232,8 +234,8 @@ public class SysTransMonitorService {
             countSumRes.setStepname(countSumReq.getStepname());
         }
         String orderSql = " order by time desc ";
-        TaskCountBO result=entityManagerUtil.executeNativeQueryForOne(selectSql1.concat(fromSql.toString()).concat(orderSql), TaskCountBO.class);
-        countSumRes.setTotal(result.getTotal());
+        CountSumBo result=entityManagerUtil.executeNativeQueryForOne(selectSql1.concat(fromSql.toString()).concat(orderSql), CountSumBo.class);
+        countSumRes.setTotal(result.getSum());
         if (countSumReq.getType()!=null&&countSumReq.getType()== CountType.DETAIL.getKey()){
             NativeQueryResultBO resultBo = entityManagerUtil.executeNativeQueryForList(selectSql2, fromSql.toString(), orderSql, pageable,TransLog.class);
             countSumRes.setTransLogPageOut(new PageOut<>(resultBo.getResultList(),pageable.getPageNumber(), pageable.getPageSize(), resultBo.getTotal()));

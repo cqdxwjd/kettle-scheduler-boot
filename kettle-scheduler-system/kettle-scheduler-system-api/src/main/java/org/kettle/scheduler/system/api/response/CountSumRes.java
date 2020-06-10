@@ -15,7 +15,7 @@ public class CountSumRes {
      * 合计
      */
     @ApiModelProperty(value = "合计")
-    private Integer total;
+    private Long total;
     /**
      * 合计
      */
