@@ -9,8 +9,16 @@
 4、删除转换名不允许重复约束   
 5、页面上增加转换描述显示   
 6、增加redis，rabbitmq等中间件，用于调度抽取任务   
-7、增加了一些扩展功能
+7、增加了一些扩展功能   
 
+ **2020-06-05 重要更新说明**   
+ 修改页面风格   
+ ![avatar](./docs/img/index_new.png)
+<centeer> **首页截图** </center>
+ 
+ 
+ ![avatar](./docs/img/trans_new.png)
+<centeer> **转换任务页面** </center>   
  **2020-05-13 重要更新说明**    
 由于原代码数据库使用的是mysql，所有ID使用的是数据库自增长ID，迁移到oracle后，将自增长ID修改为触发器，目前根据使用到的实体类，创建了相应的序列及触发器，按照SEQ_TRANS及TRANS_TRIGGER去创建即可。   
 | 序列列表 | 触发器列表 |   
@@ -50,15 +58,15 @@ end;
 #### 项目截图
 
 ![avatar](./docs/img/login.png)
-<centeer>登录页截图</center>
+ **<centeer>登录页截图</center>** 
 
 
 ![avatar](./docs/img/index.png)
-<centeer>首页截图</center>
+ **<centeer>首页截图(已更新风格)</center>** 
 
 
 ![avatar](./docs/img/trans.png)
-<centeer>新增转换任务</center>   
+ **<centeer>新增转换任务(已更新风格)</center>   ** 
 转换任务增加页面传递参数，手动写json格式的数据 
 数据库k_trans表中增加trans_params字段，对应的实体类中也需要增加，通过执行任务时，从trans中获取参数，并设置到相应的脚本中
  
