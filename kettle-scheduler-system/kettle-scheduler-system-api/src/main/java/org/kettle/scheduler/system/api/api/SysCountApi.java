@@ -4,6 +4,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.system.api.request.CountSumReq;
+import org.kettle.scheduler.system.api.response.CountSumRes;
 import org.springframework.web.bind.annotation.*;
 
 @Api(tags = "数据统计API")
@@ -16,6 +17,6 @@ public interface SysCountApi {
      */
     @ApiOperation(value = "合计")
     @PostMapping ("/sum.do")
-    public Object count(@RequestBody QueryHelper<CountSumReq> countSumReq);
+    public CountSumRes count(@RequestBody QueryHelper<CountSumReq> countSumReq);
 }
 

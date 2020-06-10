@@ -3,6 +3,7 @@ package org.kettle.scheduler.system.biz.controller;
 import org.kettle.scheduler.common.povo.QueryHelper;
 import org.kettle.scheduler.system.api.api.SysCountApi;
 import org.kettle.scheduler.system.api.request.CountSumReq;
+import org.kettle.scheduler.system.api.response.CountSumRes;
 import org.kettle.scheduler.system.biz.service.SysTransMonitorService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,7 +17,7 @@ public class SysCountApiController implements SysCountApi {
     public SysCountApiController(SysTransMonitorService transMonitorService) {
         this.transMonitorService = transMonitorService;
     }
-    public Object count(@RequestBody QueryHelper<CountSumReq> countSumReq){
+    public CountSumRes count(@RequestBody QueryHelper<CountSumReq> countSumReq){
         return transMonitorService.count(countSumReq.getQuery(),countSumReq.getPage().getPageable());
     }
 }

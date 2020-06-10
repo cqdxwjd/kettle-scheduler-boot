@@ -208,7 +208,8 @@ public class SysTransMonitorService {
         transLogRepository.saveAll(list1);
 
     }
-    public Object count(CountSumReq countSumReq,Pageable pageable) {
+    public CountSumRes count(CountSumReq countSumReq,Pageable pageable) {
+        CountSumRes countSumRes=new CountSumRes();
         String selectSql1="select nvl(sum(w),0) as total,1 as success,2 as fail ";
         String selectSql2="select ID,ADMDIVCODE,TYPE,TRANSNAME,STEPNAME,I,O,R,W,U,E,TIME,CATEGORY_ID ";
         StringBuffer fromSql=new StringBuffer(" from k_log where type=2 ");
@@ -216,26 +217,29 @@ public class SysTransMonitorService {
             fromSql.append(" and TO_CHAR(time, 'YYYYMMDD' ) = TO_CHAR(SYSDATE, 'YYYYMMDD')");
         }else{
             fromSql.append(" and TO_CHAR(time, 'YYYY-MM-DD' ) = '"+countSumReq.getTime()+"'");
+            countSumRes.setTime(countSumReq.getTime());
         }
         if(countSumReq.getAdmdivcode()!=null){
             fromSql.append(" and admdivcode="+countSumReq.getAdmdivcode());
+            countSumRes.setAdmdivcode(countSumReq.getAdmdivcode());
         }
         if (countSumReq.getCategoryId()!=null){
             fromSql.append(" and categoryId ="+countSumReq.getCategoryId());
+            countSumRes.setCategoryId(countSumReq.getCategoryId());
         }
         if (countSumReq.getStepname()!=null){
             fromSql.append(" and stepname like '"+countSumReq.getStepname()+"%'");
+            countSumRes.setStepname(countSumReq.getStepname());
         }
         String orderSql = " order by time desc ";
         TaskCountBO result=entityManagerUtil.executeNativeQueryForOne(selectSql1.concat(fromSql.toString()).concat(orderSql), TaskCountBO.class);
+        countSumRes.setTotal(result.getTotal());
         if (countSumReq.getType()!=null&&countSumReq.getType()== CountType.DETAIL.getKey()){
             NativeQueryResultBO resultBo = entityManagerUtil.executeNativeQueryForList(selectSql2, fromSql.toString(), orderSql, pageable,TransLog.class);
-            CountSumRes countSumRes=new CountSumRes();
-            countSumRes.setTotal(result.getTotal());
             countSumRes.setTransLogPageOut(new PageOut<>(resultBo.getResultList(),pageable.getPageNumber(), pageable.getPageSize(), resultBo.getTotal()));
             return countSumRes;
         }
-        return result.getTotal();
+        return countSumRes;
     }
 
     }

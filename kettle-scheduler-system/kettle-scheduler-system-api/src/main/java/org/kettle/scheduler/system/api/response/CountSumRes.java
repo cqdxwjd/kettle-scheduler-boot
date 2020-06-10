@@ -17,6 +17,27 @@ public class CountSumRes {
     @ApiModelProperty(value = "合计")
     private Integer total;
     /**
+     * 合计
+     */
+    @ApiModelProperty(value = "区划")
+    private String admdivcode;
+    /**
+     * 合计
+     */
+    @ApiModelProperty(value = "时间")
+    private String time;
+    /**
+     * 合计
+     */
+    @ApiModelProperty(value = "步骤名")
+    private String stepname;
+    /**
+     * 合计
+     */
+    @ApiModelProperty(value = "分类id")
+    private Integer categoryId;
+
+    /**
      * 明细
      */
     @ApiModelProperty(value = "明细")
