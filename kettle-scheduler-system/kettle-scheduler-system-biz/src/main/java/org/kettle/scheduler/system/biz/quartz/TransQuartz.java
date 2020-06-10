@@ -124,6 +124,11 @@ public class TransQuartz implements Job {
         transRecord.setStopTime(stopDate);
         transRecord.setCategoryId(trans.getCategoryId());
         monitorService.addTransRecord(transRecord);
+        //添加转换日志
+        if(runStatus){
+            monitorService.addTransRecord(logText,trans,params);
+        }
+
 
     }
 

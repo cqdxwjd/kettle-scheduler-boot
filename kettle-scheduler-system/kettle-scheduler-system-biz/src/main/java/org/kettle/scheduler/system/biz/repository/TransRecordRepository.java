@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.kettle.scheduler.system.biz.entity.TransRecord;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * @author lyf
@@ -18,4 +19,5 @@ public interface TransRecordRepository extends JpaRepository<TransRecord, Intege
      * @return {@link Page}
      */
     Page<TransRecord> findByRecordTransId(Integer transId, Pageable pageable);
+
 }

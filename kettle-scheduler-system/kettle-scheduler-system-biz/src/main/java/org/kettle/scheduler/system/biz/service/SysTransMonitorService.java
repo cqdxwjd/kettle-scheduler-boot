@@ -5,19 +5,21 @@ import org.kettle.scheduler.common.povo.PageHelper;
 import org.kettle.scheduler.common.povo.PageOut;
 import org.kettle.scheduler.common.utils.BeanUtil;
 import org.kettle.scheduler.common.utils.StringUtil;
+import org.kettle.scheduler.system.api.request.CountSumReq;
 import org.kettle.scheduler.system.api.request.MonitorQueryReq;
 import org.kettle.scheduler.system.api.request.TransRecordReq;
+import org.kettle.scheduler.system.api.response.CountSumRes;
 import org.kettle.scheduler.system.api.response.TaskCountRes;
 import org.kettle.scheduler.system.api.response.TransMonitorRes;
 import org.kettle.scheduler.system.api.response.TransRecordRes;
 import org.kettle.scheduler.system.biz.component.EntityManagerUtil;
 import org.kettle.scheduler.system.biz.entity.Trans;
+import org.kettle.scheduler.system.biz.entity.TransLog;
 import org.kettle.scheduler.system.biz.entity.TransMonitor;
 import org.kettle.scheduler.system.biz.entity.TransRecord;
-import org.kettle.scheduler.system.biz.entity.bo.NativeQueryResultBO;
-import org.kettle.scheduler.system.biz.entity.bo.TaskCountBO;
-import org.kettle.scheduler.system.biz.entity.bo.TransMonitorBO;
-import org.kettle.scheduler.system.biz.entity.bo.TransRecordBO;
+import org.kettle.scheduler.system.biz.entity.bo.*;
+import org.kettle.scheduler.system.biz.enums.CountType;
+import org.kettle.scheduler.system.biz.repository.TransLogRepository;
 import org.kettle.scheduler.system.biz.repository.TransMonitorRepository;
 import org.kettle.scheduler.system.biz.repository.TransRecordRepository;
 import org.kettle.scheduler.system.biz.repository.TransRepository;
@@ -26,6 +28,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -40,13 +44,15 @@ public class SysTransMonitorService {
     private final TransMonitorRepository monitorRepository;
     private final TransRecordRepository recordRepository;
 	private final EntityManagerUtil entityManagerUtil;
+	private final TransLogRepository transLogRepository;
 
     public SysTransMonitorService(TransRepository transRepository, TransMonitorRepository monitorRepository,
-			TransRecordRepository recordRepository, EntityManagerUtil entityManagerUtil) {
+			TransRecordRepository recordRepository, EntityManagerUtil entityManagerUtil,TransLogRepository transLogRepository) {
         this.transRepository = transRepository;
         this.monitorRepository = monitorRepository;
         this.recordRepository = recordRepository;
 		this.entityManagerUtil = entityManagerUtil;
+		this.transLogRepository=transLogRepository;
 	}
 
     public PageOut<TransMonitorRes> findTransMonitorListByPage(MonitorQueryReq query, Pageable pageable) {
@@ -159,4 +165,77 @@ public class SysTransMonitorService {
         TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql,TaskCountBO.class);
         return BeanUtil.copyProperties(result, TaskCountRes.class);
     }
-}
+
+    public void addTransRecord(String logText, Trans trans,Map<String,String> param) {
+        String[] arr = logText.split("\r\n");
+        List<String> list = Arrays.asList(arr);
+        List<TransLog> list1=new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        for (String s: list) {
+            if (s.indexOf("完成处理")!=-1){
+                try {
+                    TransLog transLog=new TransLog();
+                    transLog.setId(UUID.randomUUID().toString().replace("-", ""));
+                    transLog.setTransname(trans.getTransName());
+                    transLog.setAdmdivcode(param.get("region"));
+                    String[] arr2 = s.split("-");
+                    transLog.setTime(sdf.parse(arr2[0].trim()));
+                    transLog.setStepname(arr2[1].trim());
+                    if (s.indexOf("读取")!=-1){
+                        transLog.setType(1);
+                    }else if(s.indexOf("写入")!=-1){
+                        transLog.setType(2);
+                    }else {
+                        transLog.setType(3);
+                    }
+                    String quStr=s.substring(s.indexOf("(")+1,s.indexOf(")")).trim();
+                    String[] arr3 = quStr.split(",");
+                    if (trans.getCategoryId()!=null) {
+                        transLog.setCategoryId(trans.getCategoryId());
+                    }
+                    transLog.setI(Integer.valueOf(arr3[0].substring(2).trim()));
+                    transLog.setO(Integer.valueOf(arr3[1].substring(3).trim()));
+                    transLog.setR(Integer.valueOf(arr3[2].substring(3).trim()));
+                    transLog.setW(Integer.valueOf(arr3[3].substring(3).trim()));
+                    transLog.setU(Integer.valueOf(arr3[4].substring(3).trim()));
+                    transLog.setE(Integer.valueOf(arr3[5].substring(3).trim()));
+                    list1.add(transLog);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        transLogRepository.saveAll(list1);
+
+    }
+    public Object count(CountSumReq countSumReq,Pageable pageable) {
+        String selectSql1="select nvl(sum(w),0) as total,1 as success,2 as fail ";
+        String selectSql2="select ID,ADMDIVCODE,TYPE,TRANSNAME,STEPNAME,I,O,R,W,U,E,TIME,CATEGORY_ID ";
+        StringBuffer fromSql=new StringBuffer(" from k_log where type=2 ");
+        if (countSumReq.getTime()==null){
+            fromSql.append(" and TO_CHAR(time, 'YYYYMMDD' ) = TO_CHAR(SYSDATE, 'YYYYMMDD')");
+        }else{
+            fromSql.append(" and TO_CHAR(time, 'YYYY-MM-DD' ) = '"+countSumReq.getTime()+"'");
+        }
+        if(countSumReq.getAdmdivcode()!=null){
+            fromSql.append(" and admdivcode="+countSumReq.getAdmdivcode());
+        }
+        if (countSumReq.getCategoryId()!=null){
+            fromSql.append(" and categoryId ="+countSumReq.getCategoryId());
+        }
+        if (countSumReq.getStepname()!=null){
+            fromSql.append(" and stepname like '"+countSumReq.getStepname()+"%'");
+        }
+        String orderSql = " order by time desc ";
+        TaskCountBO result=entityManagerUtil.executeNativeQueryForOne(selectSql1.concat(fromSql.toString()).concat(orderSql), TaskCountBO.class);
+        if (countSumReq.getType()!=null&&countSumReq.getType()== CountType.DETAIL.getKey()){
+            NativeQueryResultBO resultBo = entityManagerUtil.executeNativeQueryForList(selectSql2, fromSql.toString(), orderSql, pageable,TransLog.class);
+            CountSumRes countSumRes=new CountSumRes();
+            countSumRes.setTotal(result.getTotal());
+            countSumRes.setTransLogPageOut(new PageOut<>(resultBo.getResultList(),pageable.getPageNumber(), pageable.getPageSize(), resultBo.getTotal()));
+            return countSumRes;
+        }
+        return result.getTotal();
+    }
+
+    }

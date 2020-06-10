@@ -28,7 +28,7 @@ public class EntityManagerUtil {
 	 * @return {@link List}
 	 */
 	public NativeQueryResultBO executeNativeQueryForList(String selectSql, String fromSql, String orderSql, Pageable pageable, Class resultClass) {
-		String sql = selectSql.concat(" ").concat(fromSql).concat(" ").concat(orderSql);
+			String sql = selectSql.concat(" ").concat(fromSql).concat(" ").concat(orderSql);
 		// 初始化sql语句
 		Query nativeQuery = entityManager.createNativeQuery(sql, resultClass);
 		// 添加分页参数
