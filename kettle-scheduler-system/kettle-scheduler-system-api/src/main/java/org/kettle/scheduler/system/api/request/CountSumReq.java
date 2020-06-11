@@ -1,11 +1,15 @@
 package org.kettle.scheduler.system.api.request;
 
+import io.lettuce.core.dynamic.annotation.Param;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.bytebuddy.implementation.bytecode.constant.DefaultValue;
 import org.kettle.scheduler.system.api.basic.BasicVO;
 
+import javax.persistence.Enumerated;
+import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 @Data
@@ -37,6 +41,14 @@ public class CountSumReq implements Serializable {
      * 1.只要合计
      * 2.查看详细
      */
-    @ApiModelProperty(value = "类型")
-    private Integer type;
+    @ApiModelProperty(value = "类型",example = "1.只要合计2.查看详细")
+    private Integer type=1;
+    /**
+     * 标识
+     * 1.今天新增条数
+     * 2.历史总条数
+     */
+    @ApiModelProperty(value = "标识",example = "1.今天新增条数 2.历史总条数")
+    private Integer mark=1;
+
 }

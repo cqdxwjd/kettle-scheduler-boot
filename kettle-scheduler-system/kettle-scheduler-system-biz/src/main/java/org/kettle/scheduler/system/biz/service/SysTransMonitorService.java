@@ -18,6 +18,7 @@ import org.kettle.scheduler.system.biz.entity.TransLog;
 import org.kettle.scheduler.system.biz.entity.TransMonitor;
 import org.kettle.scheduler.system.biz.entity.TransRecord;
 import org.kettle.scheduler.system.biz.entity.bo.*;
+import org.kettle.scheduler.system.biz.enums.CountMark;
 import org.kettle.scheduler.system.biz.enums.CountType;
 import org.kettle.scheduler.system.biz.repository.TransLogRepository;
 import org.kettle.scheduler.system.biz.repository.TransMonitorRepository;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -43,44 +45,44 @@ public class SysTransMonitorService {
     private final TransRepository transRepository;
     private final TransMonitorRepository monitorRepository;
     private final TransRecordRepository recordRepository;
-	private final EntityManagerUtil entityManagerUtil;
-	private final TransLogRepository transLogRepository;
+    private final EntityManagerUtil entityManagerUtil;
+    private final TransLogRepository transLogRepository;
 
     public SysTransMonitorService(TransRepository transRepository, TransMonitorRepository monitorRepository,
-			TransRecordRepository recordRepository, EntityManagerUtil entityManagerUtil,TransLogRepository transLogRepository) {
+                                  TransRecordRepository recordRepository, EntityManagerUtil entityManagerUtil, TransLogRepository transLogRepository) {
         this.transRepository = transRepository;
         this.monitorRepository = monitorRepository;
         this.recordRepository = recordRepository;
-		this.entityManagerUtil = entityManagerUtil;
-		this.transLogRepository=transLogRepository;
-	}
+        this.entityManagerUtil = entityManagerUtil;
+        this.transLogRepository = transLogRepository;
+    }
 
     public PageOut<TransMonitorRes> findTransMonitorListByPage(MonitorQueryReq query, Pageable pageable) {
-    	String selectSql = "SELECT a.*,b.trans_name,c.category_name,b.trans_description ";
-    	// 动态拼接from部分的sql
-		StringBuilder fromSql = new StringBuilder(" FROM k_trans_monitor a ");
-		fromSql.append("INNER JOIN k_trans b ON a.monitor_trans_id=b.id ");
-		fromSql.append("LEFT JOIN k_category c ON b.category_id=c.id ");
-		if (query!=null) {
-			fromSql.append("WHERE 1=1 ");
-			if (!StringUtil.isEmpty(query.getScriptName())) {
-				fromSql.append("AND b.trans_name like '%").append(query.getScriptName()).append("%'").append(" ");
-			}
-			if (query.getMonitorStatus() != null) {
-				fromSql.append("AND a.monitor_status = ").append(query.getMonitorStatus()).append(" ");
-			}
-			if (query.getCategoryId() != null) {
-				fromSql.append("AND b.category_id = ").append(query.getCategoryId()).append(" ");
-			}
-		}
-		// order by 部分的sql
-		String orderSql = "order by a.add_time desc ";
-		// 初始化sql语句
-		NativeQueryResultBO resultBo = entityManagerUtil.executeNativeQueryForList(selectSql, fromSql.toString(), orderSql, pageable, TransMonitorBO.class);
-		List<TransMonitorRes> list = new ArrayList<>();
-		for (Object o : resultBo.getResultList()) {
-			list.add(BeanUtil.copyProperties(o, TransMonitorRes.class));
-		}
+        String selectSql = "SELECT a.*,b.trans_name,c.category_name,b.trans_description ";
+        // 动态拼接from部分的sql
+        StringBuilder fromSql = new StringBuilder(" FROM k_trans_monitor a ");
+        fromSql.append("INNER JOIN k_trans b ON a.monitor_trans_id=b.id ");
+        fromSql.append("LEFT JOIN k_category c ON b.category_id=c.id ");
+        if (query != null) {
+            fromSql.append("WHERE 1=1 ");
+            if (!StringUtil.isEmpty(query.getScriptName())) {
+                fromSql.append("AND b.trans_name like '%").append(query.getScriptName()).append("%'").append(" ");
+            }
+            if (query.getMonitorStatus() != null) {
+                fromSql.append("AND a.monitor_status = ").append(query.getMonitorStatus()).append(" ");
+            }
+            if (query.getCategoryId() != null) {
+                fromSql.append("AND b.category_id = ").append(query.getCategoryId()).append(" ");
+            }
+        }
+        // order by 部分的sql
+        String orderSql = "order by a.add_time desc ";
+        // 初始化sql语句
+        NativeQueryResultBO resultBo = entityManagerUtil.executeNativeQueryForList(selectSql, fromSql.toString(), orderSql, pageable, TransMonitorBO.class);
+        List<TransMonitorRes> list = new ArrayList<>();
+        for (Object o : resultBo.getResultList()) {
+            list.add(BeanUtil.copyProperties(o, TransMonitorRes.class));
+        }
         // 封装数据
         return new PageOut<>(list, pageable.getPageNumber(), pageable.getPageSize(), resultBo.getTotal());
     }
@@ -91,7 +93,7 @@ public class SysTransMonitorService {
         // 查询trans信息
         Optional<Trans> transOptional = transRepository.findById(transId);
         String transName = "";
-        String transDescription="";
+        String transDescription = "";
         if (transOptional.isPresent()) {
             //transName = transOptional.get().getTransName();
             transDescription = transOptional.get().getTransDescription();
@@ -108,13 +110,14 @@ public class SysTransMonitorService {
         }).collect(Collectors.toList());
         return new PageOut<>(collect, page.getNumber(), page.getSize(), page.getTotalElements());
     }
+
     public PageOut<TransRecordRes> findTransRecordListByerror(MonitorQueryReq query, Pageable pageable) {
         String selectSql = "SELECT a.*,b.trans_name,c.category_name,b.trans_description ";
         // 动态拼接from部分的sql
         StringBuilder fromSql = new StringBuilder(" FROM K_TRANS_RECORD a ");
         fromSql.append("INNER JOIN k_trans b ON a.RECORD_TRANS_ID=b.id ");
         fromSql.append("LEFT JOIN k_category c ON b.category_id=c.id WHERE 1=1 AND A.RECORD_STATUS=0");
-        if (query!=null) {
+        if (query != null) {
             if (query.getCategoryId() != null) {
                 fromSql.append("AND b.category_id = ").append(query.getCategoryId()).append(" ");
             }
@@ -155,42 +158,46 @@ public class SysTransMonitorService {
         recordRepository.save(transRecord);
     }
 
-	public TaskCountRes countTrans() {
-    	String sql = "SELECT count(1) total, nvl(sum(monitor_success),0) success, nvl(sum(monitor_fail),0) fail FROM k_trans_monitor";
-		TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql, TaskCountBO.class);
-		return BeanUtil.copyProperties(result, TaskCountRes.class);
-	}
-    public TaskCountRes countTransByToday(Integer categoryid) {
-        String sql = "SELECT count(1) total，nvl(sum(case when RECORD_STATUS = 1 then 1 else 0 end),0) success,nvl(sum(case when RECORD_STATUS = 0 then 1 else 0 end),0) fail from K_TRANS_RECORD WHERE TO_CHAR(stop_time, 'YYYYMMDD' ) = TO_CHAR(SYSDATE, 'YYYYMMDD') and category_id="+categoryid;
-        TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql,TaskCountBO.class);
+    public TaskCountRes countTrans() {
+        String sql = "SELECT count(1) total, nvl(sum(monitor_success),0) success, nvl(sum(monitor_fail),0) fail FROM k_trans_monitor";
+        TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql, TaskCountBO.class);
         return BeanUtil.copyProperties(result, TaskCountRes.class);
     }
 
-    public void addTransRecord(String logText, Trans trans,Map<String,String> param) {
+    public TaskCountRes countTransByToday(Integer categoryid) {
+        String sql = "SELECT count(1) total，nvl(sum(case when RECORD_STATUS = 1 then 1 else 0 end),0) success,nvl(sum(case when RECORD_STATUS = 0 then 1 else 0 end),0) fail from K_TRANS_RECORD WHERE TO_CHAR(stop_time, 'YYYYMMDD' ) = TO_CHAR(SYSDATE, 'YYYYMMDD') and category_id=" + categoryid;
+        TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql, TaskCountBO.class);
+        return BeanUtil.copyProperties(result, TaskCountRes.class);
+    }
+
+    public void addTransRecord(String logText, Trans trans, Map<String, String> param) {
         String[] arr = logText.split("\r\n");
         List<String> list = Arrays.asList(arr);
-        List<TransLog> list1=new ArrayList<>();
+        List<TransLog> list1 = new ArrayList<>();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-        for (String s: list) {
-            if (s.indexOf("完成处理")!=-1){
+        for (String s : list) {
+            if (s.indexOf("完成处理") != -1) {
                 try {
-                    TransLog transLog=new TransLog();
+                    TransLog transLog = new TransLog();
                     transLog.setId(UUID.randomUUID().toString().replace("-", ""));
                     transLog.setTransname(trans.getTransName());
                     transLog.setAdmdivcode(param.get("region"));
+                    if(param.get("gz")!=null){
+                        transLog.setAdmdivcode(param.get("region")+param.get("gz"));
+                    }
                     String[] arr2 = s.split("-");
                     transLog.setTime(sdf.parse(arr2[0].trim()));
                     transLog.setStepname(arr2[1].trim());
-                    if (s.indexOf("读取")!=-1){
+                    if (s.indexOf("读取") != -1) {
                         transLog.setType(1);
-                    }else if(s.indexOf("写入")!=-1){
+                    } else if (s.indexOf("写入") != -1) {
                         transLog.setType(2);
-                    }else {
+                    } else {
                         transLog.setType(3);
                     }
-                    String quStr=s.substring(s.indexOf("(")+1,s.indexOf(")")).trim();
+                    String quStr = s.substring(s.indexOf("(") + 1, s.indexOf(")")).trim();
                     String[] arr3 = quStr.split(",");
-                    if (trans.getCategoryId()!=null) {
+                    if (trans.getCategoryId() != null) {
                         transLog.setCategoryId(trans.getCategoryId());
                     }
                     transLog.setI(Integer.valueOf(arr3[0].substring(2).trim()));
@@ -208,40 +215,61 @@ public class SysTransMonitorService {
         transLogRepository.saveAll(list1);
 
     }
-    public CountSumRes count(CountSumReq countSumReq,Pageable pageable) {
-        CountSumRes countSumRes=new CountSumRes();
-        String selectSql1="select nvl(sum(w),0) as SUM";
-        String selectSql2="select ID,ADMDIVCODE,TYPE,TRANSNAME,STEPNAME,I,O,R,W,U,E,TIME,CATEGORY_ID ";
-        StringBuffer fromSql=new StringBuffer(" from k_log where type=2 ");
-        if (countSumReq.getTime()==null){
-            fromSql.append(" and TO_CHAR(time, 'YYYYMMDD' ) = TO_CHAR(SYSDATE, 'YYYYMMDD')");
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-            countSumRes.setTime(df.format(new Date()));
-        }else{
-            fromSql.append(" and TO_CHAR(time, 'YYYY-MM-DD' ) = '"+countSumReq.getTime()+"'");
-            countSumRes.setTime(countSumReq.getTime());
+
+    public CountSumRes count(CountSumReq countSumReq, Pageable pageable) {
+
+        if (countSumReq.getMark() != null && countSumReq.getMark() == CountMark.TODAY.getKey()) {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, -24);
+            countSumReq.setTime(dateFormat.format(calendar.getTime()));
+            CountSumRes yestCount = historySum(countSumReq, pageable);
+            countSumReq.setTime(dateFormat.format(new Date()));
+            CountSumRes todayCount = historySum(countSumReq, pageable);
+            todayCount.setTotal(todayCount.getTotal() - yestCount.getTotal());
+            return todayCount;
         }
-        if(countSumReq.getAdmdivcode()!=null){
-            fromSql.append(" and admdivcode="+countSumReq.getAdmdivcode());
+        CountSumRes history = historySum(countSumReq, pageable);
+        return history;
+    }
+
+    public CountSumRes historySum(CountSumReq countSumReq, Pageable pageable) {
+        CountSumRes countSumRes = new CountSumRes();
+        String selectSql = "select nvl(sum(w),0) as sum from(";
+        String selectSql1 = "SELECT a.* ";
+        StringBuffer fromsql = new StringBuffer(" FROM k_log a INNER join ( SELECT admdivcode||stepname names, max(time) maxtime FROM  k_log ");
+        if (countSumReq.getMark() == CountMark.TODAY.getKey()) {
+        fromsql.append(" where TO_CHAR(time, 'YYYY-MM-DD' ) = '" + countSumReq.getTime() + "'");
+        }
+        fromsql.append("GROUP BY admdivcode || stepname )b ON a.admdivcode || stepname = b.names AND a.time = b.maxtime where a.type = 2");
+        if (countSumReq.getAdmdivcode() != null) {
+            fromsql.append(" and a.admdivcode='" + countSumReq.getAdmdivcode()+"'");
             countSumRes.setAdmdivcode(countSumReq.getAdmdivcode());
         }
-        if (countSumReq.getCategoryId()!=null){
-            fromSql.append(" and categoryId ="+countSumReq.getCategoryId());
+        if (countSumReq.getCategoryId() != null) {
+            fromsql.append(" and a.category_Id =" + countSumReq.getCategoryId());
             countSumRes.setCategoryId(countSumReq.getCategoryId());
         }
-        if (countSumReq.getStepname()!=null){
-            fromSql.append(" and stepname like '"+countSumReq.getStepname()+"%'");
+        if (countSumReq.getStepname() != null) {
+            fromsql.append(" and a.stepname like '" + countSumReq.getStepname() + "%'");
             countSumRes.setStepname(countSumReq.getStepname());
         }
-        String orderSql = " order by time desc ";
-        CountSumBo result=entityManagerUtil.executeNativeQueryForOne(selectSql1.concat(fromSql.toString()).concat(orderSql), CountSumBo.class);
+        if (countSumReq.getMark() != null) {
+            countSumRes.setMark(countSumReq.getMark());
+        }
+        if (countSumReq.getType() != null) {
+            countSumRes.setType(countSumReq.getType());
+        }
+        String ordersql = " order by a.time desc";
+        String end = ")";
+        CountSumBo result = entityManagerUtil.executeNativeQueryForOne(selectSql.concat(selectSql1).concat(fromsql.toString()).concat(ordersql).concat(end), CountSumBo.class);
         countSumRes.setTotal(result.getSum());
-        if (countSumReq.getType()!=null&&countSumReq.getType()== CountType.DETAIL.getKey()){
-            NativeQueryResultBO resultBo = entityManagerUtil.executeNativeQueryForList(selectSql2, fromSql.toString(), orderSql, pageable,TransLog.class);
-            countSumRes.setTransLogPageOut(new PageOut<>(resultBo.getResultList(),pageable.getPageNumber(), pageable.getPageSize(), resultBo.getTotal()));
+        if (countSumReq.getType() == CountType.DETAIL.getKey()) {
+            NativeQueryResultBO resultBo = entityManagerUtil.executeNativeQueryForList(selectSql1, fromsql.toString(), ordersql, pageable, TransLog.class);
+            countSumRes.setTransLogPageOut(new PageOut<>(resultBo.getResultList(), pageable.getPageNumber(), pageable.getPageSize(), resultBo.getTotal()));
             return countSumRes;
         }
         return countSumRes;
     }
 
-    }
+}
