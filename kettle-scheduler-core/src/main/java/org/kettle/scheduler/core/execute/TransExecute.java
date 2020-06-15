@@ -7,6 +7,8 @@ import org.kettle.scheduler.common.utils.JsonUtil;
 import org.kettle.scheduler.core.log.KettleLogUtil;
 import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.core.logging.KettleLogStore;
+import org.pentaho.di.core.logging.LogChannel;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.core.parameters.UnknownParamException;
 import org.pentaho.di.repository.AbstractRepository;
@@ -14,7 +16,7 @@ import org.pentaho.di.repository.RepositoryDirectoryInterface;
 import org.pentaho.di.trans.Trans;
 import org.pentaho.di.trans.TransMeta;
 
-import java.util.Map;
+import java.util.*;
 
 /**
  * kettle的ktr脚本执行器
@@ -33,7 +35,14 @@ public class TransExecute {
      */
     private static String executeTrans(TransMeta tm, Map<String, String> params, String[] args) throws KettleException {
         // 通过元数据获取ktr的实例
+        Random random = new Random();
+        int i = random.nextInt(1000);;
         Trans trans = new Trans(tm);
+        LogChannel logChannel=new LogChannel(trans.getName()+System.currentTimeMillis()+i);
+        trans.setLog(logChannel);
+        if(tm.getLogLevel()!=null){
+            trans.setLogLevel(tm.getLogLevel());
+        }
         // 传入ktr需要的变量
         if (CollectionUtil.isNotEmpty(params)) {
 			log.info("传入kettle的参数：{}", JsonUtil.toJsonString(params));
@@ -48,14 +57,19 @@ public class TransExecute {
                 trans.setParameterValue(entry.getKey(), entry.getValue());
             }*/
         }
-        // 开始执行ktr，该方法还可以传入命令行参数args
+        // 开始执行ktr，该方法以传入命令行参数args
+
         trans.execute(args);
         // 线程等待，直到ktr执行完成
         trans.waitUntilFinished();
         // 执行完成后获取日志
-		String logText = KettleLogUtil.getLogText(trans.getLogChannelId(), true, trans.getLogDate().getTime());
-		// 判断执行过程中是否有错误, 有错误就抛出错误日志
-		if (trans.getErrors() > 0) {
+
+        String logText = KettleLogUtil.getLogText(trans.getLogChannelId(), true, trans.getLogDate().getTime());
+
+
+
+        // 判断执行过程中是否有错误, 有错误就抛出错误日志
+        if (trans.getErrors() > 0) {
             throw new KettleException(logText);
         }
         // 没有错误就返回正常执行日志
