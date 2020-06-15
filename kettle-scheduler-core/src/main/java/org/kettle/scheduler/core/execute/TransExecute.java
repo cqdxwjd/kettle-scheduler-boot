@@ -33,15 +33,15 @@ public class TransExecute {
      * @param params ktr需要的命名参数
      * @param args 命令行参数
      */
-    private static String executeTrans(TransMeta tm, Map<String, String> params, String[] args) throws KettleException {
+    private static String executeTrans(TransMeta tm, Map<String, String> params, String[] args,LogLevel logLevel) throws KettleException {
         // 通过元数据获取ktr的实例
         Random random = new Random();
-        int i = random.nextInt(1000);;
+        int i = random.nextInt(1000);
         Trans trans = new Trans(tm);
-        LogChannel logChannel=new LogChannel(trans.getName()+System.currentTimeMillis()+i);
+        LogChannel logChannel=new LogChannel(trans.getName()+i+System.currentTimeMillis());
         trans.setLog(logChannel);
-        if(tm.getLogLevel()!=null){
-            trans.setLogLevel(tm.getLogLevel());
+        if(logLevel!=null){
+            trans.setLogLevel(logLevel);
         }
         // 传入ktr需要的变量
         if (CollectionUtil.isNotEmpty(params)) {
@@ -86,12 +86,8 @@ public class TransExecute {
     public static String run(String fullPathName, Map<String, String> params, LogLevel logLevel) throws KettleException {
         // 通过ktr全路径名获取ktr元数据
         TransMeta tm = new TransMeta(FileUtil.replaceSeparator(fullPathName));
-        // 设置日志级别
-        if (logLevel != null) {
-            tm.setLogLevel(logLevel);
-        }
         // 开始执行ktr
-        return executeTrans(tm, params, null);
+        return executeTrans(tm, params, null,logLevel);
     }
 
     /**
@@ -109,11 +105,7 @@ public class TransExecute {
         RepositoryDirectoryInterface rdi = rep.loadRepositoryDirectoryTree().findDirectory(FileUtil.getParentPath(transPath));
         // 在指定资源库的目录下找到要执行的转换
         TransMeta tm = rep.loadTransformation(transName, rdi, new ProgressNullMonitorListener(), true, versionLabel);
-        // 设置日志级别
-        if (logLevel != null) {
-            tm.setLogLevel(logLevel);
-        }
         // 开始执行ktr
-        return executeTrans(tm, params, null);
+        return executeTrans(tm, params, null,logLevel);
     }
 }
