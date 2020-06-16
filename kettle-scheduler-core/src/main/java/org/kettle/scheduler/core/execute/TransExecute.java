@@ -35,7 +35,13 @@ public class TransExecute {
      * @param args   命令行参数
      */
     private static String executeTrans(TransMeta tm, Map<String, String> params, String[] args, LogLevel logLevel) throws KettleException {
-        // 通过元数据获取ktr的实例
+
+        /**
+         * 同一脚本，同时运行时，日志会串。
+         * 原因：
+         * LogChannelID是根据transName和stepName来获取的，便于处理
+         * 在脚本和步骤名称中加入随机数，保证名称不冲突问题，计算出来的logChannelId不会出现重复的情况
+         */
         Random random = new Random();
         int i = random.nextInt(1000);
         //设置变动的stepName
@@ -43,6 +49,7 @@ public class TransExecute {
         steps.forEach(stepMeta -> {
             stepMeta.setName(stepMeta.getName() + random.nextInt(1000));
         });
+        // 通过元数据获取ktr的实例
         Trans trans = new Trans(tm);
         LogChannel logChannel = new LogChannel(trans.getName() + i + System.currentTimeMillis());
         trans.setLog(logChannel);
