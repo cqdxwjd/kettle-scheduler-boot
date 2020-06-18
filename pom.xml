@@ -71,16 +71,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        <!--MQ-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-amqp</artifactId>
-        </dependency>
-        <!--Redis-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
         <!--前端页面模板-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -95,16 +85,12 @@
         </dependency>
 
         <!--数据库操作相关jar-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis</artifactId>
-        </dependency>
-        <dependency>
+<!--        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.48</version>
             <scope>runtime</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>ojdbc6</artifactId>
@@ -126,11 +112,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.ctjsoft</groupId>
-            <artifactId>ctj-common</artifactId>
-            <version>2017.12.30.00-SNAPSHOT</version>
-        </dependency>
         <!--swagger文档-->
         <dependency>
             <groupId>com.spring4all</groupId>
@@ -150,11 +131,11 @@
             <version>1.2.62</version>
         </dependency>
         <!-- 任务调度注解 -->
-        <dependency>
+   <!--     <dependency>
             <groupId>com.ctjsoft</groupId>
             <artifactId>task-scheduler</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+        </dependency>-->
         <!--<dependency>-->
         <!--<groupId>com.xuxueli</groupId>-->
         <!--<artifactId>xxl-job-core</artifactId>-->

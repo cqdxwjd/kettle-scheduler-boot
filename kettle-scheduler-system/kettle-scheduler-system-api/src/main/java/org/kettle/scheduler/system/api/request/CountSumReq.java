@@ -1,15 +1,8 @@
 package org.kettle.scheduler.system.api.request;
 
-import io.lettuce.core.dynamic.annotation.Param;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import net.bytebuddy.implementation.bytecode.constant.DefaultValue;
-import org.kettle.scheduler.system.api.basic.BasicVO;
-
-import javax.persistence.Enumerated;
-import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
 @Data
