@@ -45,10 +45,10 @@ public class TransExecute {
         Random random = new Random();
         int i = random.nextInt(1000);
         //设置变动的stepName
-        List<StepMeta> steps = tm.getSteps();
-        steps.forEach(stepMeta -> {
-            stepMeta.setName(stepMeta.getName() + random.nextInt(1000));
-        });
+//        List<StepMeta> steps = tm.getSteps();
+//        steps.forEach(stepMeta -> {
+//            stepMeta.setName(stepMeta.getName() + random.nextInt(1000));
+//        });
         // 通过元数据获取ktr的实例
         Trans trans = new Trans(tm);
         LogChannel logChannel = new LogChannel(trans.getName() + i + System.currentTimeMillis());
