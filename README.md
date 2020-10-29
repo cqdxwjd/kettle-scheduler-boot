@@ -1,5 +1,23 @@
 # kettle-scheduler-boot
+    
+## 开发计划
 
+|序号|项目|状态|优先级|
+|----|----|----|----|
+|1|通过源码实现集群，多线程执行任务 |✔|紧急|
+|2|重构jpa部分，改为mybatis |✔|一般|
+**注：项目在内部版本中已经定型，不会与大的更新了，有兴趣一起研究的，可以扫描最底下的微信一起开发下去.   
+本来这个项目打算就此终结仅更新内部使用版本（大量内部功能代码），昨天官方突然推荐了，倒逼我继续更新。**   
+![web kettle](https://images.gitee.com/uploads/images/2020/1029/095456_a0903322_720502.png "屏幕截图.png")
+**在线编辑kettle脚本工具，和桌面端的kettle一样用法** 
+
+##### 通过源码创建集群，目前发现的问题是jettry的包冲突导致的问题
+```  java
+        SlaveServer slaveServer = new SlaveServer("kettle", "127.0.0.1", "9080", "user", "password");
+        log.info("创建slave Config");
+        SlaveServerConfig slaveServerConfig = new SlaveServerConfig(slaveServer);
+        Carte.runCarte(slaveServerConfig);
+```
 #### 介绍
 基于Spring-boot的kettle调度项目，参考了[zhaxiaodong9860](https://github.com/zhaxiaodong9860)的代码并引用了其中的页面管理，后台代码自行参考了API进行工具化编写，方便使用   
 在原代码的基础上加入以下功能   
@@ -121,3 +139,4 @@ if (StringUtil.hasText(trans.getSyncStrategy())) {
 2.  新建 Feat_xxx 分支
 3.  提交代码
 4.  新建 Pull Request
+![微信](https://images.gitee.com/uploads/images/2020/1029/100546_32f86823_720502.png "屏幕截图.png")
