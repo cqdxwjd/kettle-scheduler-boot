@@ -86,6 +86,10 @@
                     <artifactId>hibernate-commons-annotations</artifactId>
                     <groupId>org.hibernate</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>jetty-security</artifactId>
+                    <groupId>org.eclipse.jetty</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -104,7 +108,7 @@
             <artifactId>kettle-sap-plugin-core</artifactId>
             <version>${kettle-version}</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>pentaho-kettle</groupId>
             <artifactId>kettle-ui-swt</artifactId>
             <version>${kettle-version}</version>
@@ -118,8 +122,7 @@
                     <groupId>commons-logging</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
+        </dependency>-->
         <!-- kettle的hadoop组件依赖 -->
         <!--<dependency>
             <groupId>org.pentaho</groupId>

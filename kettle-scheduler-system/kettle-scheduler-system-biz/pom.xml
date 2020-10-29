@@ -29,7 +29,7 @@
             <artifactId>kettle-scheduler-quartz</artifactId>
         </dependency>
         <!--httpclient-->
-        <dependency>
+        <!--<dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
             <version>4.5.2</version>
@@ -48,7 +48,7 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpasyncclient</artifactId>
             <version>4.1.2</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.aspectj</groupId>
             <artifactId>aspectjweaver</artifactId>

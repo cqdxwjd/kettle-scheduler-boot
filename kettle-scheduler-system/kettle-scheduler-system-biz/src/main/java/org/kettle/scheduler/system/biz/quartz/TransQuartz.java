@@ -1,13 +1,7 @@
 package org.kettle.scheduler.system.biz.quartz;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
-import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
-import org.apache.http.impl.nio.client.HttpAsyncClients;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.utils.*;
 import org.kettle.scheduler.core.constant.KettleConfig;
@@ -16,16 +10,13 @@ import org.kettle.scheduler.core.execute.TransExecute;
 import org.kettle.scheduler.core.repository.RepositoryUtil;
 import org.kettle.scheduler.system.api.enums.RunResultEnum;
 import org.kettle.scheduler.system.api.enums.RunTypeEnum;
-import org.kettle.scheduler.system.api.response.TaskCountRes;
 import org.kettle.scheduler.system.biz.entity.Repository;
 import org.kettle.scheduler.system.biz.entity.Trans;
 import org.kettle.scheduler.system.biz.entity.TransMonitor;
 import org.kettle.scheduler.system.biz.entity.TransRecord;
 import org.kettle.scheduler.system.biz.repository.RepositoryRepository;
-import org.kettle.scheduler.system.biz.service.SysCategoryService;
 import org.kettle.scheduler.system.biz.service.SysTransMonitorService;
 import org.kettle.scheduler.system.biz.service.SysTransService;
-import org.kettle.scheduler.system.biz.util.HttpAsyncUtils;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.LogLevel;
 import org.pentaho.di.repository.AbstractRepository;
@@ -33,15 +24,11 @@ import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Future;
 
 /**
  * 转换定时任务执行器
