@@ -100,6 +100,10 @@ public interface SysRepositoryApi {
     @GetMapping("/findJobRepTreeById.do")
     Result<List<TreeDTO<String>>> findJobRepTreeById(@RequestParam("id") Integer id);
 
+    @ApiOperation(value = "根据资源库id查询资源库中job作业内容树,根据树形表格来封装数据")
+    @GetMapping("/findRepTreegridById.do")
+    Result<List<TreeDTO<String>>> findTransRepTreegridById(Integer id);
+
     /**
      * 根据资源库id查询资源库中trans转换内容树
      *
@@ -110,24 +114,34 @@ public interface SysRepositoryApi {
     @GetMapping("/findTransRepTreeById.do")
     Result<List<TreeDTO<String>>> findTransRepTreeById(@RequestParam("id") Integer id);
 
-	/**
-	 * 测试资源库链接
-	 *
-	 * @param req {@link RepositoryReq}
-	 * @return {@link Result}
-	 */
-	@ApiOperation(value = "测试资源库链接")
-	@PostMapping("/testConnection.do")
-	Result testConnection(@RequestBody RepositoryReq req);
+    /**
+     * 测试资源库链接
+     *
+     * @param req {@link RepositoryReq}
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "获取脚本详细信息")
+    @GetMapping("/getScriptByRepository.do")
+    Result getScriptByRepository(@RequestParam("id") String id,@RequestParam("scriptPath") String scriptPath, @RequestParam("scriptName") String scriptName, @RequestParam("type") String type) throws Exception;
 
-	/**
-	 * 验证资源库名是否存在
-	 *
-	 * @param repId 资源库ID
-	 * @param repName 资源库名
-	 * @return 只能返回true或false
-	 */
-	@ApiOperation(value = "验证资源库名是否存在")
-	@PostMapping("/repNameExist.do")
-	String repNameExist(Integer repId, String repName);
+    /**
+     * 测试资源库链接
+     *
+     * @param req {@link RepositoryReq}
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "测试资源库链接")
+    @PostMapping("/testConnection.do")
+    Result testConnection(@RequestBody RepositoryReq req);
+
+    /**
+     * 验证资源库名是否存在
+     *
+     * @param repId   资源库ID
+     * @param repName 资源库名
+     * @return 只能返回true或false
+     */
+    @ApiOperation(value = "验证资源库名是否存在")
+    @PostMapping("/repNameExist.do")
+    String repNameExist(Integer repId, String repName);
 }

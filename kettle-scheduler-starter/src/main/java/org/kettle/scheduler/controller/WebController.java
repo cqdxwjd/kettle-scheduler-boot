@@ -75,6 +75,38 @@ public class WebController {
 		return "repository/edit";
 	}
 
+	//=============================================脚本管理=================================================//
+	/**
+	 * 资源库列表页面
+	 *
+	 * @return /repository/list
+	 */
+	@RequestMapping("/script/list.shtml")
+	public String scriptListWeb() {
+		return "script/list";
+	}
+
+	/**
+	 * 资源库添加页面
+	 *
+	 * @return /repository/add
+	 */
+	@RequestMapping("/script/add.shtml")
+	public String scriptAddWeb() {
+		return "script/add";
+	}
+
+	/**
+	 * 资源库编辑页面
+	 *
+	 * @return /repository/edit
+	 */
+	@RequestMapping("/script/edit.shtml")
+	public String scriptEditWeb(Integer scriptId, Model model) {
+		model.addAttribute("scriptId", scriptId);
+		return "script/edit";
+	}
+
 	//=============================================定时策略=================================================//
 	/**
 	 * 定时策略列表页面

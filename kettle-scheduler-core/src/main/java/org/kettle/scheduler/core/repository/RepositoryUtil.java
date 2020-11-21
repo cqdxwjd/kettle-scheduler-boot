@@ -10,6 +10,7 @@ import org.kettle.scheduler.common.utils.FileUtil;
 import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.core.dto.RepositoryDTO;
 import org.kettle.scheduler.core.enums.RepTypeEnum;
+import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.repository.*;
@@ -17,9 +18,13 @@ import org.pentaho.di.repository.filerep.KettleFileRepository;
 import org.pentaho.di.repository.filerep.KettleFileRepositoryMeta;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepository;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepositoryMeta;
+import org.pentaho.di.trans.TransHopMeta;
+import org.pentaho.di.trans.TransMeta;
+import org.pentaho.di.trans.step.StepMeta;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -313,5 +318,34 @@ public class RepositoryUtil {
             });
         }
         return treeList;
+    }
+
+    /**
+     *获取资源库中的脚本详细信息
+     *
+     * @param rep          资源库对象
+     * @param scriptPath    ktr所在路径
+     * @param scriptName    ktr名称
+     * @param versionLabel 版本号，传入null表示执行最新的ktr
+     * @param type         脚本类型，trans：job
+     */
+    public static Object getScriptByRepository(AbstractRepository rep, String scriptPath, String scriptName, String versionLabel,String type) throws KettleException {
+        Map<String,Object> map = new HashMap<>();
+        if(type.equals("trans")){
+            // 根据相对目录地址获取ktr所在目录信息
+            RepositoryDirectoryInterface rdi = rep.loadRepositoryDirectoryTree().findDirectory(FileUtil.getParentPath(scriptPath));
+            // 在指定资源库的目录下找到要执行的转换
+            TransMeta tm = rep.loadTransformation(scriptName, rdi, new ProgressNullMonitorListener(), true, versionLabel);
+            /*tm.getSteps().forEach(stepMeta -> {
+                List<TransHopMeta> transHops = stepMeta.getParentTransMeta().getTransHops();
+                List<StepMeta> steps = stepMeta.getParentTransMeta().getSteps();
+
+            });*/
+
+            return tm;
+        }else if(type=="job"){
+
+        }
+        return null;
     }
 }

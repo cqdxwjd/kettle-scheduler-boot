@@ -46,4 +46,7 @@ public class TreeDTO<T> {
      * 附加的扩展信息, 可以是自定义实体类
      */
     private T extra;
+
+    //父级ID
+    private String pid;
 }
