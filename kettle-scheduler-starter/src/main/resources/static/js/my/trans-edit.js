@@ -19,7 +19,7 @@ function getTransLogLevel() {
         data: {},
         success: function (data) {
             var list = data.result;
-            for (var i=0; i<list.length; i++){
+            for (var i = 0; i < list.length; i++) {
                 $("#transLogLevel").append('<option value="' + list[i].code + '">' + list[i].value + '</option>');
             }
         },
@@ -38,7 +38,7 @@ function getCategory() {
         data: {},
         success: function (data) {
             var list = data.result;
-            for (var i=0; i<list.length; i++){
+            for (var i = 0; i < list.length; i++) {
                 $("#categoryId").append('<option value="' + list[i].id + '">' + list[i].categoryName + '</option>');
             }
         },
@@ -57,7 +57,7 @@ function getQuartz() {
         data: {},
         success: function (data) {
             var list = data.result;
-            for (var i=0; i<list.length; i++){
+            for (var i = 0; i < list.length; i++) {
                 $("#transQuartz").append('<option value="' + list[i].id + '">' + list[i].quartzDescription + '</option>');
             }
         },
@@ -87,14 +87,69 @@ $.validator.setDefaults({
     validClass: "help-block m-b-none"
 });
 
+//打开参数编辑页面
+$("#transParams").click(function () {
+    var transParams = $("#transParams").val();
+    var datas = [];
+    if (!isEmpty(transParams)) {
+        var json2map = JSON.parse(transParams);
+        for (var key in json2map) {
+            var data = {};
+            data["key"] = key;
+            data["value"] = json2map[key];
+            datas.push(data);
+        }
+    }
+
+    var index = layer.open({
+        type: 1,
+        title: '参数编辑',
+        area: ["450px", '40%'],
+        skin: 'layui-layer-rim',
+        content: '<div class="table-box" style="margin: 20px;"><div id="toolbar"><a  class="btn btn-primary" id="addRow" onclick="addRow()">添加行</a>&nbsp;<a class="btn btn-danger" id="removeRow" onclick="removeRow()">删除行</a></div><table id="exampleTable"></table><div id="toolbar"><a  class="btn btn-primary" id="addRow" onclick="saveParams()">保存</a></div>'
+    });
+    $('#exampleTable').bootstrapTable({
+        data: datas,
+        dataType: 'jsonp',
+        columns: [{
+            checkbox: true
+        },
+            {
+                field: 'index',
+                title: '序列',
+                formatter: function (value, row, index) {
+                    return row.index = index + 1; //返回行号
+                }
+            }, {
+                field: 'key',
+                title: 'key',
+                formatter: function (value, row, index) {
+                    var result = "<input id='" + index + "key' placeholder='key'" +
+                        "class='form-control'  value='" + (value == undefined ? '' : value) + "'  onblur='getValues(" + index + ")'>";
+                    return result //formatter 这里，里面的value一定要加，不然写值的时候会写不上去
+                }
+            },
+            {
+                field: 'value',
+                title: 'value',
+                formatter: function (value, row, index) {
+                    var result = "<input id='" + index + "value' placeholder='value'" +
+                        "class='form-control' value='" + (value == undefined ? '' : value) + "' onblur='getValues(" + index + ")'>";
+                    return result
+                }
+            }]
+    });
+    $('#exampleTable').bootstrapTable("hideLoading");
+});
+
 function submitListener() {
     var icon = "<i class='fa fa-times-circle'></i> ";
     $("#RepositoryTransForm").validate({
         rules: {
-            transQuartz:{
+            transQuartz: {
                 required: true
             },
-            syncStrategy:{
+            syncStrategy: {
                 checkRegex: '^((T\\+)\\d+)$'
             },
             transLogLevel: {
@@ -105,10 +160,10 @@ function submitListener() {
             }
         },
         messages: {
-            transQuartz:{
+            transQuartz: {
                 required: icon + "请选择转换执行策略"
             },
-            syncStrategy:{
+            syncStrategy: {
                 checkRegex: icon + "同步策略只能是T+N(N是正整数)"
             },
             transLogLevel: {
@@ -119,7 +174,7 @@ function submitListener() {
             }
         },
         // 提交按钮监听 按钮必须type="submit"
-        submitHandler:function(form){
+        submitHandler: function (form) {
             // 获取表单数据
             var data = {};
             $.each($("form").serializeArray(), function (i, field) {
@@ -134,16 +189,16 @@ function submitListener() {
                 processData: true,
                 contentType: "application/json;charset=UTF-8",
                 success: function (res) {
-                    if (res.success){
-                        layer.msg('添加成功',{
+                    if (res.success) {
+                        layer.msg('添加成功', {
                             time: 1000,
                             icon: 6
                         });
                         // 成功后跳转到列表页面
-                        setTimeout(function(){
+                        setTimeout(function () {
                             location.href = "/web/trans/list.shtml";
-                        },1000);
-                    }else {
+                        }, 1000);
+                    } else {
                         layer.msg(res.message, {icon: 2});
                     }
                 },
@@ -156,13 +211,13 @@ function submitListener() {
     });
 }
 
-function cancel(){
+function cancel() {
     location.href = "/web/trans/list.shtml";
 }
 
-function initData(){
+function initData() {
     var transId = $("#id").val();
-    debugger;
+    //debugger;
     if (transId && transId !== "") {
         $.ajax({
             type: 'GET',
@@ -172,9 +227,9 @@ function initData(){
             success: function (data) {
                 if (data.success) {
                     var Trans = data.result;
-                    $("#categoryId").find("option[value=" + Trans.categoryId + "]").prop("selected",true);
-                    $("#transQuartz").find("option[value=" + Trans.transQuartz + "]").prop("selected",true);
-                    $("#transLogLevel").find("option[value=" + Trans.transLogLevel + "]").prop("selected",true);
+                    $("#categoryId").find("option[value=" + Trans.categoryId + "]").prop("selected", true);
+                    $("#transQuartz").find("option[value=" + Trans.transQuartz + "]").prop("selected", true);
+                    $("#transLogLevel").find("option[value=" + Trans.transLogLevel + "]").prop("selected", true);
                     $("#transDescription").val(Trans.transDescription);
                     $("#syncStrategy").val(Trans.syncStrategy);
                     $("#transParams").val(Trans.transParams);
@@ -200,3 +255,73 @@ $.validator.addMethod("checkRegex", function (value, element, param) {
     var regExp = new RegExp(param);
     return regExp.test(value);
 }, "值与规则不匹配");
+
+//添加行
+function addRow() {
+    var row =
+        {
+            "contactsName": "",
+            "email": "",
+            "telphone": "",
+            "comment": ""
+        };
+    //append  追加到最后一行
+    //prepend  新增到第一行
+    $('#exampleTable').bootstrapTable('append', row);
+    //更新行数据
+    $('#exampleTable').bootstrapTable('updateRow', row);
+    //定位到最后一行
+    $('#exampleTable').bootstrapTable('scrollTo', 'bottom');
+}
+
+function getValues(index) {
+    var rows = $('#exampleTable').bootstrapTable('getData');
+    $.each(rows, function (i, row) {
+        if (row.index == (index + 1)) {
+            row.key = $("#" + index + "key").val();
+            row.value = $("#" + index + "value").val();
+            $('#exampleTable').bootstrapTable('updateRow', row);
+            return false;
+        }
+    });
+}
+
+function removeRow() {
+    var rows = $('#exampleTable').bootstrapTable('getSelections');//获取选中行
+    if (rows.length == 0) {
+        layer.msg("请选择要删除的数据");
+        return;
+    }
+    var indexs = [];
+    for (var i = 0; i < rows.length; i++) {
+        indexs[i] = rows[i].index;
+    }
+//删除
+    $('#exampleTable').bootstrapTable('remove', {
+        field: 'index',
+        values: indexs
+    });
+
+}
+
+//保存参数，将参数转换为json格式
+function saveParams() {
+    var data = $('#exampleTable').bootstrapTable('getData', false);
+    var obj = {};
+    for (i = 0; i < data.length; i++) {
+        obj[data[i].key] = data[i].value;
+    }
+    var params = JSON.stringify(obj)
+    $("#transParams").val(params);
+    layer.closeAll();
+    layer.msg("保存成功！");
+}
+
+//判断字符是否为空的方法
+function isEmpty(obj) {
+    if (typeof obj == "undefined" || obj == null || obj == "") {
+        return true;
+    } else {
+        return false;
+    }
+}
