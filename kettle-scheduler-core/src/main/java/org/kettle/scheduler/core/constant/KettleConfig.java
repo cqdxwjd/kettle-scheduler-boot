@@ -41,16 +41,6 @@ public class KettleConfig {
 	 */
 	public static String kettlePluginPackages;
 
-	/**
-	 * 刷新视图接口路径
-	 */
-	public static String vmUrl;
-
-	/**
-	 * 物化视图获取方式，0，通过DBlink查询源库所有物化视图，1查询维护视图
-	 */
-	public static String refreshType;
-
 	public void setLogFilePath(String logFilePath) {
         KettleConfig.logFilePath = FileUtil.replaceSeparator(logFilePath);;
     }
@@ -71,6 +61,4 @@ public class KettleConfig {
 		KettleConfig.kettlePluginPackages = kettlePluginPackages;
 	}
 
-	public void setVmUrl(String vmUrl) { KettleConfig.vmUrl = vmUrl;
-	}
 }

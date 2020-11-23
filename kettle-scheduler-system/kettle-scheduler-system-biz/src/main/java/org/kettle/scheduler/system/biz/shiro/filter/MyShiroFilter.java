@@ -20,11 +20,11 @@ public class MyShiroFilter {
      */
     @Bean
     public ShiroFilterChainDefinition shiroFilterChainDefinition() {
-        DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
-        // 可以匿名访问静态资源
-        chainDefinition.addPathDefinition("favicon.ico", "anon");
-        chainDefinition.addPathDefinition("/css/**", "anon");
-        chainDefinition.addPathDefinition("/fonts/**", "anon");
+		DefaultShiroFilterChainDefinition chainDefinition = new DefaultShiroFilterChainDefinition();
+		// 可以匿名访问静态资源
+		chainDefinition.addPathDefinition("favicon.ico", "anon");
+		chainDefinition.addPathDefinition("/css/**", "anon");
+		chainDefinition.addPathDefinition("/fonts/**", "anon");
 		chainDefinition.addPathDefinition("/img/**", "anon");
 		chainDefinition.addPathDefinition("/js/**", "anon");
 		chainDefinition.addPathDefinition("/lib/**", "anon");
@@ -39,13 +39,11 @@ public class MyShiroFilter {
 		chainDefinition.addPathDefinition("/sys/user/getUserByUsername.do", "authc");
 		chainDefinition.addPathDefinition("/sys/user/**", "authc,roles[admin]");
 
-		//去除登录
-		//chainDefinition.addPathDefinition("/**","anon");
         /* roles[python]中定义需要当前角色才能具有访问权限, 自定义Filter中的Object o就是roles["角色1","角色2"]中的数据
         chainDefinition.addPathDefinition("/my/python", "authc,roles[python]");*/
 
-        // 需要登录才能访问
-        //chainDefinition.addPathDefinition("/**", "authc");
-        return chainDefinition;
+		// 需要登录才能访问
+		chainDefinition.addPathDefinition("/**", "authc");
+		return chainDefinition;
     }
 }
