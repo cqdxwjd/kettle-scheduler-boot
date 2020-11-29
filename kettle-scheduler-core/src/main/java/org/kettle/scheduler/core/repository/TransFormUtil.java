@@ -3,10 +3,12 @@ package org.kettle.scheduler.core.repository;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.log4j.Log4j2;
-import org.kettle.scheduler.core.dto.SetpMetaDTO;
-import org.kettle.scheduler.core.dto.TransSetpDTO;
+import org.kettle.scheduler.core.dto.HopsDTO;
+import org.kettle.scheduler.core.dto.StepMetaDTO;
+import org.kettle.scheduler.core.dto.TransStepDTO;
 import org.kettle.scheduler.core.dto.common.DatabaseMetaDTO;
 import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.di.trans.TransHopMeta;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.step.StepMetaInterface;
@@ -36,13 +38,33 @@ public class TransFormUtil {
         if (type.equals("job")) {
 
         } else if (type.equals("trans")) {
-            List<TransSetpDTO> transSetpDTOS = transStepsTransform(transMeta.getSteps());
+            List<TransStepDTO> transStepDTOS = transStepsTransform(transMeta.getSteps());
+            List<HopsDTO> hopsList = transHopsTransform(transMeta.getTransHops());
+            //hops
             jsonObject.put("transName", transMeta.getName());
-            jsonObject.put("setpList",transSetpDTOS);
+            jsonObject.put("stepList", transStepDTOS);
+            jsonObject.put("hopsList",hopsList);
         }
         return jsonObject;
     }
 
+    /**
+     * 连接线对象处理
+     * @param transHops
+     * @return
+     */
+    public static List<HopsDTO> transHopsTransform(List<TransHopMeta> transHops){
+        List<HopsDTO> hopsList = new ArrayList<>();
+        transHops.stream().forEach((hops)->{
+            HopsDTO hopsDTO = new HopsDTO();
+            hopsDTO.setFromId(hops.getFromStep().getObjectId().getId());
+            hopsDTO.setEnabled(hops.isEnabled());
+            hopsDTO.setToId(hops.getToStep().getObjectId().getId());
+            hopsDTO.setHopsId(hops.getObjectId().getId());
+            hopsList.add(hopsDTO);
+        });
+        return hopsList;
+    }
 
     /**
      * 转换步骤
@@ -50,23 +72,24 @@ public class TransFormUtil {
      * @param stepMetaList
      * @return
      */
-    public static List<TransSetpDTO> transStepsTransform(List<StepMeta> stepMetaList) {
-        List<TransSetpDTO> setpsList = new ArrayList();
-        int i=1;
+    public static List<TransStepDTO> transStepsTransform(List<StepMeta> stepMetaList) {
+        List<TransStepDTO> stepsList = new ArrayList();
         if (stepMetaList.size() > 0) {
             stepMetaList.forEach((stepMeta) -> {
-                TransSetpDTO transSetpDTO = new TransSetpDTO();
-                transSetpDTO.setSetpId(stepMeta.getStepID());
-                transSetpDTO.setSetpChangedDate(stepMeta.getChangedDate());
-                transSetpDTO.setSetpName(stepMeta.getName());
+                TransStepDTO transStepDTO = new TransStepDTO();
+                transStepDTO.setStepId(stepMeta.getObjectId().getId());
+                transStepDTO.setStepChangedDate(stepMeta.getChangedDate());
+                transStepDTO.setStepName(stepMeta.getName());
                 //步骤属性替换
-                SetpMetaDTO setpMetaDTO = setpTransform(stepMeta.getStepMetaInterface());
-                transSetpDTO.setSetpMeta(setpMetaDTO);
-                transSetpDTO.setSetpType(stepMeta.getStepID());
-                setpsList.add(transSetpDTO);
+                StepMetaDTO stepMetaDTO = stepTransform(stepMeta.getStepMetaInterface());
+                transStepDTO.setStepMeta(stepMetaDTO);
+                transStepDTO.setStepType(stepMeta.getStepID());
+                transStepDTO.setLocationX(stepMeta.getLocation().x);
+                transStepDTO.setLocationY(stepMeta.getLocation().y);
+                stepsList.add(transStepDTO);
             });
         }
-        return setpsList;
+        return stepsList;
     }
 
     /**
@@ -74,17 +97,17 @@ public class TransFormUtil {
      * @param stepMetaInterface
      * @return
      */
-    public static SetpMetaDTO setpTransform(StepMetaInterface stepMetaInterface) {
-        SetpMetaDTO setpMetaDTO = new SetpMetaDTO();
+    public static StepMetaDTO stepTransform(StepMetaInterface stepMetaInterface) {
+        StepMetaDTO stepMetaDTO = new StepMetaDTO();
         if (stepMetaInterface instanceof TableInputMeta) {
             TableInputMeta tableInputMeta = (TableInputMeta) stepMetaInterface;
-            setpMetaDTO.setSql(tableInputMeta.getSQL());
-            setpMetaDTO.setDatabaseMeta(databaseTransform(tableInputMeta.getDatabaseMeta()));
+            stepMetaDTO.setSql(tableInputMeta.getSQL());
+            stepMetaDTO.setDatabaseMeta(databaseTransform(tableInputMeta.getDatabaseMeta()));
             //setpMetaDTO.setDatabaseMetaList(tableInputMeta.getUsedDatabaseConnections());
         }else if(stepMetaInterface instanceof TableOutputMeta){
             log.info("表输出");
         }
-        return setpMetaDTO;
+        return stepMetaDTO;
     }
 
     /**

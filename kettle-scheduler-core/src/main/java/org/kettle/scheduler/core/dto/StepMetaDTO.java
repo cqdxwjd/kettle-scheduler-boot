@@ -11,7 +11,7 @@ import java.util.List;
  * @author chenzhao
  */
 @Data
-public class SetpMetaDTO {
+public class StepMetaDTO {
 
     //步骤库
     private List<DatabaseMetaDTO> databaseMetaList;

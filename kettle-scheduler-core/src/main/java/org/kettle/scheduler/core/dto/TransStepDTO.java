@@ -4,7 +4,6 @@ package org.kettle.scheduler.core.dto;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 转换步骤实体类
@@ -12,21 +11,26 @@ import java.util.List;
  * @author chenzhao
  */
 @Data
-public class TransSetpDTO {
+public class TransStepDTO {
 
     //转换ID
-    private String setpId;
+    private String stepId;
 
     //步骤名称
-    private String setpName;
+    private String stepName;
 
     //步骤类型，后续替换为枚举类
-    private String setpType;
+    private String stepType;
 
     //步骤属性
-    private SetpMetaDTO setpMeta;
+    private StepMetaDTO stepMeta;
 
     //步骤变更日期
-    private Date setpChangedDate;
+    private Date stepChangedDate;
 
+    //X轴位置
+    private int locationX;
+
+    //Y轴位置
+    private int locationY;
 }

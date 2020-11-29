@@ -1,0 +1,162 @@
+<!--
+  Copyright (c) 2006-2013, JGraph Ltd
+  
+  JSON data example for mxGraph. This example demonstrates using
+  JSON to encode/decode parts of the graph model in mxCodec.
+-->
+<html>
+<head>
+    <title>JSON data example for mxGraph</title>
+
+    <!-- Sets the basepath for the library if not in same directory -->
+    <script type="text/javascript">
+        mxBasePath = "../../plugins/Mxgraph";
+    </script>
+    <!--	<script type="text/javascript">
+            mxBasePath = '../static/plugins/Mxgraph/';
+        </script>-->
+
+    <!-- Loads and initializes the library -->
+    <script th:src="@{/plugins/Mxgraph/js/mxClient.js}" src="../static/plugins/Mxgraph/js/mxClient.js"></script>
+    <!-- 全局js -->
+    <script th:src="@{/js/jquery.min.js}" src="../static/js/jquery.min.js?v=2.1.4"></script>
+    <!-- Example code -->
+    <script type="text/javascript">
+        // Program starts here. Creates a sample graph in the
+        // DOM node with the specified ID. This function is invoked
+        // from the onLoad event handler of the document (see below).
+        function main(container) {
+            // Checks if the browser is supported
+            if (!mxClient.isBrowserSupported()) {
+                // Displays an error message if the browser is not supported.
+                mxUtils.error('Browser is not supported!', 200, false);
+            } else {
+                // Disables the built-in context menu
+                mxEvent.disableContextMenu(container);
+
+                // Creates the graph inside the given container
+                var graph = new mxGraph(container);
+
+                // Enables rubberband selection
+                new mxRubberband(graph);
+
+                // Gets the default parent for inserting new cells. This
+                // is normally the first child of the root (ie. layer 0).
+                var parent = graph.getDefaultParent();
+
+                // Adds cells to the model in a single step
+                graph.getModel().beginUpdate();
+                try {
+                    //loadData
+                    var data = loadScriptDetail(getQueryVariable("repositoryId"), getQueryVariable("scriptPath"), getQueryVariable("scriptName"));
+                    var result = JSON.parse(data.result);
+                    var stepList = result.stepList;
+                    var hopsList = result.hopsList;
+                    var stepsMap = new Map();
+                    //加载转换步骤
+                    for (j = 0; j < stepList.length; j++) {
+                        var step = graph.insertVertex(parent, null, stepList[j].stepName, stepList[j].locationX, stepList[j].locationY, 80, 30);
+                        step.data = new CustomData(stepList[j].stepId);
+                        stepsMap.set(stepList[j].stepId, step);
+                    }
+                    //加载步骤连接线，后续处理开启，未开启线段编辑
+                    for (j = 0; j < hopsList.length; j++) {
+                        var from = stepsMap.get(hopsList[j].fromId);
+                        var to = stepsMap.get(hopsList[j].toId);
+                        graph.insertEdge(parent, null, '', from, to);
+                    }
+                } finally {
+                    // Updates the display
+                    graph.getModel().endUpdate();
+                }
+            }
+
+        };
+
+        function CustomData(value) {
+            this.value = value;
+        }
+
+        var codec = new mxObjectCodec(new CustomData());
+
+        codec.encode = function (enc, obj) {
+            var node = enc.document.createElement('CustomData');
+            mxUtils.setTextContent(node, JSON.stringify(obj));
+
+            return node;
+        };
+
+        codec.decode = function (dec, node, into) {
+            var obj = JSON.parse(mxUtils.getTextContent(node));
+            obj.constructor = CustomData;
+
+            return obj;
+        };
+
+        mxCodecRegistry.register(codec);
+
+        /**
+         * 加载数据
+         *
+         * @param repositoryId  资源库ID
+         * @param scriptPath    脚本路径
+         * @param scriptName    脚本名称
+         * @returns {null}
+         */
+        function loadScriptDetail(repositoryId, scriptPath, scriptName) {
+            var resultData = null;
+            $.ajax({
+                type: 'GET',
+                async: false,
+                url: '/sys/repository/getScriptByRepository.do?id=' + repositoryId + "&scriptPath=" + scriptPath + "&scriptName=" + scriptName + "&type=trans",
+                data: {},
+                success: function (data) {
+                    resultData = data;
+                },
+                error: function () {
+                    alert("请求失败！请刷新页面重试");
+                },
+                dataType: 'json'
+            });
+            return resultData;
+        }
+
+        /**
+         * 获取URL参数
+         *
+         * @param variable 变量名
+         * @returns {string|boolean}
+         */
+        function getQueryVariable(variable) {
+            var query = window.location.search.substring(1);
+            var vars = query.split("&");
+            for (var i = 0; i < vars.length; i++) {
+                var pair = vars[i].split("=");
+                if (pair[0] == variable) {
+                    return pair[1];
+                }
+            }
+            return (false);
+        }
+
+        /**
+         * 数据组装
+         * 根据脚本的返回值，拼装成mxGraph格式
+         *
+         * @param graph
+         */
+        function dataAssembly(graph, data) {
+
+        }
+    </script>
+</head>
+
+<!-- Page passes the container for the graph to the program -->
+<body onload="main(document.getElementById('graphContainer'))">
+
+<!-- Creates a container for the graph with a grid wallpaper -->
+<div id="graphContainer"
+     style="position:relative;overflow:hidden;width:100%;height:100%;background:url('../../plugins/Mxgraph/images/grid.gif');cursor:default;">
+</div>
+</body>
+</html>

@@ -1,6 +1,5 @@
 package org.kettle.scheduler.core.repository;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +10,6 @@ import org.kettle.scheduler.common.utils.CollectionUtil;
 import org.kettle.scheduler.common.utils.FileUtil;
 import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.core.dto.RepositoryDTO;
-import org.kettle.scheduler.core.dto.TransSetpDTO;
 import org.kettle.scheduler.core.enums.RepTypeEnum;
 import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.database.DatabaseMeta;
@@ -21,9 +19,7 @@ import org.pentaho.di.repository.filerep.KettleFileRepository;
 import org.pentaho.di.repository.filerep.KettleFileRepositoryMeta;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepository;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepositoryMeta;
-import org.pentaho.di.trans.TransHopMeta;
 import org.pentaho.di.trans.TransMeta;
-import org.pentaho.di.trans.step.StepMeta;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -356,7 +352,6 @@ public class RepositoryUtil {
 
             });*/
             jsonObject = TransFormUtil.dataTransform("trans", tm);
-            System.out.println(jsonObject.toString());
         } else if (type == "job") {
 
         }

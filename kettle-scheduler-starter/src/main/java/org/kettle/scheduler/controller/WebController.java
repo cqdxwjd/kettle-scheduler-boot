@@ -77,13 +77,33 @@ public class WebController {
 
 	//=============================================脚本管理=================================================//
 	/**
-	 * 资源库列表页面
+	 * 脚本列表页面
 	 *
 	 * @return /repository/list
 	 */
 	@RequestMapping("/script/list.shtml")
 	public String scriptListWeb() {
 		return "script/list";
+	}
+
+	/**
+	 * 脚本画布页面
+	 *
+	 * @return /repository/list
+	 */
+	@RequestMapping("/script/scriptDetail.shtml")
+	public String scriptDetailWeb() {
+		return "script/scriptDetail";
+	}
+
+	/**
+	 * 脚本画布页面
+	 *
+	 * @return /repository/list
+	 */
+	@RequestMapping("/script/jsonData.shtml")
+	public String jsonDataWeb() {
+		return "script/jsonData";
 	}
 
 	/**

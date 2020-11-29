@@ -17,6 +17,8 @@ public class TransDTO {
     private String transName;
 
     //步骤列表
-    private List<TransSetpDTO> setpList;
+    private List<TransStepDTO> stepList;
+
+
 
 }

@@ -46,10 +46,13 @@
     <table id="table"></table>
 </div>
 </body>
-<script src="https://cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+<!-- 全局js -->
+<script th:src="@{/js/jquery.min.js}" src="../static/js/jquery.min.js?v=2.1.4"></script>
 <script src="https://cdn.bootcss.com/bootstrap-table/1.12.1/bootstrap-table.min.js"></script>
 <script src="https://cdn.bootcss.com/bootstrap-table/1.12.0/extensions/treegrid/bootstrap-table-treegrid.js"></script>
 <script src="https://cdn.bootcss.com/jquery-treegrid/0.2.0/js/jquery.treegrid.min.js"></script>
+<!-- layer javascript -->
+<script th:src="@{/js/plugins/layer/layer.min.js}" src="../static/js/plugins/layer/layer.min.js"></script>
 <script type="text/javascript">
     var $table = $('#table');
 
@@ -268,21 +271,14 @@
         var path = row.extra;
         var text = row.text;
         var transRepositoryId =  $("#repositoryId").val();
-        /*alert("查看详情方法 , 资源库ID:" + transRepositoryId+
-              "\n 脚本路径:"+path+
-              "\n 脚本名称:"+text);*/
-        $.ajax({
-            type: 'GET',
-            async: false,
-            url: '/sys/repository/getScriptByRepository.do?id='+transRepositoryId+"&scriptPath="+path+"&scriptName="+text+"&type=trans",
-            data: {},
-            success: function (data) {
-                console.log(data)
-            },
-            error: function () {
-                alert("请求失败！请刷新页面重试");
-            },
-            dataType: 'json'
+        var url = "jsonData.shtml?repositoryId="+transRepositoryId+"&scriptPath="+path+"&scriptName="+text;
+        layer.open({
+            type: 2,
+            title: '脚本详情',
+            maxmin: true, //开启最大化最小化按钮
+            area: ["400px", '60%'],
+            skin: 'layui-layer-rim',
+            content: url
         });
     }
 

@@ -20,14 +20,10 @@
 7、增加在线编辑脚本   
 
 #### [点击查看完整更新记录](./docs/md/update.md) 
-**2020-11-27 更新说明**  
-1、【优化】完善脚本管理中返回转换中属性（工作量巨大）   
-2、【计划】引入Mxgraph.js完成在线编辑脚本功能 
-![avatar](./docs/img/transDetail.jpg)
-转换详情接口返回数据格式   
-
-![avatar](./docs/img/Mxgraph.js.png)
-Mxgraph.js插件  
+**2020-11-29 更新说明**  
+1、【新功能】引入Mxgraph.js，初步完成脚本在线预览功能（持续完善中）   
+![avatar](./docs/img/scriptDetail.png)
+在线预览脚本  
 
 #### [已知Bug列表](./docs/md/Bug.md)
 
