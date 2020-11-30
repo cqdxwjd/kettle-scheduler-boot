@@ -20,10 +20,10 @@
 7、增加在线编辑脚本   
 
 #### [点击查看完整更新记录](./docs/md/update.md) 
-**2020-11-29 更新说明**  
-1、【新功能】引入Mxgraph.js，初步完成脚本在线预览功能（持续完善中）   
-![avatar](./docs/img/scriptDetail.png)
-在线预览脚本  
+**2020-11-30 更新说明**  
+1、【优化】完善脚本在线预览功能（持续完善中）   
+![avatar](./docs/img/transPreview.png)
+在线预览脚本 
 
 #### [已知Bug列表](./docs/md/Bug.md)
 

@@ -272,14 +272,15 @@
         var text = row.text;
         var transRepositoryId =  $("#repositoryId").val();
         var url = "jsonData.shtml?repositoryId="+transRepositoryId+"&scriptPath="+path+"&scriptName="+text;
-        layer.open({
+        var index = layer.open({
             type: 2,
             title: '脚本详情',
             maxmin: true, //开启最大化最小化按钮
-            area: ["400px", '60%'],
+            area: ["80%", '80%'],
             skin: 'layui-layer-rim',
             content: url
         });
+        //layer.full(index);
     }
 
     function del(id) {

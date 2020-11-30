@@ -7,6 +7,12 @@
 <html>
 <head>
     <title>JSON data example for mxGraph</title>
+    <link th:href="@{/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <link th:href="@{/css/plugins/bootstrap-table/bootstrap-table.min.css}"
+          href="../static/css/plugins/bootstrap-table/bootstrap-table.min.css" rel="stylesheet">
+    <link th:href="@{/css/font-awesome.css}" href="../static/css/font-awesome.css?v=4.4.0" rel="stylesheet">
+    <link th:href="@{/css/animate.css}" href="../static/css/animate.css" rel="stylesheet">
+    <link th:href="@{/css/style.css}" href="../static/css/style.css?v=4.1.0" rel="stylesheet">
 
     <!-- Sets the basepath for the library if not in same directory -->
     <script type="text/javascript">
@@ -20,8 +26,11 @@
     <script th:src="@{/plugins/Mxgraph/js/mxClient.js}" src="../static/plugins/Mxgraph/js/mxClient.js"></script>
     <!-- 全局js -->
     <script th:src="@{/js/jquery.min.js}" src="../static/js/jquery.min.js?v=2.1.4"></script>
+    <!-- layer javascript -->
+    <script th:src="@{/js/plugins/layer/layer.min.js}" src="../static/js/plugins/layer/layer.min.js"></script>
     <!-- Example code -->
     <script type="text/javascript">
+        var stepData = null;
         // Program starts here. Creates a sample graph in the
         // DOM node with the specified ID. This function is invoked
         // from the onLoad event handler of the document (see below).
@@ -53,17 +62,64 @@
                     var stepList = result.stepList;
                     var hopsList = result.hopsList;
                     var stepsMap = new Map();
+
+                    //单击事件
+                    /*graph.addListener(mxEvent.CLICK, function (sender, evt) {
+                        var cell = evt.getProperty('cell');
+                        if (cell != null) {
+                            var overlays = graph.getCellOverlays(cell);
+                            if (overlays == null) {
+                                // Creates a new overlay with an image and a tooltip
+                                var overlay = new mxCellOverlay(
+                                    new mxImage('editors/images/overlays/check.png', 16, 16),
+                                    'Overlay tooltip');
+                                // Installs a handler for clicks on the overlay
+                                overlay.addListener(mxEvent.CLICK, function (sender, evt2) {
+                                    mxUtils.alert('Overlay clicked');
+                                });
+
+                                // Sets the overlay for the cell in the graph
+                                graph.addCellOverlay(cell, overlay);
+                            } else {
+                                graph.removeCellOverlays(cell);
+                            }
+                        }
+                    });*/
+                    // 双击事件
+                    graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
+                        var cell = evt.getProperty('cell');
+                        //mxUtils.alert('Doubleclick: ' + ((cell != null) ? 'Cell' : 'Graph'));
+                        layer.open({
+                            type: 1,
+                            area: ["500px", '510px'],
+                            title: "表输入",
+                            content: $('#transEdit'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                            success: function (layero, index) {
+                                $("#sql").val(cell.data.value.stepMeta.sql);
+                                $("#stepName").val(cell.data.value.stepName);
+                                $("#dbName").val(cell.data.value.stepMeta.databaseMeta.databaseName);
+                            }
+                        });
+                        evt.consume();
+                    });
                     //加载转换步骤
                     for (j = 0; j < stepList.length; j++) {
-                        var step = graph.insertVertex(parent, null, stepList[j].stepName, stepList[j].locationX, stepList[j].locationY, 80, 30);
-                        step.data = new CustomData(stepList[j].stepId);
-                        stepsMap.set(stepList[j].stepId, step);
+                        stepData = graph.insertVertex(parent, null, stepList[j].stepName, stepList[j].locationX, stepList[j].locationY, 80, 30);
+                        stepData.data = new CustomData(stepList[j]);
+                        stepsMap.set(stepList[j].stepId, stepData);
                     }
                     //加载步骤连接线，后续处理开启，未开启线段编辑
                     for (j = 0; j < hopsList.length; j++) {
+                        //var style = [];
                         var from = stepsMap.get(hopsList[j].fromId);
                         var to = stepsMap.get(hopsList[j].toId);
-                        graph.insertEdge(parent, null, '', from, to);
+                        var style = "";
+                        if (hopsList[j].enabled) {
+                            style = 'style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#3d6480;"';
+                        } else {
+                            style = 'style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeColor=#CCCCCC;"';
+                        }
+                        graph.insertEdge(parent, null, '', from, to, style);
                     }
                 } finally {
                     // Updates the display
@@ -71,7 +127,8 @@
                 }
             }
 
-        };
+        }
+        ;
 
         function CustomData(value) {
             this.value = value;
@@ -156,7 +213,28 @@
 
 <!-- Creates a container for the graph with a grid wallpaper -->
 <div id="graphContainer"
-     style="position:relative;overflow:hidden;width:100%;height:100%;background:url('../../plugins/Mxgraph/images/grid.gif');cursor:default;">
+     style="position:relative;overflow:hidden;width:100%;height:100%;background:url('../../plugins/Mxgraph/images/blank.gif');cursor:default;">
+
 </div>
+
+<form class="form-horizontal center-block" role="form">
+    <div class="form-group" style="display: none;padding: 5px 5px; " id="transEdit">
+        <label style="margin-top:10px;" class="col-sm-3 control-label">步骤名称:</label>
+        <div style="margin-top:10px;" class="col-sm-9">
+            <input type="text" style="margin-top:10px;" class="form-control" id="stepName" name="stepName"
+                   placeholder="步骤名称">
+        </div>
+        <label style="margin-top:10px;" class="col-sm-3 control-label">数据库连接:</label>
+        <div style="margin-top:10px;" class="col-sm-9">
+            <input type="text" style="margin-top:10px;" class="form-control" id="dbName" name="dbName"
+                   placeholder="数据库连接">
+        </div>
+        <label style="margin-top:10px;" class="col-sm-3 control-label">SQL:</label>
+        <div style="margin-top:10px;" class="col-sm-9">
+            <textarea class="form-control" id="sql" name="sql" rows="15"></textarea>
+        </div>
+
+    </div>
+</form>
 </body>
 </html>
