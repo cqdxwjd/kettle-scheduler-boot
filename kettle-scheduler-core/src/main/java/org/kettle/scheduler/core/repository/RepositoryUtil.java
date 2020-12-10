@@ -14,6 +14,7 @@ import org.kettle.scheduler.core.enums.RepTypeEnum;
 import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.repository.*;
 import org.pentaho.di.repository.filerep.KettleFileRepository;
 import org.pentaho.di.repository.filerep.KettleFileRepositoryMeta;
@@ -356,6 +357,33 @@ public class RepositoryUtil {
 
         }
         return jsonObject;
+    }
+    
+
+    /**
+     * 保存脚本,外层需要对TransMeta、JobMeta对象进行封装
+     *
+     * @param repository        资源库对象
+     * @param repositoryElement 脚本
+     * @param versionComment    版本备注
+     * @throws KettleException
+     */
+    public static void saveScript(AbstractRepository repository, RepositoryElementInterface repositoryElement, String versionComment) throws KettleException {
+        if (repository instanceof KettleDatabaseRepository) {
+            KettleDatabaseRepository kettleDatabaseRepository = (KettleDatabaseRepository) repository;
+            if (repositoryElement instanceof TransMeta) {
+                kettleDatabaseRepository.save((TransMeta) repositoryElement, versionComment);
+            } else if (repositoryElement instanceof JobMeta) {
+                kettleDatabaseRepository.save((JobMeta) repositoryElement, versionComment);
+            }
+        } else if (repository instanceof KettleFileRepository) {
+            KettleFileRepository kettleFileRepository = (KettleFileRepository) repository;
+            if (repositoryElement instanceof TransMeta) {
+                kettleFileRepository.save((TransMeta) repositoryElement, versionComment);
+            } else if (repositoryElement instanceof JobMeta) {
+                kettleFileRepository.save((JobMeta) repositoryElement, versionComment);
+            }
+        }
     }
 
 }
