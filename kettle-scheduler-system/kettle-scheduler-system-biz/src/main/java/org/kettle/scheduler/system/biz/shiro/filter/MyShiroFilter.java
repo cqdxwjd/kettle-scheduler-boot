@@ -43,7 +43,7 @@ public class MyShiroFilter {
         chainDefinition.addPathDefinition("/my/python", "authc,roles[python]");*/
 
 		// 需要登录才能访问
-		chainDefinition.addPathDefinition("/**", "authc");
+		//chainDefinition.addPathDefinition("/**", "authc");
 		return chainDefinition;
     }
 }

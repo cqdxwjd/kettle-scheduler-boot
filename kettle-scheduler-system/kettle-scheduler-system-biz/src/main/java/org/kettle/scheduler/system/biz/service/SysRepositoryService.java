@@ -188,7 +188,7 @@ public class SysRepositoryService {
      * @throws KettleException
      */
     public String getScriptByRepository(String transRepositoryId, String scriptPath, String scriptName, String type) throws KettleException {
-        return RepositoryUtil.getScriptByRepository(getAbstractRepository(Integer.valueOf(transRepositoryId)), scriptPath, scriptName, null, type).toString();
+        return JSON.toJSONString(RepositoryUtil.getScriptByRepository(getAbstractRepository(Integer.valueOf(transRepositoryId)), scriptPath, scriptName, null, type));
     }
 
 
