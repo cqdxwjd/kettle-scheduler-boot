@@ -61,6 +61,7 @@ public class TransExecute {
             log.info("传入kettle的参数：{}", JsonUtil.toJsonString(params));
             params.forEach((String k, Object v) -> {
                 try {
+                    trans.setVariable(k, v.toString());
                     trans.setParameterValue(k, v.toString());
                 } catch (UnknownParamException e) {
                     e.printStackTrace();
@@ -119,5 +120,10 @@ public class TransExecute {
         TransMeta tm = rep.loadTransformation(transName, rdi, new ProgressNullMonitorListener(), true, versionLabel);
         // 开始执行ktr
         return executeTrans(tm, params, null, logLevel);
+    }
+
+
+    public static void main(String[] args) {
+        
     }
 }

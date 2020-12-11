@@ -6,12 +6,15 @@ import org.kettle.scheduler.common.utils.IpUtil;
 import org.kettle.scheduler.core.init.EnableEtlKettle;
 import org.mybatis.spring.annotation.MapperScan;
 import org.pentaho.di.core.annotations.CarteServlet;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.stereotype.Component;
 
 /**
  * 启动类
@@ -28,9 +31,13 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @CarteServlet(id = "test", name = "test")
 @MapperScan("org.kettle.scheduler.system.biz.mapper")
 public class KettleSchedulerApplication {
+
     public static void main(String[] args) {
+
+        // 获取 Spring Boot 上下文
         ConfigurableApplicationContext applicationContext = SpringApplication.run(KettleSchedulerApplication.class, args);
         Environment env = applicationContext.getEnvironment();
+
         String port = env.getProperty("server.port");
         String path = env.getProperty("server.servlet.context-path");
 

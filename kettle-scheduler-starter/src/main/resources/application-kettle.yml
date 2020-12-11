@@ -1,6 +1,10 @@
 kettle:
-  log-file-path: /apps/logs/${spring.application.name}/run-logs
+  log-file-path: D:\Development\kettle\8.3\data-integration\run-logs
   encoding: utf-8
-  upload-path: /apps/var/kettle-script-file
-  kettle-home: /apps/var/file-rep
-  kettlePluginPackages: /apps/var/file-rep/plugin
+  upload-path: D:\Development\kettle\8.3\data-integration\kettle-script-file
+  #kettle-home: /apps/var/file-rep
+  kettle-home: D:\Development\kettle\8.3\data-integration
+  #kettlePluginPackages: /apps/var/file-rep/plugin
+  kettlePluginPackages: D:\Development\kettle\8.3\data-integration\plugins
+  kettlePluginBaseFolder: D:\Development\kettle\8.3\data-integration\plugins
+

@@ -35,11 +35,15 @@ public class KettleConfig {
 	 * kettle所在路径，初始化会自动生成.kettle文件在该目录,kettle.properties,repositories.xml,shared.xml都在里面
 	 */
 	public static String kettleHome;
-
 	/**
 	 * kettle插件包所在路径 eg: D:\Development\kettle\8.3\data-integration\plugins
 	 */
 	public static String kettlePluginPackages;
+
+
+	public static String kettlePluginBaseFolder;
+
+
 
 	public void setLogFilePath(String logFilePath) {
         KettleConfig.logFilePath = FileUtil.replaceSeparator(logFilePath);;
@@ -60,5 +64,10 @@ public class KettleConfig {
 	public void setKettlePluginPackages(String kettlePluginPackages) {
 		KettleConfig.kettlePluginPackages = kettlePluginPackages;
 	}
+
+	public  void setKettlePluginBaseFolder(String kettlePluginBaseFolder) {
+		KettleConfig.kettlePluginBaseFolder = kettlePluginBaseFolder;
+	}
+
 
 }

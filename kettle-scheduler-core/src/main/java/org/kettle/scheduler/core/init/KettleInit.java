@@ -8,6 +8,8 @@ import org.pentaho.di.core.KettleEnvironment;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Component;
 
+import java.util.Properties;
+
 /**
  * kettle初始化
  *
@@ -26,10 +28,17 @@ public class KettleInit implements InitializingBean {
 
 	private void environmentInit() {
 		log.info("KETTLE HOME:"+KettleConfig.kettleHome);
-		System.getProperties().put("KETTLE_HOME", KettleConfig.kettleHome);
+		Properties properties = System.getProperties();
+		properties.put("KETTLE_HOME", KettleConfig.kettleHome);
 		if (StringUtil.hasText(KettleConfig.kettlePluginPackages)) {
 			log.info("KETTLE_PLUGIN_PACKAGES:"+KettleConfig.kettlePluginPackages);
-			System.getProperties().put("KETTLE_PLUGIN_PACKAGES", FileUtil.replaceSeparator(KettleConfig.kettlePluginPackages));
+			properties.put("KETTLE_PLUGIN_PACKAGES", FileUtil.replaceSeparator(KettleConfig.kettlePluginPackages));
 		}
+		if (StringUtil.hasText(KettleConfig.kettlePluginBaseFolder)) {
+			log.info("KETTLE_PLUGIN_PACKAGES:"+KettleConfig.kettlePluginBaseFolder);
+			properties.put("KETTLE_PLUGIN_BASE_FOLDERS", FileUtil.replaceSeparator(KettleConfig.kettlePluginBaseFolder));
+			//System.setProperty("KETTLE_PLUGIN_BASE_FOLDERS", KettleConfig.kettlePluginBaseFolder);
+		}
+
 	}
 }
