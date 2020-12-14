@@ -1397,3 +1397,17 @@ group by t.type, t.start_time
     )
 ;
 
+-- ----------------------------
+-- 首页任务执行情况统计视图
+-- ----------------------------
+create or replace view v_data_collect_counts as
+(select d.day, d.num, c.category_name,d.category_id
+  from (select to_char(time, 'YYYY-MM-dd') as day,
+               category_id，sum(w) as num
+          from k_log
+          where type=2
+         group by to_char(time, 'YYYY-MM-dd'), category_id
+         order by to_char(time, 'YYYY-MM-dd') desc) d
+  left join k_category c
+    on d.category_id = c.id
+);
