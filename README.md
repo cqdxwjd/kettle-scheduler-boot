@@ -72,7 +72,7 @@ if (StringUtil.hasText(trans.getSyncStrategy())) {
 资源库字典：https://35youth.cn/kettleRepository.html
 
 #### 安装教程
-1、导入docs中的kettle-scheduler-oracle.sql文件至oracle数据库   
+1、导入docs中的1_XXX.sql 2_XXX、3_XXX文件至oracle数据库   
 
 #### 使用说明
 1.  执行kettle-scheduler-starter下面docs下面的kettle-scheduler-oracle.sql脚本创建表
