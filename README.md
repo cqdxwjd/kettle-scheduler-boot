@@ -28,9 +28,9 @@
 [点击下载可运行程序包](https://pan.baidu.com/s/1xnd2bYZ_3cZGmSm4azg8iw) 提取码：e150
 
 #### [点击查看完整更新记录](./docs/md/update.md) 
-**2020-11-30 更新说明**  
-1、【优化】完善脚本在线预览功能（持续完善中）   
-![avatar](./docs/img/transPreview.png)
+**2020-12-16 更新说明**  
+1、【优化】完善脚本在线预览功能，增加表输出预览（持续完善中）   
+![avatar](./docs/img/tableOutput.png)
 在线预览脚本 
 
 #### [已知Bug列表](./docs/md/Bug.md)

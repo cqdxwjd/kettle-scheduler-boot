@@ -1,7 +1,6 @@
 spring:
   datasource: # 数据库链接
-    #url: jdbc:mysql://120.79.236.37/kettle-scheduler?serverTimezone=UTC&useSSL=false
-    url: jdbc:oracle:thin:@10.108.8.17:1521:orcl
+    url: jdbc:oracle:thin:@172.16.23.211:8064:orcl
     username: kettle_scheduler
     password: 123456
     driver-class-name: oracle.jdbc.OracleDriver

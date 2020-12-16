@@ -88,23 +88,46 @@
                     // 双击事件
                     graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
                         var cell = evt.getProperty('cell');
-                        //mxUtils.alert('Doubleclick: ' + ((cell != null) ? 'Cell' : 'Graph'));
-                        layer.open({
-                            type: 1,
-                            area: ["500px", '510px'],
-                            title: "表输入",
-                            content: $('#transEdit'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                            success: function (layero, index) {
-                                $("#sql").val(cell.data.value.stepMeta.sql);
-                                $("#stepName").val(cell.data.value.stepName);
-                                $("#dbName").val(cell.data.value.stepMeta.databaseMeta.databaseName);
-                            }
-                        });
+                        if (cell.data.value.stepType == "TableOutput") {
+                            layer.open({
+                                type: 1,
+                                area: ["500px", '510px'],
+                                title: "表输出",
+                                content: $('#transEdit_tableOutput'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                                success: function (layero, index) {
+                                    cell.data.value.stepInterface.truncateTable == true ? $("#truncateTable").attr("checked", "checked") : null;
+                                    $("#outputStepName").val(cell.data.value.stepInterface.name);
+                                    $("#tableName").val(cell.data.value.stepInterface.tableName);
+                                    $("#commitSize").val(cell.data.value.stepInterface.commitSize);
+                                    $("#outputDbName").val(cell.data.value.stepInterface.databaseMeta.databaseName);
+                                }
+                            });
+                        } else if (cell.data.value.stepType == "TableInput") {
+                            layer.open({
+                                type: 1,
+                                area: ["510px", '520px'],
+                                title: "表输入",
+                                content: $('#transEdit_tableInput'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                                success: function (layero, index) {
+                                    $("#sql").val(cell.data.value.stepInterface.sql);
+                                    $("#stepName").val(cell.data.value.stepName);
+                                    $("#dbName").val(cell.data.value.stepInterface.databaseMeta.databaseName);
+                                }
+                            });
+                        }
+
                         evt.consume();
                     });
+                    //设置文字位置
+                    var style = "verticalLabelPosition=bottom;verticalAlign=top;";
                     //加载转换步骤
                     for (j = 0; j < stepList.length; j++) {
-                        stepData = graph.insertVertex(parent, null, stepList[j].stepName, stepList[j].locationX, stepList[j].locationY, 80, 30);
+                        if(stepList[j].stepType=="TableInput"){
+                            stepData = graph.insertVertex(parent, null, stepList[j].stepName, stepList[j].locationX, stepList[j].locationY, 42, 42,`shape=image;image=/img/component/tableInput.svg;`+style);
+                        }else if(stepList[j].stepType=="TableOutput"){
+                            stepData = graph.insertVertex(parent, null, stepList[j].stepName, stepList[j].locationX, stepList[j].locationY, 42, 42,`shape=image;image=/img/component/tableOutput.svg;`+style);
+                        }
+
                         stepData.data = new CustomData(stepList[j]);
                         stepsMap.set(stepList[j].stepId, stepData);
                     }
@@ -217,23 +240,56 @@
 
 </div>
 
+<!-- 表输入 -->
 <form class="form-horizontal center-block" role="form">
-    <div class="form-group" style="display: none;padding: 5px 5px; " id="transEdit">
+    <div class="form-group" style="display: none;padding: 5px 5px; " id="transEdit_tableInput">
         <label style="margin-top:10px;" class="col-sm-3 control-label">步骤名称:</label>
         <div style="margin-top:10px;" class="col-sm-9">
-            <input type="text" style="margin-top:10px;" class="form-control" id="stepName" name="stepName"
-                   placeholder="步骤名称">
+            <input type="text" class="form-control" id="stepName" name="stepName"
+                   placeholder="步骤名称" readonly>
         </div>
         <label style="margin-top:10px;" class="col-sm-3 control-label">数据库连接:</label>
         <div style="margin-top:10px;" class="col-sm-9">
-            <input type="text" style="margin-top:10px;" class="form-control" id="dbName" name="dbName"
-                   placeholder="数据库连接">
+            <input type="text" class="form-control" id="dbName" name="dbName"
+                   placeholder="数据库连接" readonly>
         </div>
         <label style="margin-top:10px;" class="col-sm-3 control-label">SQL:</label>
         <div style="margin-top:10px;" class="col-sm-9">
-            <textarea class="form-control" id="sql" name="sql" rows="15"></textarea>
+            <textarea class="form-control" id="sql" name="sql" rows="15" readonly></textarea>
         </div>
 
+    </div>
+</form>
+
+<!-- 表输出 -->
+<form class="form-horizontal center-block" role="form">
+    <div class="form-group" style="display: none;padding: 5px 5px; " id="transEdit_tableOutput">
+        <label style="margin-top:10px;" class="col-sm-3 control-label">步骤名称:</label>
+        <div style="margin-top:10px;" class="col-sm-9">
+            <input type="text" class="form-control" id="outputStepName" name="outputStepName"
+                   placeholder="步骤名称" readonly>
+        </div>
+        <label style="margin-top:10px;" class="col-sm-3 control-label">数据库连接:</label>
+        <div style="margin-top:10px;" class="col-sm-9">
+            <input type="text" class="form-control" id="outputDbName" name="outputDbName"
+                   placeholder="数据库连接" readonly>
+        </div>
+        <label style="margin-top:10px;" class="col-sm-3 control-label">目标表:</label>
+        <div style="margin-top:10px;" class="col-sm-9">
+            <input type="text" class="form-control" id="tableName" name="tableName"
+                   placeholder="目标表" readonly>
+        </div>
+        <label style="margin-top:10px;" class="col-sm-3 control-label">提交记录数量:</label>
+        <div style="margin-top:10px;" class="col-sm-9">
+            <input type="text" class="form-control" id="commitSize" name="commitSize"
+                   placeholder="提交记录数量" readonly>
+        </div>
+        <label style="margin-top:10px;" class="col-sm-3 control-label">裁剪表:</label>
+        <div style="margin-top:16px;" class="col-sm-9">
+            <label class="checkbox-inline">
+                <input type="checkbox" name="truncateTable" id="truncateTable" value="false" readonly/>
+            </label>
+        </div>
     </div>
 </form>
 </body>

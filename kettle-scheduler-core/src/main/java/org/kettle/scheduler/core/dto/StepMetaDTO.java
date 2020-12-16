@@ -11,7 +11,7 @@ import java.util.List;
  * @author chenzhao
  */
 @Data
-public class StepMetaDTO {
+public class StepMetaDTO implements StepInterface{
 
     //步骤库
     private List<DatabaseMetaDTO> databaseMetaList;
