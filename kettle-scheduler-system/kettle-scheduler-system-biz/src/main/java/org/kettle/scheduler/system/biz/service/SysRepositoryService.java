@@ -184,7 +184,7 @@ public class SysRepositoryService {
      * @param scriptPath  脚本路径
      * @param scriptName  脚本名称
      * @param type        脚本类型 trans:job
-     * @return
+     * @returnloadTransformation
      * @throws KettleException
      */
     public String getScriptByRepository(String transRepositoryId, String scriptPath, String scriptName, String type) throws KettleException {
@@ -198,7 +198,7 @@ public class SysRepositoryService {
      * @param transRepositoryId 资源库id
      * @return {@link AbstractRepository}
      */
-    private AbstractRepository getAbstractRepository(Integer transRepositoryId) {
+    public AbstractRepository getAbstractRepository(Integer transRepositoryId) {
         AbstractRepository repository = RepositoryUtil.getRepository(transRepositoryId);
         if (repository == null) {
             RepositoryRepository repRepository = SpringContextUtil.getBean(RepositoryRepository.class);

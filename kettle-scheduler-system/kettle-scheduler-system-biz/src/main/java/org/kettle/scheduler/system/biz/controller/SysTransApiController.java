@@ -1,5 +1,8 @@
 package org.kettle.scheduler.system.biz.controller;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import org.apache.shiro.util.StringUtils;
 import org.kettle.scheduler.common.enums.GlobalStatusEnum;
 import org.kettle.scheduler.common.exceptions.MyMessageException;
 import org.kettle.scheduler.common.groups.Insert;
@@ -17,12 +20,24 @@ import org.kettle.scheduler.system.api.request.TransReq;
 import org.kettle.scheduler.system.api.response.TransRes;
 import org.kettle.scheduler.core.constant.KettleConfig;
 import org.kettle.scheduler.system.biz.entity.Trans;
+import org.kettle.scheduler.system.biz.service.SysRepositoryService;
 import org.kettle.scheduler.system.biz.service.SysTransService;
+import org.kettle.scheduler.system.biz.utils.TransPreviewProgress;
+import org.pentaho.di.core.ProgressNullMonitorListener;
+import org.pentaho.di.core.row.RowMetaInterface;
+import org.pentaho.di.core.row.ValueMetaInterface;
+import org.pentaho.di.repository.AbstractRepository;
+import org.pentaho.di.repository.RepositoryDirectoryInterface;
+import org.pentaho.di.trans.TransMeta;
+import org.pentaho.di.trans.TransPreviewFactory;
+import org.pentaho.di.trans.step.StepMeta;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.groups.Default;
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -34,29 +49,31 @@ import java.util.List;
 public class SysTransApiController implements SysTransApi {
 
     private final SysTransService transService;
+    @Autowired
+    private SysRepositoryService repositoryService;
 
     public SysTransApiController(SysTransService transService) {
         this.transService = transService;
     }
 
-	private void validatedParam(TransReq req) {
-		switch (RunTypeEnum.getEnum(req.getTransType())) {
-			case FILE:
-				String result1 = ValidatorUtil.validateWithString(req, TransReq.File.class);
-				if (!StringUtil.isEmpty(result1)) {
-					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result1);
-				}
-				break;
-			case REP:
-				String result2 = ValidatorUtil.validateWithString(req, TransReq.Rep.class);
-				if (!StringUtil.isEmpty(result2)) {
-					throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result2);
-				}
-				break;
-			default:
-				throw new IllegalStateException("Unexpected value: " + RepTypeEnum.getEnum(req.getTransType()));
-		}
-	}
+    private void validatedParam(TransReq req) {
+        switch (RunTypeEnum.getEnum(req.getTransType())) {
+            case FILE:
+                String result1 = ValidatorUtil.validateWithString(req, TransReq.File.class);
+                if (!StringUtil.isEmpty(result1)) {
+                    throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result1);
+                }
+                break;
+            case REP:
+                String result2 = ValidatorUtil.validateWithString(req, TransReq.Rep.class);
+                if (!StringUtil.isEmpty(result2)) {
+                    throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, result2);
+                }
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + RepTypeEnum.getEnum(req.getTransType()));
+        }
+    }
 
     /**
      * 添加转换
@@ -66,15 +83,15 @@ public class SysTransApiController implements SysTransApi {
      */
     @Override
     public Result add(@Validated({Insert.class, Default.class}) TransReq req, MultipartFile transFile) {
-		// 参数验证
-		validatedParam(req);
-		// 保存上传文件
-		if (RunTypeEnum.FILE.getCode().equals(req.getTransType())) {
-			if (transFile == null || transFile.isEmpty()) {
-				throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, "上传文件不能为空");
-			}
-			req.setTransPath(FileUtil.uploadFile(transFile, KettleConfig.uploadPath));
-		}
+        // 参数验证
+        validatedParam(req);
+        // 保存上传文件
+        if (RunTypeEnum.FILE.getCode().equals(req.getTransType())) {
+            if (transFile == null || transFile.isEmpty()) {
+                throw new MyMessageException(GlobalStatusEnum.ERROR_PARAM, "上传文件不能为空");
+            }
+            req.setTransPath(FileUtil.uploadFile(transFile, KettleConfig.uploadPath));
+        }
         transService.add(req);
         return Result.ok();
     }
@@ -183,23 +200,123 @@ public class SysTransApiController implements SysTransApi {
         return Result.ok();
     }
 
-	/**
-	 * 验证名称是否存在
-	 *
-	 * @param transName 转换名
-	 * @return 只能返回true或false
-	 */
-	@Override
-	public String transNameExist(String transName) {
-		if (StringUtil.isEmpty(transName)) {
-			return "true";
-		} else {
-			Trans trans = transService.getByTransName(transName);
-			if (trans != null) {
-				return "false";
-			} else {
-				return "true";
-			}
-		}
-	}
+    /**
+     * 验证名称是否存在
+     *
+     * @param transName 转换名
+     * @return 只能返回true或false
+     */
+    @Override
+    public String transNameExist(String transName) {
+        if (StringUtil.isEmpty(transName)) {
+            return "true";
+        } else {
+            Trans trans = transService.getByTransName(transName);
+            if (trans != null) {
+                return "false";
+            } else {
+                return "true";
+            }
+        }
+    }
+
+
+    /**
+     * 预览数据
+     *
+     * @param transRepositoryId
+     * @param scriptPath
+     * @param stepName          步骤名称
+     * @param rowLimit          预览条数
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public Result<JSONObject> previewData(String transRepositoryId, String scriptPath, String scriptName, String stepName, int rowLimit) throws Exception {
+        AbstractRepository abstractRepository = repositoryService.getAbstractRepository(Integer.valueOf(transRepositoryId));
+        RepositoryDirectoryInterface rdi = abstractRepository.loadRepositoryDirectoryTree().findDirectory(FileUtil.getParentPath(scriptPath));
+        // 在指定资源库的目录下找到要执行的转换
+        TransMeta transMeta = abstractRepository.loadTransformation(scriptName, rdi, new ProgressNullMonitorListener(), true, null);
+        StepMeta stepMeta = getStep(transMeta, stepName);
+        TransMeta previewMeta = TransPreviewFactory.generatePreviewTransformation(transMeta, stepMeta.getStepMetaInterface(), stepName);
+        TransPreviewProgress progresser = new TransPreviewProgress(previewMeta, new String[]{stepName}, new int[]{rowLimit});
+
+        RowMetaInterface rowMeta = progresser.getPreviewRowsMeta(stepName);
+        List<Object[]> rowsData = progresser.getPreviewRows(stepName);
+
+        Font f = new Font("Arial", Font.PLAIN, 12);
+        FontMetrics fm = Toolkit.getDefaultToolkit().getFontMetrics(f);
+        JSONObject jsonObject = new JSONObject();
+        if (rowMeta != null) {
+            List<ValueMetaInterface> valueMetas = rowMeta.getValueMetaList();
+
+            int width = 0;
+            JSONArray columns = new JSONArray();
+            JSONObject metaData = new JSONObject();
+            JSONArray fields = new JSONArray();
+            for (int i = 0; i < valueMetas.size(); i++) {
+                ValueMetaInterface valueMeta = rowMeta.getValueMeta(i);
+                fields.add(valueMeta.getName());
+                String header = valueMeta.getComments() == null ? valueMeta.getName() : valueMeta.getComments();
+
+                int hWidth = fm.stringWidth(header) + 10;
+                width += hWidth;
+                JSONObject column = new JSONObject();
+                column.put("dataIndex", valueMeta.getName());
+                column.put("header", header);
+                column.put("width", hWidth);
+                columns.add(column);
+            }
+            metaData.put("fields", fields);
+            metaData.put("root", "firstRecords");
+
+            JSONArray firstRecords = new JSONArray();
+            for (int rowNr = 0; rowNr < rowsData.size(); rowNr++) {
+                Object[] rowData = rowsData.get(rowNr);
+                JSONObject row = new JSONObject();
+                for (int colNr = 0; colNr < rowMeta.size(); colNr++) {
+                    String string = null;
+                    ValueMetaInterface valueMetaInterface;
+                    try {
+                        valueMetaInterface = rowMeta.getValueMeta(colNr);
+                        if (valueMetaInterface.isStorageBinaryString()) {
+                            Object nativeType = valueMetaInterface.convertBinaryStringToNativeType((byte[]) rowData[colNr]);
+                            string = valueMetaInterface.getStorageMetadata().getString(nativeType);
+                        } else {
+                            string = rowMeta.getString(rowData, colNr);
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    if (!StringUtils.hasText(string))
+                        string = "&lt;null&gt;";
+
+                    ValueMetaInterface valueMeta = rowMeta.getValueMeta(colNr);
+                    row.put(valueMeta.getName(), string);
+                }
+                if (firstRecords.size() <= rowLimit) {
+                    firstRecords.add(row);
+                }
+            }
+
+            jsonObject.put("metaData", metaData);
+            jsonObject.put("columns", columns);
+            jsonObject.put("firstRecords", firstRecords);
+            jsonObject.put("width", width < 1000 ? width : 1000);
+
+        } else {
+
+        }
+        return Result.ok(jsonObject);
+    }
+
+    public StepMeta getStep(TransMeta transMeta, String label) {
+        List<StepMeta> list = transMeta.getSteps();
+        for (int i = 0; i < list.size(); i++) {
+            StepMeta step = list.get(i);
+            if (label.equals(step.getName()))
+                return step;
+        }
+        return null;
+    }
 }
