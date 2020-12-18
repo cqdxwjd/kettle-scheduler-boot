@@ -6,6 +6,7 @@ import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.core.constant.KettleConfig;
 import org.pentaho.di.core.KettleEnvironment;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Properties;
@@ -18,6 +19,9 @@ import java.util.Properties;
 @Component
 @Log4j2
 public class KettleInit implements InitializingBean {
+	@Autowired
+	KettleConfig KettleConfig;
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		// 自定义环境初始化
@@ -35,7 +39,7 @@ public class KettleInit implements InitializingBean {
 			properties.put("KETTLE_PLUGIN_PACKAGES", FileUtil.replaceSeparator(KettleConfig.kettlePluginPackages));
 		}
 		if (StringUtil.hasText(KettleConfig.kettlePluginBaseFolder)) {
-			log.info("KETTLE_PLUGIN_PACKAGES:"+KettleConfig.kettlePluginBaseFolder);
+			log.info("KETTLE_PLUGIN_BASE_FOLDERS:"+KettleConfig.kettlePluginBaseFolder);
 			properties.put("KETTLE_PLUGIN_BASE_FOLDERS", FileUtil.replaceSeparator(KettleConfig.kettlePluginBaseFolder));
 			//System.setProperty("KETTLE_PLUGIN_BASE_FOLDERS", KettleConfig.kettlePluginBaseFolder);
 		}
