@@ -21,6 +21,7 @@ import org.kettle.scheduler.system.biz.entity.Repository;
 import org.kettle.scheduler.system.biz.entity.bo.NativeQueryResultBO;
 import org.kettle.scheduler.system.biz.entity.bo.TransBO;
 import org.kettle.scheduler.system.biz.repository.RepositoryRepository;
+import org.pentaho.di.cluster.SlaveServer;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.repository.AbstractRepository;
 import org.pentaho.di.repository.RepositoryObjectType;
@@ -181,11 +182,11 @@ public class SysRepositoryService {
      * 根据资源库获取脚本信息
      *
      * @param transRepositoryId 资源库ID
-     * @param scriptPath  脚本路径
-     * @param scriptName  脚本名称
-     * @param type        脚本类型 trans:job
-     * @returnloadTransformation
+     * @param scriptPath        脚本路径
+     * @param scriptName        脚本名称
+     * @param type              脚本类型 trans:job
      * @throws KettleException
+     * @returnloadTransformation
      */
     public String getScriptByRepository(String transRepositoryId, String scriptPath, String scriptName, String type) throws KettleException {
         return RepositoryUtil.getScriptByRepository(getAbstractRepository(Integer.valueOf(transRepositoryId)), scriptPath, scriptName, null, type).toString();
@@ -212,5 +213,9 @@ public class SysRepositoryService {
             repository = RepositoryUtil.connection(repDto);
         }
         return repository;
+    }
+
+    public List<SlaveServer> getSlaveServers(AbstractRepository abstractRepository) throws KettleException {
+        return RepositoryUtil.getSlaveServers(abstractRepository);
     }
 }

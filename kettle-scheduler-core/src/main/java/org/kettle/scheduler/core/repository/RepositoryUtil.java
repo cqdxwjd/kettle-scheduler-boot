@@ -11,6 +11,7 @@ import org.kettle.scheduler.common.utils.FileUtil;
 import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.core.dto.RepositoryDTO;
 import org.kettle.scheduler.core.enums.RepTypeEnum;
+import org.pentaho.di.cluster.SlaveServer;
 import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
@@ -357,6 +358,18 @@ public class RepositoryUtil {
 
         }
         return jsonObject;
+    }
+
+    /**
+     * 获取资源库中子节点
+     *
+     * @param rep
+     * @return
+     * @throws KettleException
+     */
+    public static List<SlaveServer> getSlaveServers(AbstractRepository rep) throws KettleException {
+        List<SlaveServer> slaveServers = rep.getSlaveServers();
+        return slaveServers;
     }
     
 
