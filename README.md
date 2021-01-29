@@ -1,5 +1,8 @@
 # kettle-scheduler-boot
     
+## 问卷调查
+[问卷地址](https://www.35youth.cn/wp-admin/admin-ajax.php?action=frm_forms_preview&form=contact-form) 请提出你的宝贵意见，帮助我们优化项目。
+![avatar](./docs/img/questionnaire.png)
 ## 开发计划
 
 |序号|项目|状态|优先级|
