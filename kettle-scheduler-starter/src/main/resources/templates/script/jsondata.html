@@ -28,6 +28,14 @@
     <script th:src="@{/js/jquery.min.js}" src="../static/js/jquery.min.js?v=2.1.4"></script>
     <!-- layer javascript -->
     <script th:src="@{/js/plugins/layer/layer.min.js}" src="../static/js/plugins/layer/layer.min.js"></script>
+    <!-- Bootstrap table -->
+    <script th:src="@{/js/plugins/bootstrap-table/bootstrap-table.min.js}"
+            src="../static/js/plugins/bootstrap-table/bootstrap-table.min.js"></script>
+    <script th:src="@{/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js}"
+            src="../static/js/plugins/bootstrap-table/bootstrap-table-mobile.min.js"></script>
+    <script th:src="@{/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}"
+            src="../static/js/plugins/bootstrap-table/locale/bootstrap-table-zh-CN.min.js"></script>
+
     <!-- Example code -->
     <script type="text/javascript">
         var stepData = null;
@@ -88,23 +96,46 @@
                     // 双击事件
                     graph.addListener(mxEvent.DOUBLE_CLICK, function (sender, evt) {
                         var cell = evt.getProperty('cell');
-                        //mxUtils.alert('Doubleclick: ' + ((cell != null) ? 'Cell' : 'Graph'));
-                        layer.open({
-                            type: 1,
-                            area: ["500px", '510px'],
-                            title: "表输入",
-                            content: $('#transEdit'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
-                            success: function (layero, index) {
-                                $("#sql").val(cell.data.value.stepMeta.sql);
-                                $("#stepName").val(cell.data.value.stepName);
-                                $("#dbName").val(cell.data.value.stepMeta.databaseMeta.databaseName);
-                            }
-                        });
+                        if (cell.data.value.stepType == "TableOutput") {
+                            layer.open({
+                                type: 1,
+                                area: ["500px", '510px'],
+                                title: "表输出",
+                                content: $('#transEdit_tableOutput'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                                success: function (layero, index) {
+                                    cell.data.value.stepInterface.truncateTable == true ? $("#truncateTable").attr("checked", "checked") : null;
+                                    $("#outputStepName").val(cell.data.value.stepInterface.name);
+                                    $("#tableName").val(cell.data.value.stepInterface.tableName);
+                                    $("#commitSize").val(cell.data.value.stepInterface.commitSize);
+                                    $("#outputDbName").val(cell.data.value.stepInterface.databaseMeta.databaseName);
+                                }
+                            });
+                        } else if (cell.data.value.stepType == "TableInput") {
+                            layer.open({
+                                type: 1,
+                                area: ["510px", '520px'],
+                                title: "表输入",
+                                content: $('#transEdit_tableInput'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+                                success: function (layero, index) {
+                                    $("#sql").val(cell.data.value.stepInterface.sql);
+                                    $("#stepName").val(cell.data.value.stepName);
+                                    $("#dbName").val(cell.data.value.stepInterface.databaseMeta.databaseName);
+                                }
+                            });
+                        }
+
                         evt.consume();
                     });
+                    //设置文字位置
+                    var style = "verticalLabelPosition=bottom;verticalAlign=top;";
                     //加载转换步骤
                     for (j = 0; j < stepList.length; j++) {
-                        stepData = graph.insertVertex(parent, null, stepList[j].stepName, stepList[j].locationX, stepList[j].locationY, 80, 30);
+                        if (stepList[j].stepType == "TableInput") {
+                            stepData = graph.insertVertex(parent, null, stepList[j].stepName, stepList[j].locationX, stepList[j].locationY, 42, 42, `shape=image;image=/img/component/tableInput.svg;` + style);
+                        } else if (stepList[j].stepType == "TableOutput") {
+                            stepData = graph.insertVertex(parent, null, stepList[j].stepName, stepList[j].locationX, stepList[j].locationY, 42, 42, `shape=image;image=/img/component/tableOutput.svg;` + style);
+                        }
+
                         stepData.data = new CustomData(stepList[j]);
                         stepsMap.set(stepList[j].stepId, stepData);
                     }
@@ -161,11 +192,13 @@
          * @returns {null}
          */
         function loadScriptDetail(repositoryId, scriptPath, scriptName) {
+            var stepNam = "表输入";
             var resultData = null;
             $.ajax({
                 type: 'GET',
                 async: false,
                 url: '/sys/repository/getScriptByRepository.do?id=' + repositoryId + "&scriptPath=" + scriptPath + "&scriptName=" + scriptName + "&type=trans",
+                //url: '/sys/trans/previewData.do?transRepositoryId=' + repositoryId + "&scriptPath=" + scriptPath + "&scriptName=" + scriptName + "&rowLimit=100&stepName=" + stepNam + "&type=trans",
                 data: {},
                 success: function (data) {
                     resultData = data;
@@ -205,7 +238,69 @@
         function dataAssembly(graph, data) {
 
         }
+
+        /**
+         *预览SQL，动态table
+         */
+        function previewSQL() {
+            var transRepositoryId = getQueryVariable("repositoryId");
+            var scriptPath = getQueryVariable("scriptPath");
+            var scriptName = getQueryVariable("scriptName");
+            var stepName = $("#stepName").val();
+            var previewUrl = '/sys/trans/previewData.do?transRepositoryId=' + transRepositoryId + '&scriptPath=' + scriptPath + '&scriptName=' + scriptName + '&rowLimit=100&stepName=' + stepName;
+            $("#previewTable").bootstrapTable({
+                ajax: function (request) {
+                    $.ajax({
+                        type: "GET",
+                        url: previewUrl,
+                        contentType: "application/json;charset=utf-8",
+                        dataType: "json",
+                        json: 'callback',
+                        success: function (json) {
+                            var columnsArray = [];
+                            columnsArray.push({field: "state", checkbox: true});
+                            for (var i = 0; i < (json.result.columns).length; i++) {//Object.keys(obj) 获取key名称
+                                columnsArray.push({
+                                    "title": json.result.columns[i].dataIndex,
+                                    "field": json.result.columns[i].dataIndex,
+                                    switchable: true,
+                                    sortable: true
+                                });
+                            }
+                            $('#previewTable').bootstrapTable('destroy').bootstrapTable({
+                                data: json.result.firstRecords,
+                                singleSelect: true,
+                                clickToSelect: true,
+                                //sortName: "create_time",
+                                //sortOrder: "desc",
+                                pageSize: 15,
+                                pageNumber: 1,
+                                pageList: "[10, 25, 50, 100, All]",
+                                showToggle: true,
+                                showRefresh: true,
+                                showColumns: true,
+                                search: true,
+                                pagination: true,
+                                columns: columnsArray
+                            });
+                            layer.open({
+                                type: 1,
+                                area: ['80%', '60%'],
+                                title: "表输入",
+                                content: $('#previewTable')
+                            });
+                        },
+                        error: function () {
+                            alert("错误");
+                        }
+                    });
+                }
+            });
+        }
+
+
     </script>
+
 </head>
 
 <!-- Page passes the container for the graph to the program -->
@@ -217,24 +312,64 @@
 
 </div>
 
+<!-- 表输入 -->
 <form class="form-horizontal center-block" role="form">
-    <div class="form-group" style="display: none;padding: 5px 5px; " id="transEdit">
+    <div class="form-group" style="display: none;padding: 5px 5px; " id="transEdit_tableInput">
         <label style="margin-top:10px;" class="col-sm-3 control-label">步骤名称:</label>
         <div style="margin-top:10px;" class="col-sm-9">
-            <input type="text" style="margin-top:10px;" class="form-control" id="stepName" name="stepName"
-                   placeholder="步骤名称">
+            <input type="text" class="form-control" id="stepName" name="stepName"
+                   placeholder="步骤名称" readonly>
         </div>
         <label style="margin-top:10px;" class="col-sm-3 control-label">数据库连接:</label>
         <div style="margin-top:10px;" class="col-sm-9">
-            <input type="text" style="margin-top:10px;" class="form-control" id="dbName" name="dbName"
-                   placeholder="数据库连接">
+            <input type="text" class="form-control" id="dbName" name="dbName"
+                   placeholder="数据库连接" readonly>
         </div>
         <label style="margin-top:10px;" class="col-sm-3 control-label">SQL:</label>
         <div style="margin-top:10px;" class="col-sm-9">
-            <textarea class="form-control" id="sql" name="sql" rows="15"></textarea>
+            <textarea class="form-control" id="sql" name="sql" rows="15" readonly></textarea>
         </div>
-
+        <button type="button" class="btn btn-primary" onclick="previewSQL()">预览</button>
     </div>
 </form>
+
+<!-- 表输出 -->
+<form class="form-horizontal center-block" role="form">
+    <div class="form-group" style="display: none;padding: 5px 5px; " id="transEdit_tableOutput">
+        <label style="margin-top:10px;" class="col-sm-3 control-label">步骤名称:</label>
+        <div style="margin-top:10px;" class="col-sm-9">
+            <input type="text" class="form-control" id="outputStepName" name="outputStepName"
+                   placeholder="步骤名称" readonly>
+        </div>
+        <label style="margin-top:10px;" class="col-sm-3 control-label">数据库连接:</label>
+        <div style="margin-top:10px;" class="col-sm-9">
+            <input type="text" class="form-control" id="outputDbName" name="outputDbName"
+                   placeholder="数据库连接" readonly>
+        </div>
+        <label style="margin-top:10px;" class="col-sm-3 control-label">目标表:</label>
+        <div style="margin-top:10px;" class="col-sm-9">
+            <input type="text" class="form-control" id="tableName" name="tableName"
+                   placeholder="目标表" readonly>
+        </div>
+        <label style="margin-top:10px;" class="col-sm-3 control-label">提交记录数量:</label>
+        <div style="margin-top:10px;" class="col-sm-9">
+            <input type="text" class="form-control" id="commitSize" name="commitSize"
+                   placeholder="提交记录数量" readonly>
+        </div>
+        <label style="margin-top:10px;" class="col-sm-3 control-label">裁剪表:</label>
+        <div style="margin-top:16px;" class="col-sm-9">
+            <label class="checkbox-inline">
+                <input type="checkbox" name="truncateTable" id="truncateTable" value="false" readonly/>
+            </label>
+        </div>
+    </div>
+</form>
+
+<!-- 预览数据 动态表格-->
+<div>
+    <table id="previewTable" class="table table-responsive table-striped
+    table-bordered table-hover table-condensed ">
+    </table>
+</div>
 </body>
 </html>

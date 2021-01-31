@@ -1,5 +1,6 @@
 package org.kettle.scheduler.core.repository;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.kettle.scheduler.common.enums.GlobalStatusEnum;
@@ -10,17 +11,17 @@ import org.kettle.scheduler.common.utils.FileUtil;
 import org.kettle.scheduler.common.utils.StringUtil;
 import org.kettle.scheduler.core.dto.RepositoryDTO;
 import org.kettle.scheduler.core.enums.RepTypeEnum;
+import org.pentaho.di.cluster.SlaveServer;
 import org.pentaho.di.core.ProgressNullMonitorListener;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.repository.*;
 import org.pentaho.di.repository.filerep.KettleFileRepository;
 import org.pentaho.di.repository.filerep.KettleFileRepositoryMeta;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepository;
 import org.pentaho.di.repository.kdr.KettleDatabaseRepositoryMeta;
-import org.pentaho.di.trans.TransHopMeta;
 import org.pentaho.di.trans.TransMeta;
-import org.pentaho.di.trans.step.StepMeta;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -48,11 +49,11 @@ public class RepositoryUtil {
      */
     private static AbstractRepository databaseRepository(RepositoryDTO dbRep) {
         // 检查资源库是否存在
-        if (dbRep.getId() !=null && DATABASE_REP.containsKey(dbRep.getId())) {
-			return DATABASE_REP.get(dbRep.getId());
+        if (dbRep.getId() != null && DATABASE_REP.containsKey(dbRep.getId())) {
+            return DATABASE_REP.get(dbRep.getId());
         }
         // 获取数据连接元
-        DatabaseMeta dataMeta = new DatabaseMeta(dbRep.getDbName(),dbRep.getDbType(),dbRep.getDbAccess(),dbRep.getDbHost(),dbRep.getDbName(),dbRep.getDbPort(),dbRep.getDbUsername(),dbRep.getDbPassword());
+        DatabaseMeta dataMeta = new DatabaseMeta(dbRep.getDbName(), dbRep.getDbType(), dbRep.getDbAccess(), dbRep.getDbHost(), dbRep.getDbName(), dbRep.getDbPort(), dbRep.getDbUsername(), dbRep.getDbPassword());
         // 数据库资源库元
         KettleDatabaseRepositoryMeta drm = new KettleDatabaseRepositoryMeta();
         drm.setConnection(dataMeta);
@@ -69,10 +70,10 @@ public class RepositoryUtil {
             throw new MyMessageException(GlobalStatusEnum.KETTLE_ERROR, msg);
         }
         // 缓存资源库信息
-		if (dbRep.getId() != null) {
-			DATABASE_REP.put(dbRep.getId(), rep);
-		}
-		return rep;
+        if (dbRep.getId() != null) {
+            DATABASE_REP.put(dbRep.getId(), rep);
+        }
+        return rep;
     }
 
     /**
@@ -82,17 +83,17 @@ public class RepositoryUtil {
      */
     private static AbstractRepository fileRepository(RepositoryDTO fileRep) {
         // 检查资源库是否存在
-        if (fileRep.getId() !=null && DATABASE_REP.containsKey(fileRep.getId())) {
+        if (fileRep.getId() != null && DATABASE_REP.containsKey(fileRep.getId())) {
             return DATABASE_REP.get(fileRep.getId());
         }
-		// 判断文件是否存在
-		String baseDir = FileUtil.replaceSeparator(fileRep.getRepBasePath());
-		if (StringUtil.isEmpty(baseDir) || !new File(baseDir).exists()) {
-			throw new MyMessageException(GlobalStatusEnum.KETTLE_ERROR, "文件资源库不存在");
-		}
-		// 文件资源库元数据
-		KettleFileRepositoryMeta frm = new KettleFileRepositoryMeta();
-		frm.setBaseDirectory(baseDir);
+        // 判断文件是否存在
+        String baseDir = FileUtil.replaceSeparator(fileRep.getRepBasePath());
+        if (StringUtil.isEmpty(baseDir) || !new File(baseDir).exists()) {
+            throw new MyMessageException(GlobalStatusEnum.KETTLE_ERROR, "文件资源库不存在");
+        }
+        // 文件资源库元数据
+        KettleFileRepositoryMeta frm = new KettleFileRepositoryMeta();
+        frm.setBaseDirectory(baseDir);
         frm.setName(fileRep.getRepName());
         // 初始化资源库
         KettleFileRepository rep = new KettleFileRepository();
@@ -106,14 +107,15 @@ public class RepositoryUtil {
             throw new MyMessageException(GlobalStatusEnum.KETTLE_ERROR, msg);
         }
         // 缓存资源库信息
-		if (fileRep.getId() != null) {
-			DATABASE_REP.put(fileRep.getId(), rep);
-		}
-		return rep;
+        if (fileRep.getId() != null) {
+            DATABASE_REP.put(fileRep.getId(), rep);
+        }
+        return rep;
     }
 
     /**
      * 连接资源库
+     *
      * @param rep 连接参数
      */
     public static AbstractRepository connection(@NotNull RepositoryDTO rep) {
@@ -122,26 +124,27 @@ public class RepositoryUtil {
             return getRepository(rep.getId());
         }
         // 不存在就创建资源库
-		AbstractRepository repository = null;
-		RepTypeEnum repTypeEnum = RepTypeEnum.getEnum(rep.getRepType());
-		if (repTypeEnum != null) {
-			switch (repTypeEnum) {
-				case FILE:
-					repository = fileRepository(rep);
-					break;
-				case DB:
-					repository = databaseRepository(rep);
-					break;
-				default:
-					throw new IllegalStateException("Unexpected value: " + rep.getRepType());
-			}
-		}
+        AbstractRepository repository = null;
+        RepTypeEnum repTypeEnum = RepTypeEnum.getEnum(rep.getRepType());
+        if (repTypeEnum != null) {
+            switch (repTypeEnum) {
+                case FILE:
+                    repository = fileRepository(rep);
+                    break;
+                case DB:
+                    repository = databaseRepository(rep);
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + rep.getRepType());
+            }
+        }
         // 返回资源库
         return repository;
     }
 
     /**
      * 批量连接资源库
+     *
      * @param list 连接参数列表
      */
     public static void connectionBatch(List<RepositoryDTO> list) {
@@ -150,6 +153,7 @@ public class RepositoryUtil {
 
     /**
      * 断开指定资源库
+     *
      * @param repId 资源库ID
      */
     public static void disconnection(Integer repId) {
@@ -181,6 +185,7 @@ public class RepositoryUtil {
 
     /**
      * 判断资源库是否连接成功
+     *
      * @param repId 资源库ID
      * @return {@link Boolean}
      */
@@ -190,6 +195,7 @@ public class RepositoryUtil {
 
     /**
      * 通过资源库ID获取资源库
+     *
      * @param repId 资源库ID
      * @return {@link AbstractRepository}
      */
@@ -199,6 +205,7 @@ public class RepositoryUtil {
 
     /**
      * 通过资源库名称获取文件资源库
+     *
      * @param repId 资源库ID
      * @return {@link KettleFileRepository}
      */
@@ -216,6 +223,7 @@ public class RepositoryUtil {
 
     /**
      * 通过资源库名称获取数据库资源库
+     *
      * @param repId 资源库ID
      * @return {@link KettleDatabaseRepository}
      */
@@ -233,8 +241,9 @@ public class RepositoryUtil {
 
     /**
      * 遍历获取资源库信息
+     *
      * @param repository 资源库
-     * @param dirPath 当前目录路径
+     * @param dirPath    当前目录路径
      * @param objectType 查询指定脚本类型
      * @return {@link List}
      */
@@ -264,6 +273,7 @@ public class RepositoryUtil {
 
     /**
      * 获取当前目录下的子目录信息
+     *
      * @param rdi 当前目录
      * @return {@link List}
      */
@@ -288,8 +298,9 @@ public class RepositoryUtil {
 
     /**
      * 获取当前目录下的转换和作业
+     *
      * @param repository 资源库
-     * @param rdi 当前目录
+     * @param rdi        当前目录
      * @param objectType 查询指定脚本类型
      * @return {@link List}
      * @throws KettleException 异常
@@ -298,21 +309,21 @@ public class RepositoryUtil {
         List<TreeDTO<String>> treeList = new ArrayList<>();
         List<RepositoryElementMetaInterface> list = repository.getJobAndTransformationObjects(rdi.getObjectId(), false);
         if (null != list) {
-			String rdiPath = rdi.getPath();
-			list.forEach(element -> {
+            String rdiPath = rdi.getPath();
+            list.forEach(element -> {
                 if (objectType == null || objectType.equals(element.getObjectType())) {
                     TreeDTO<String> tree = new TreeDTO<>();
                     tree.setId(element.getObjectType().getTypeDescription() + "@" + rdi.getObjectId().getId() + "@" + element.getObjectId().getId());
                     tree.setText(element.getName());
-					tree.setIcon("jstree-file");
+                    tree.setIcon("jstree-file");
                     tree.setLeaf(true);
                     tree.setExpand(false);
 
                     if (rdiPath.endsWith(FileUtil.separator)) {
-						tree.setExtra(rdiPath.concat(element.getName()));
-					} else {
-						tree.setExtra(rdiPath.concat(FileUtil.separator).concat(element.getName()));
-					}
+                        tree.setExtra(rdiPath.concat(element.getName()));
+                    } else {
+                        tree.setExtra(rdiPath.concat(FileUtil.separator).concat(element.getName()));
+                    }
                     treeList.add(tree);
                 }
             });
@@ -321,17 +332,18 @@ public class RepositoryUtil {
     }
 
     /**
-     *获取资源库中的脚本详细信息
+     * 获取资源库中的脚本详细信息
      *
      * @param rep          资源库对象
-     * @param scriptPath    ktr所在路径
-     * @param scriptName    ktr名称
+     * @param scriptPath   ktr所在路径
+     * @param scriptName   ktr名称
      * @param versionLabel 版本号，传入null表示执行最新的ktr
      * @param type         脚本类型，trans：job
      */
-    public static Object getScriptByRepository(AbstractRepository rep, String scriptPath, String scriptName, String versionLabel,String type) throws KettleException {
-        Map<String,Object> map = new HashMap<>();
-        if(type.equals("trans")){
+    public static Object getScriptByRepository(AbstractRepository rep, String scriptPath, String scriptName, String versionLabel, String type) throws KettleException {
+        Map<String, Object> map = new HashMap<>();
+        JSONObject jsonObject = null;
+        if (type.equals("trans")) {
             // 根据相对目录地址获取ktr所在目录信息
             RepositoryDirectoryInterface rdi = rep.loadRepositoryDirectoryTree().findDirectory(FileUtil.getParentPath(scriptPath));
             // 在指定资源库的目录下找到要执行的转换
@@ -341,11 +353,50 @@ public class RepositoryUtil {
                 List<StepMeta> steps = stepMeta.getParentTransMeta().getSteps();
 
             });*/
-
-            return tm;
-        }else if(type=="job"){
+            jsonObject = TransFormUtil.dataTransform("trans", tm);
+        } else if (type == "job") {
 
         }
-        return null;
+        return jsonObject;
     }
+
+    /**
+     * 获取资源库中子节点
+     *
+     * @param rep
+     * @return
+     * @throws KettleException
+     */
+    public static List<SlaveServer> getSlaveServers(AbstractRepository rep) throws KettleException {
+        List<SlaveServer> slaveServers = rep.getSlaveServers();
+        return slaveServers;
+    }
+    
+
+    /**
+     * 保存脚本,外层需要对TransMeta、JobMeta对象进行封装
+     *
+     * @param repository        资源库对象
+     * @param repositoryElement 脚本
+     * @param versionComment    版本备注
+     * @throws KettleException
+     */
+    public static void saveScript(AbstractRepository repository, RepositoryElementInterface repositoryElement, String versionComment) throws KettleException {
+        if (repository instanceof KettleDatabaseRepository) {
+            KettleDatabaseRepository kettleDatabaseRepository = (KettleDatabaseRepository) repository;
+            if (repositoryElement instanceof TransMeta) {
+                kettleDatabaseRepository.save((TransMeta) repositoryElement, versionComment);
+            } else if (repositoryElement instanceof JobMeta) {
+                kettleDatabaseRepository.save((JobMeta) repositoryElement, versionComment);
+            }
+        } else if (repository instanceof KettleFileRepository) {
+            KettleFileRepository kettleFileRepository = (KettleFileRepository) repository;
+            if (repositoryElement instanceof TransMeta) {
+                kettleFileRepository.save((TransMeta) repositoryElement, versionComment);
+            } else if (repositoryElement instanceof JobMeta) {
+                kettleFileRepository.save((JobMeta) repositoryElement, versionComment);
+            }
+        }
+    }
+
 }

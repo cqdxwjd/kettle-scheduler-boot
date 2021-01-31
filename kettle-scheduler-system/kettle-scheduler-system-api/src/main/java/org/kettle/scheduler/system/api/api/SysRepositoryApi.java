@@ -122,7 +122,7 @@ public interface SysRepositoryApi {
      */
     @ApiOperation(value = "获取脚本详细信息")
     @GetMapping("/getScriptByRepository.do")
-    Result getScriptByRepository(@RequestParam("id") String id,@RequestParam("scriptPath") String scriptPath, @RequestParam("scriptName") String scriptName, @RequestParam("type") String type) throws Exception;
+    Result getScriptByRepository(@RequestParam("id") String id, @RequestParam("scriptPath") String scriptPath, @RequestParam("scriptName") String scriptName, @RequestParam("type") String type) throws Exception;
 
     /**
      * 测试资源库链接
@@ -144,4 +144,14 @@ public interface SysRepositoryApi {
     @ApiOperation(value = "验证资源库名是否存在")
     @PostMapping("/repNameExist.do")
     String repNameExist(Integer repId, String repName);
+
+    /**
+     * 根据资源库ID获取子服务器
+     *
+     * @param repId
+     * @return
+     */
+    @ApiOperation(value = "根据资源库ID获取子服务器")
+    @GetMapping("/getSlaveServers.do")
+    Object getSlaveServers(Integer repId) throws Exception;
 }

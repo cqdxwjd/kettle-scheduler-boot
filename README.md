@@ -1,11 +1,14 @@
 # kettle-scheduler-boot
     
+## 问卷调查
+[问卷地址](https://www.35youth.cn/wp-admin/admin-ajax.php?action=frm_forms_preview&form=contact-form) 请提出你的宝贵意见，帮助我们优化项目。
+![avatar](./docs/img/questionnaire.png)
 ## 开发计划
 
 |序号|项目|状态|优先级|
 |----|----|----|----|
-|1|在线管理，编辑kettle脚本 |✔|紧急|
-|2|通过源码实现集群，多线程执行任务 |✔|紧急|
+|1|在线管理，编辑kettle脚本 ||紧急|
+|2|通过源码实现集群，多线程执行任务 |×|已放弃|
 |2|重构jpa部分，改为mybatis|✔|一般|
 
 #### 介绍
@@ -19,11 +22,19 @@
 6、增加了一些扩展功能   
 7、增加在线编辑脚本   
 
+#### 演示环境
+[点击查看演示环境](http://kettle.35youth.cn)   
+账号：demo   
+密码：demo@1234   
+**演示环境，请善待。**   
+
+[点击下载可运行程序包](https://pan.baidu.com/s/1xnd2bYZ_3cZGmSm4azg8iw) 提取码：e150
+
 #### [点击查看完整更新记录](./docs/md/update.md) 
-**2020-11-30 更新说明**  
-1、【优化】完善脚本在线预览功能（持续完善中）   
-![avatar](./docs/img/transPreview.png)
-在线预览脚本 
+**2020-12-17 更新说明**  
+1、【新增】增加表输入预览数据   
+![avatar](./docs/img/dataPreview.png)
+数据预览 
 
 #### [已知Bug列表](./docs/md/Bug.md)
 
@@ -72,7 +83,7 @@ if (StringUtil.hasText(trans.getSyncStrategy())) {
 资源库字典：https://35youth.cn/kettleRepository.html
 
 #### 安装教程
-1、导入docs中的kettle-scheduler-oracle.sql文件至oracle数据库   
+1、导入docs中的1_XXX.sql 2_XXX、3_XXX文件至oracle数据库   
 
 #### 使用说明
 1.  执行kettle-scheduler-starter下面docs下面的kettle-scheduler-oracle.sql脚本创建表
@@ -94,6 +105,13 @@ if (StringUtil.hasText(trans.getSyncStrategy())) {
 3.  提交代码
 4.  新建 Pull Request
 
+#### 感谢
+项目开源至今，感谢一下朋友的各种帮助。（排名按时间先后顺序）   
+
+| 序号  |     名称     |            个人主页               |    捐赠方式    | 金额 |          备注                |  时间 |
+| ---- | ----------- | -------------------------------- | ------------ | ---- | --------------------------- | ----- |
+|  1   | 啦啦啦啦啦啦  | https://www.cnblogs.com/wlh1995/ | 维护Mysql分支  | XX   | kettle作者热心，一起加油。   | 2020-12-11 |
+|  2   | 华子哥 | XXX | 微信  | 50 |  | 2021-01-20 |
 #### 关于我
 1.  半码农
 <img src="https://images.gitee.com/uploads/images/2020/1029/100546_32f86823_720502.png" width="50%" height="50%" />

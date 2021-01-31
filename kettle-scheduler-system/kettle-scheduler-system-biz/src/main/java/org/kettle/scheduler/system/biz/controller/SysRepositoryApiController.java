@@ -18,6 +18,7 @@ import org.kettle.scheduler.system.api.response.RepositoryRes;
 import org.kettle.scheduler.system.biz.entity.Repository;
 import org.kettle.scheduler.system.biz.service.SysRepositoryService;
 import org.pentaho.di.core.exception.KettleException;
+import org.pentaho.di.repository.AbstractRepository;
 import org.pentaho.di.repository.RepositoryObjectType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
@@ -214,5 +215,12 @@ public class SysRepositoryApiController implements SysRepositoryApi {
 	@Override
 	public Result getScriptByRepository(String id, String scriptPath, String scriptName, String type) throws KettleException {
 		return Result.ok(repositoryService.getScriptByRepository(id, scriptPath, scriptName, type));
+	}
+
+	@Override
+	public Object getSlaveServers(Integer repId) throws KettleException {
+		AbstractRepository abstractRepository = repositoryService.getAbstractRepository(repId);
+		//repositoryService.get
+		return repositoryService.getSlaveServers(abstractRepository);
 	}
 }

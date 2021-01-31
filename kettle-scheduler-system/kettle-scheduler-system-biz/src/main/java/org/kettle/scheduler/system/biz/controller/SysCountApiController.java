@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 public class SysCountApiController implements SysCountApi {
     private final SysTransMonitorService transMonitorService;
@@ -19,5 +22,24 @@ public class SysCountApiController implements SysCountApi {
     }
     public CountSumRes count(@RequestBody QueryHelper<CountSumReq> countSumReq){
         return transMonitorService.count(countSumReq.getQuery(),countSumReq.getPage().getPageable());
+    }
+    @Override
+    public List<Map> getLastSevenDaysNum() {
+        return transMonitorService.getLastSevenDaysNum();
+    }
+
+    @Override
+    public Map getTodayNum() {
+        return transMonitorService.getTodayNum();
+    }
+
+    @Override
+    public Map getSystemDisk() {
+        return transMonitorService.getSystemDisk();
+    }
+
+    @Override
+    public List<Map> getDataBySystem() {
+        return transMonitorService.getDataBySystem();
     }
 }

@@ -4,9 +4,11 @@ package org.kettle.scheduler.core.repository;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.log4j.Log4j2;
 import org.kettle.scheduler.core.dto.HopsDTO;
+import org.kettle.scheduler.core.dto.StepInterface;
 import org.kettle.scheduler.core.dto.StepMetaDTO;
 import org.kettle.scheduler.core.dto.TransStepDTO;
 import org.kettle.scheduler.core.dto.common.DatabaseMetaDTO;
+import org.kettle.scheduler.core.dto.output.TableOutputDTO;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.trans.TransHopMeta;
 import org.pentaho.di.trans.TransMeta;
@@ -43,19 +45,20 @@ public class TransFormUtil {
             //hops
             jsonObject.put("transName", transMeta.getName());
             jsonObject.put("stepList", transStepDTOS);
-            jsonObject.put("hopsList",hopsList);
+            jsonObject.put("hopsList", hopsList);
         }
         return jsonObject;
     }
 
     /**
      * 连接线对象处理
+     *
      * @param transHops
      * @return
      */
-    public static List<HopsDTO> transHopsTransform(List<TransHopMeta> transHops){
+    public static List<HopsDTO> transHopsTransform(List<TransHopMeta> transHops) {
         List<HopsDTO> hopsList = new ArrayList<>();
-        transHops.stream().forEach((hops)->{
+        transHops.stream().forEach((hops) -> {
             HopsDTO hopsDTO = new HopsDTO();
             hopsDTO.setFromId(hops.getFromStep().getObjectId().getId());
             hopsDTO.setEnabled(hops.isEnabled());
@@ -81,8 +84,8 @@ public class TransFormUtil {
                 transStepDTO.setStepChangedDate(stepMeta.getChangedDate());
                 transStepDTO.setStepName(stepMeta.getName());
                 //步骤属性替换
-                StepMetaDTO stepMetaDTO = stepTransform(stepMeta.getStepMetaInterface());
-                transStepDTO.setStepMeta(stepMetaDTO);
+                StepInterface stepInterface = stepTransform(stepMeta.getStepMetaInterface());
+                transStepDTO.setStepInterface(stepInterface);
                 transStepDTO.setStepType(stepMeta.getStepID());
                 transStepDTO.setLocationX(stepMeta.getLocation().x);
                 transStepDTO.setLocationY(stepMeta.getLocation().y);
@@ -94,24 +97,37 @@ public class TransFormUtil {
 
     /**
      * 步骤属性转换
+     *
      * @param stepMetaInterface
      * @return
      */
-    public static StepMetaDTO stepTransform(StepMetaInterface stepMetaInterface) {
-        StepMetaDTO stepMetaDTO = new StepMetaDTO();
+    public static StepInterface stepTransform(StepMetaInterface stepMetaInterface) {
+        StepInterface stepInterface = null;
         if (stepMetaInterface instanceof TableInputMeta) {
+            StepMetaDTO stepMetaDTO = new StepMetaDTO();
             TableInputMeta tableInputMeta = (TableInputMeta) stepMetaInterface;
             stepMetaDTO.setSql(tableInputMeta.getSQL());
             stepMetaDTO.setDatabaseMeta(databaseTransform(tableInputMeta.getDatabaseMeta()));
             //setpMetaDTO.setDatabaseMetaList(tableInputMeta.getUsedDatabaseConnections());
-        }else if(stepMetaInterface instanceof TableOutputMeta){
+            stepInterface = stepMetaDTO;
+        } else if (stepMetaInterface instanceof TableOutputMeta) {
+            TableOutputMeta tableOutputMeta = (TableOutputMeta) stepMetaInterface;
+            TableOutputDTO tableOutputDTO = new TableOutputDTO();
+            tableOutputDTO.setTableName(tableOutputMeta.getTableName());
+            //tableOutputDTO.setId(tableOutputMeta.getObjectId().getId());
+            tableOutputDTO.setName(tableOutputMeta.getParentStepMeta().getName());
+            tableOutputDTO.setDatabaseMeta(databaseTransform(tableOutputMeta.getDatabaseMeta()));
+            tableOutputDTO.setTruncateTable(tableOutputMeta.truncateTable());
+            tableOutputDTO.setCommitSize(tableOutputMeta.getCommitSize());
+            stepInterface = tableOutputDTO;
             log.info("表输出");
         }
-        return stepMetaDTO;
+        return stepInterface;
     }
 
     /**
      * 数据源连接转换
+     *
      * @param databaseMeta
      * @return
      */

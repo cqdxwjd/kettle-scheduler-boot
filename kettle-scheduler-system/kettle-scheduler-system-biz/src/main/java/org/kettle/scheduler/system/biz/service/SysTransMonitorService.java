@@ -20,10 +20,12 @@ import org.kettle.scheduler.system.biz.entity.TransRecord;
 import org.kettle.scheduler.system.biz.entity.bo.*;
 import org.kettle.scheduler.system.biz.enums.CountMark;
 import org.kettle.scheduler.system.biz.enums.CountType;
+import org.kettle.scheduler.system.biz.mapper.SysCountMapper;
 import org.kettle.scheduler.system.biz.repository.TransLogRepository;
 import org.kettle.scheduler.system.biz.repository.TransMonitorRepository;
 import org.kettle.scheduler.system.biz.repository.TransRecordRepository;
 import org.kettle.scheduler.system.biz.repository.TransRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -47,6 +49,9 @@ public class SysTransMonitorService {
     private final TransRecordRepository recordRepository;
     private final EntityManagerUtil entityManagerUtil;
     private final TransLogRepository transLogRepository;
+
+    @Autowired
+    SysCountMapper sysCountMapper;
 
     public SysTransMonitorService(TransRepository transRepository, TransMonitorRepository monitorRepository,
                                   TransRecordRepository recordRepository, EntityManagerUtil entityManagerUtil, TransLogRepository transLogRepository) {
@@ -271,5 +276,29 @@ public class SysTransMonitorService {
         }
         return countSumRes;
     }
+    /**
+     * 获取最近七天数据采集情况
+     *
+     * @return
+     */
+    public List<Map> getLastSevenDaysNum() {
+        return sysCountMapper.getLastSevenDaysNum();
+    }
 
+    /**
+     * 获取今天采集数量
+     *
+     * @return
+     */
+    public Map getTodayNum() {
+        return sysCountMapper.getTodayNum();
+    }
+
+    public Map getSystemDisk(){
+        return sysCountMapper.getSystemDisk();
+    }
+
+    public  List<Map> getDataBySystem(){
+        return sysCountMapper.getDataBySystem();
+    }
 }

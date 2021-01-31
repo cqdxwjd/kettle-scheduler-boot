@@ -1,5 +1,6 @@
 package org.kettle.scheduler.system.api.api;
 
+import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.kettle.scheduler.common.povo.PageOut;
@@ -24,8 +25,8 @@ public interface SysTransApi {
     /**
      * 添加转换
      *
-     * @param req {@link TransReq}
-	 * @param transFile {@link MultipartFile}
+     * @param req       {@link TransReq}
+     * @param transFile {@link MultipartFile}
      * @return {@link Result}
      */
     @ApiOperation(value = "添加转换")
@@ -120,13 +121,28 @@ public interface SysTransApi {
     @GetMapping("/stopTrans.do")
     Result stopTrans(@RequestParam("id") Integer id);
 
-	/**
-	 * 验证名称是否存在
-	 *
-	 * @param transName 转换名
-	 * @return 只能返回true或false
-	 */
-	@ApiOperation(value = "验证名称是否存在")
-	@PostMapping("/transNameExist.do")
-	String transNameExist(String transName);
+    /**
+     * 验证名称是否存在
+     *
+     * @param transName 转换名
+     * @return 只能返回true或false
+     */
+    @ApiOperation(value = "验证名称是否存在")
+    @PostMapping("/transNameExist.do")
+    String transNameExist(String transName);
+
+
+    /**
+     * 预览数据
+     *
+     * @param transRepositoryId
+     * @param scriptPath
+     * @param stepName          步骤名称
+     * @param rowLimit          预览条数
+     * @throws Exception
+     * @return
+     */
+    @ApiOperation(value = "预览数据")
+    @GetMapping("/previewData.do")
+    Result<JSONObject> previewData(@RequestParam String transRepositoryId, @RequestParam String scriptPath, @RequestParam String scriptName, @RequestParam String stepName, @RequestParam int rowLimit) throws Exception;
 }

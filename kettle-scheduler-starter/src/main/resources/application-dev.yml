@@ -1,11 +1,10 @@
 spring:
   datasource: # 数据库链接
     #url: jdbc:mysql://120.79.236.37/kettle-scheduler?serverTimezone=UTC&useSSL=false
-    url: jdbc:mysql://139.199.31.200:3506/kettle_scheduler_z?characterEncoding=utf8&autoReconnect=true&useSSL=false
-    username: sample
-    password: sample
+    url: jdbc:mysql://127.0.0.1:3306/kettle-scheduler?serverTimezone=UTC&useSSL=false
+    username: root
+    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
-    #driver-class-name: com.mysql.jdbc.Driver
   jpa:
     show-sql: true # sql打印
     #database-platform: org.hibernate.dialect.MySQLDialect # 数据库方言

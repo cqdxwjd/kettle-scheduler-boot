@@ -23,7 +23,7 @@ public class TransStepDTO {
     private String stepType;
 
     //步骤属性
-    private StepMetaDTO stepMeta;
+    private StepInterface stepInterface;
 
     //步骤变更日期
     private Date stepChangedDate;
