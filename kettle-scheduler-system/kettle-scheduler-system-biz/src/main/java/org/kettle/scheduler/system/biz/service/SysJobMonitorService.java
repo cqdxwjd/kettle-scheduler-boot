@@ -127,7 +127,7 @@ public class SysJobMonitorService {
     }
 
 	public TaskCountRes countJob() {
-		String sql = "SELECT count(1) total, nvl(sum(monitor_success),0) success, nvl(sum(monitor_fail),0) fail FROM k_job_monitor";
+		String sql = "SELECT count(1) total, IFNULL(sum(monitor_success),0) success, IFNULL(sum(monitor_fail),0) fail FROM k_job_monitor";
 		TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql, TaskCountBO.class);
 		return BeanUtil.copyProperties(result, TaskCountRes.class);
 	}

@@ -77,7 +77,7 @@ public class TransQuartz implements Job {
                             , LogLevel.getLogLevelForCode(trans.getTransLogLevel()));
                     break;
                 case FILE:
-                    logText = TransExecute.run(trans.getTransPath(), null
+                    logText = TransExecute.run(trans.getTransPath(), params
                             , LogLevel.getLogLevelForCode(trans.getTransLogLevel()));
                     break;
                 default:

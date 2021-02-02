@@ -1,23 +1,16 @@
 spring:
   datasource: # 数据库链接
-    url: jdbc:oracle:thin:@10.108.8.17:1521:orcl
-    username: kettle_scheduler
+    url: jdbc:mysql://127.0.0.1:3306/kettle-scheduler?serverTimezone=UTC&useSSL=false
+    username: root
     password: 123456
-    driver-class-name: oracle.jdbc.OracleDriver
-    #driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
   jpa:
     show-sql: true # sql打印
-    #database-platform: org.hibernate.dialect.MySQLDialect # 数据库方言
+    database-platform: org.hibernate.dialect.MySQLDialect # 数据库方言
     open-in-view: false # false关闭懒加载
-    database-platform: org.hibernate.dialect.Oracle10gDialect
-    hibernate:
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-  thymeleaf:
-    cache: false #开发过程关闭页面缓存
 logging: # 日志记录
+  config: classpath:log/logback.xml
+  file: /apps/logs/${spring.application.name}/${spring.application.name}
   level:
     root: info
-    org.kettle.scheduler: debug
-    org.hibernate.type.descriptor.sql.BasicBinder: trace # 打印sql参数
-  file: /apps/logs/${spring.application.name}/${spring.application.name}.log
+    org.kettle.scheduler: info

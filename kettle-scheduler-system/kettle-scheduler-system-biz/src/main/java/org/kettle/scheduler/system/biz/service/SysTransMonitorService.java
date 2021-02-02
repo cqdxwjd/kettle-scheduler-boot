@@ -164,13 +164,13 @@ public class SysTransMonitorService {
     }
 
     public TaskCountRes countTrans() {
-        String sql = "SELECT count(1) total, nvl(sum(monitor_success),0) success, nvl(sum(monitor_fail),0) fail FROM k_trans_monitor";
+        String sql = "SELECT count(1) total, IFNULL(sum(monitor_success),0) success, IFNULL(sum(monitor_fail),0) fail FROM k_trans_monitor";
         TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql, TaskCountBO.class);
         return BeanUtil.copyProperties(result, TaskCountRes.class);
     }
 
     public TaskCountRes countTransByToday(Integer categoryid) {
-        String sql = "SELECT count(1) total，nvl(sum(case when RECORD_STATUS = 1 then 1 else 0 end),0) success,nvl(sum(case when RECORD_STATUS = 0 then 1 else 0 end),0) fail from K_TRANS_RECORD WHERE TO_CHAR(stop_time, 'YYYYMMDD' ) = TO_CHAR(SYSDATE, 'YYYYMMDD') and category_id=" + categoryid;
+        String sql = "SELECT count(1) total，IFNULL(sum(case when RECORD_STATUS = 1 then 1 else 0 end),0) success,IFNULL(sum(case when RECORD_STATUS = 0 then 1 else 0 end),0) fail from K_TRANS_RECORD WHERE TO_CHAR(stop_time, 'YYYYMMDD' ) = TO_CHAR(SYSDATE, 'YYYYMMDD') and category_id=" + categoryid;
         TaskCountBO result = entityManagerUtil.executeNativeQueryForOne(sql, TaskCountBO.class);
         return BeanUtil.copyProperties(result, TaskCountRes.class);
     }
@@ -240,7 +240,7 @@ public class SysTransMonitorService {
 
     public CountSumRes historySum(CountSumReq countSumReq, Pageable pageable) {
         CountSumRes countSumRes = new CountSumRes();
-        String selectSql = "select nvl(sum(w),0) as sum from(";
+        String selectSql = "select IFNULL(sum(w),0) as sum from(";
         String selectSql1 = "SELECT a.* ";
         StringBuffer fromsql = new StringBuffer(" FROM k_log a INNER join ( SELECT admdivcode||stepname names, max(time) maxtime FROM  k_log ");
         if (countSumReq.getMark() == CountMark.TODAY.getKey()) {
