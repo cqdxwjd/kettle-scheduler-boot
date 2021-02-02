@@ -13,333 +13,363 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/web")
 public class WebController {
 
-	/**
-	 * 请求登录页面
-	 *
-	 * @return /login
-	 */
+    /**
+     * 请求登录页面
+     *
+     * @return /login
+     */
     @RequestMapping("/login.shtml")
-	public String loginWeb() {
-		return "login";
-	}
+    public String loginWeb() {
+        return "login";
+    }
 
-	/**
-	 * 登录成功后跳转的页面
-	 *
-	 * @return /index
-	 */
-	@RequestMapping("/index.shtml")
-	public String indexWeb() {
-		return "index";
-	}
+    /**
+     * 登录成功后跳转的页面
+     *
+     * @return /index
+     */
+    @RequestMapping("/index.shtml")
+    public String indexWeb() {
+        return "index";
+    }
 
-	/**
-	 * 首页统计页面
-	 *
-	 * @return /main
-	 */
-	@RequestMapping("/main.shtml")
-	public String mainWeb() {
-		return "main";
-	}
+    /**
+     * 首页统计页面
+     *
+     * @return /main
+     */
+    @RequestMapping("/main.shtml")
+    public String mainWeb() {
+        return "main";
+    }
 
-	//=============================================资源库=================================================//
-	/**
-	 * 资源库列表页面
-	 *
-	 * @return /repository/list
-	 */
-	@RequestMapping("/repository/list.shtml")
-	public String repositoryListWeb() {
-		return "repository/list";
-	}
+    //=============================================资源库=================================================//
 
-	/**
-	 * 资源库添加页面
-	 *
-	 * @return /repository/add
-	 */
-	@RequestMapping("/repository/add.shtml")
-	public String repositoryAddWeb() {
-		return "repository/add";
-	}
+    /**
+     * 资源库列表页面
+     *
+     * @return /repository/list
+     */
+    @RequestMapping("/repository/list.shtml")
+    public String repositoryListWeb() {
+        return "repository/list";
+    }
 
-	/**
-	 * 资源库编辑页面
-	 *
-	 * @return /repository/edit
-	 */
-	@RequestMapping("/repository/edit.shtml")
-	public String repositoryEditWeb(Integer repositoryId, Model model) {
-		model.addAttribute("repositoryId", repositoryId);
-		return "repository/edit";
-	}
+    /**
+     * 资源库添加页面
+     *
+     * @return /repository/add
+     */
+    @RequestMapping("/repository/add.shtml")
+    public String repositoryAddWeb() {
+        return "repository/add";
+    }
 
-	//=============================================脚本管理=================================================//
-	/**
-	 * 资源库列表页面
-	 *
-	 * @return /repository/list
-	 */
-	@RequestMapping("/script/list.shtml")
-	public String scriptListWeb() {
-		return "script/list";
-	}
+    /**
+     * 资源库编辑页面
+     *
+     * @return /repository/edit
+     */
+    @RequestMapping("/repository/edit.shtml")
+    public String repositoryEditWeb(Integer repositoryId, Model model) {
+        model.addAttribute("repositoryId", repositoryId);
+        return "repository/edit";
+    }
 
-	/**
-	 * 资源库添加页面
-	 *
-	 * @return /repository/add
-	 */
-	@RequestMapping("/script/add.shtml")
-	public String scriptAddWeb() {
-		return "script/add";
-	}
+    //=============================================脚本管理=================================================//
 
-	/**
-	 * 资源库编辑页面
-	 *
-	 * @return /repository/edit
-	 */
-	@RequestMapping("/script/edit.shtml")
-	public String scriptEditWeb(Integer scriptId, Model model) {
-		model.addAttribute("scriptId", scriptId);
-		return "script/edit";
-	}
+    /**
+     * 资源库列表页面
+     *
+     * @return /repository/list
+     */
+    @RequestMapping("/script/list.shtml")
+    public String scriptListWeb() {
+        return "script/list";
+    }
 
-	//=============================================定时策略=================================================//
-	/**
-	 * 定时策略列表页面
-	 *
-	 * @return /quartz/list
-	 */
-	@RequestMapping("/quartz/list.shtml")
-	public String quartzListWeb() {
-		return "quartz/list";
-	}
+    /**
+     * 脚本画布页面
+     *
+     * @return /repository/list
+     */
+    @RequestMapping("/script/scriptDetail.shtml")
+    public String scriptDetailWeb() {
+        return "script/scriptDetail";
+    }
 
-	/**
-	 * 定时策略添加页面
-	 *
-	 * @return /quartz/add
-	 */
-	@RequestMapping("/quartz/add.shtml")
-	public String quartzAddWeb() {
-		return "quartz/add";
-	}
+    /**
+     * 脚本画布页面
+     *
+     * @return /repository/list
+     */
+    @RequestMapping("/script/jsonData.shtml")
+    public String jsonDataWeb() {
+        return "script/jsonData";
+    }
 
-	/**
-	 * 定时策略编辑页面
-	 *
-	 * @return /quartz/edit
-	 */
-	@RequestMapping("/quartz/edit.shtml")
-	public String quartzEditWeb(Integer quartzId, Model model) {
-		model.addAttribute("quartzId", quartzId);
-		return "quartz/edit";
-	}
+    /**
+     * 资源库添加页面
+     *
+     * @return /repository/add
+     */
+    @RequestMapping("/script/add.shtml")
+    public String scriptAddWeb() {
+        return "script/add";
+    }
 
-	//=============================================物化视图=================================================//
-	/**
-	 * 物化视图列表页面
-	 *
-	 * @return /quartz/list
-	 */
-	@RequestMapping("/mview/list.shtml")
-	public String mviewListWeb() {
-		return "mview/list";
-	}
+    /**
+     * 资源库编辑页面
+     *
+     * @return /repository/edit
+     */
+    @RequestMapping("/script/edit.shtml")
+    public String scriptEditWeb(Integer scriptId, Model model) {
+        model.addAttribute("scriptId", scriptId);
+        return "script/edit";
+    }
 
-	/**
-	 * 物化视图添加页面
-	 *
-	 * @return /quartz/add
-	 */
-	@RequestMapping("/mview/add.shtml")
-	public String mviewAddWeb() {
-		return "mview/add";
-	}
+    //=============================================定时策略=================================================//
 
-	/**
-	 * 物化视图编辑页面
-	 *
-	 * @return /quartz/edit
-	 */
-	@RequestMapping("/mview/edit.shtml")
-	public String mviewEditWeb(Integer mviewId, Model model) {
-		model.addAttribute("mviewId", mviewId);
-		return "mview/edit";
-	}
+    /**
+     * 定时策略列表页面
+     *
+     * @return /quartz/list
+     */
+    @RequestMapping("/quartz/list.shtml")
+    public String quartzListWeb() {
+        return "quartz/list";
+    }
 
-	//=============================================用户管理=================================================//
-	/**
-	 * 用户管理列表页面
-	 *
-	 * @return /user/list
-	 */
-	@RequestMapping("/user/list.shtml")
-	public String userListWeb() {
-		return "user/list";
-	}
+    /**
+     * 定时策略添加页面
+     *
+     * @return /quartz/add
+     */
+    @RequestMapping("/quartz/add.shtml")
+    public String quartzAddWeb() {
+        return "quartz/add";
+    }
 
-	/**
-	 * 用户管理添加页面
-	 *
-	 * @return /user/add
-	 */
-	@RequestMapping("/user/add.shtml")
-	public String userAddWeb() {
-		return "user/add";
-	}
+    /**
+     * 定时策略编辑页面
+     *
+     * @return /quartz/edit
+     */
+    @RequestMapping("/quartz/edit.shtml")
+    public String quartzEditWeb(Integer quartzId, Model model) {
+        model.addAttribute("quartzId", quartzId);
+        return "quartz/edit";
+    }
 
-	/**
-	 * 用户管理编辑页面
-	 *
-	 * @return /user/edit
-	 */
-	@RequestMapping("/user/edit.shtml")
-	public String userEditWeb(Integer userId, Model model) {
-		model.addAttribute("userId", userId);
-		return "user/edit";
-	}
+    //=============================================物化视图=================================================//
 
-	//=============================================任务分类=================================================//
-	/**
-	 * 任务分类列表页面
-	 *
-	 * @return /category/list
-	 */
-	@RequestMapping("/category/list.shtml")
-	public String categoryListWeb() {
-		return "category/list";
-	}
+    /**
+     * 物化视图列表页面
+     *
+     * @return /quartz/list
+     */
+    @RequestMapping("/mview/list.shtml")
+    public String mviewListWeb() {
+        return "mview/list";
+    }
 
-	/**
-	 * 任务分类添加页面
-	 *
-	 * @return /category/add
-	 */
-	@RequestMapping("/category/add.shtml")
-	public String categoryAddWeb() {
-		return "category/add";
-	}
+    /**
+     * 物化视图添加页面
+     *
+     * @return /quartz/add
+     */
+    @RequestMapping("/mview/add.shtml")
+    public String mviewAddWeb() {
+        return "mview/add";
+    }
 
-	/**
-	 * 任务分类编辑页面
-	 *
-	 * @return /category/edit
-	 */
-	@RequestMapping("/category/edit.shtml")
-	public String categoryEditWeb(Integer categoryId, Model model) {
-		model.addAttribute("categoryId", categoryId);
-		return "category/edit";
-	}
+    /**
+     * 物化视图编辑页面
+     *
+     * @return /quartz/edit
+     */
+    @RequestMapping("/mview/edit.shtml")
+    public String mviewEditWeb(Integer mviewId, Model model) {
+        model.addAttribute("mviewId", mviewId);
+        return "mview/edit";
+    }
 
-	//=============================================转换管理=================================================//
-	/**
-	 * 转换管理列表页面
-	 *
-	 * @return /trans/list
-	 */
-	@RequestMapping("/trans/list.shtml")
-	public String transListWeb() {
-		return "trans/list";
-	}
+    //=============================================用户管理=================================================//
 
-	/**
-	 * 转换管理添加页面
-	 *
-	 * @return /trans/add
-	 */
-	@RequestMapping("/trans/add.shtml")
-	public String transAddWeb() {
-		return "trans/add";
-	}
+    /**
+     * 用户管理列表页面
+     *
+     * @return /user/list
+     */
+    @RequestMapping("/user/list.shtml")
+    public String userListWeb() {
+        return "user/list";
+    }
 
-	/**
-	 * 转换管理编辑页面
-	 *
-	 * @return /trans/edit
-	 */
-	@RequestMapping("/trans/edit.shtml")
-	public String transEditWeb(Integer transId, Model model) {
-		model.addAttribute("transId", transId);
-		return "trans/edit";
-	}
+    /**
+     * 用户管理添加页面
+     *
+     * @return /user/add
+     */
+    @RequestMapping("/user/add.shtml")
+    public String userAddWeb() {
+        return "user/add";
+    }
 
-	//=============================================作业管理=================================================//
-	/**
-	 * 作业管理列表页面
-	 *
-	 * @return /job/list
-	 */
-	@RequestMapping("/job/list.shtml")
-	public String jobListWeb() {
-		return "job/list";
-	}
+    /**
+     * 用户管理编辑页面
+     *
+     * @return /user/edit
+     */
+    @RequestMapping("/user/edit.shtml")
+    public String userEditWeb(Integer userId, Model model) {
+        model.addAttribute("userId", userId);
+        return "user/edit";
+    }
 
-	/**
-	 * 作业管理添加页面
-	 *
-	 * @return /job/add
-	 */
-	@RequestMapping("/job/add.shtml")
-	public String jobAddWeb() {
-		return "job/add";
-	}
+    //=============================================任务分类=================================================//
 
-	/**
-	 * 作业管理编辑页面
-	 *
-	 * @return /job/edit
-	 */
-	@RequestMapping("/job/edit.shtml")
-	public String jobEditWeb(Integer jobId, Model model) {
-		model.addAttribute("jobId", jobId);
-		return "job/edit";
-	}
+    /**
+     * 任务分类列表页面
+     *
+     * @return /category/list
+     */
+    @RequestMapping("/category/list.shtml")
+    public String categoryListWeb() {
+        return "category/list";
+    }
 
-	//=============================================监控管理=================================================//
-	/**
-	 * 作业监控管理列表页面
-	 *
-	 * @return /monitor/j-list
-	 */
-	@RequestMapping("/job/monitor/list.shtml")
-	public String jobMonitorListWeb() {
-		return "monitor/j-list";
-	}
+    /**
+     * 任务分类添加页面
+     *
+     * @return /category/add
+     */
+    @RequestMapping("/category/add.shtml")
+    public String categoryAddWeb() {
+        return "category/add";
+    }
 
-	/**
-	 * 转换监控管理列表页面
-	 *
-	 * @return /monitor/t-list
-	 */
-	@RequestMapping("/trans/monitor/list.shtml")
-	public String transMonitorListWeb() {
-		return "monitor/t-list";
-	}
+    /**
+     * 任务分类编辑页面
+     *
+     * @return /category/edit
+     */
+    @RequestMapping("/category/edit.shtml")
+    public String categoryEditWeb(Integer categoryId, Model model) {
+        model.addAttribute("categoryId", categoryId);
+        return "category/edit";
+    }
 
-	//=============================================记录管理=================================================//
-	/**
-	 * 作业记录管理列表页面
-	 *
-	 * @return /record/j-list
-	 */
-	@RequestMapping("/job/record/list.shtml")
-	public String jobMonitorRecordListWeb(Integer jobId, Model model) {
-		model.addAttribute("jobId", jobId);
-		return "record/j-list";
-	}
+    //=============================================转换管理=================================================//
 
-	/**
-	 * 转换记录管理列表页面
-	 *
-	 * @return /record/t-list
-	 */
-	@RequestMapping("/trans/record/list.shtml")
-	public String transMonitorRecordListWeb(Integer transId, Model model) {
-		model.addAttribute("transId", transId);
-		return "record/t-list";
-	}
+    /**
+     * 转换管理列表页面
+     *
+     * @return /trans/list
+     */
+    @RequestMapping("/trans/list.shtml")
+    public String transListWeb() {
+        return "trans/list";
+    }
+
+    /**
+     * 转换管理添加页面
+     *
+     * @return /trans/add
+     */
+    @RequestMapping("/trans/add.shtml")
+    public String transAddWeb() {
+        return "trans/add";
+    }
+
+    /**
+     * 转换管理编辑页面
+     *
+     * @return /trans/edit
+     */
+    @RequestMapping("/trans/edit.shtml")
+    public String transEditWeb(Integer transId, Model model) {
+        model.addAttribute("transId", transId);
+        return "trans/edit";
+    }
+
+    //=============================================作业管理=================================================//
+
+    /**
+     * 作业管理列表页面
+     *
+     * @return /job/list
+     */
+    @RequestMapping("/job/list.shtml")
+    public String jobListWeb() {
+        return "job/list";
+    }
+
+    /**
+     * 作业管理添加页面
+     *
+     * @return /job/add
+     */
+    @RequestMapping("/job/add.shtml")
+    public String jobAddWeb() {
+        return "job/add";
+    }
+
+    /**
+     * 作业管理编辑页面
+     *
+     * @return /job/edit
+     */
+    @RequestMapping("/job/edit.shtml")
+    public String jobEditWeb(Integer jobId, Model model) {
+        model.addAttribute("jobId", jobId);
+        return "job/edit";
+    }
+
+    //=============================================监控管理=================================================//
+
+    /**
+     * 作业监控管理列表页面
+     *
+     * @return /monitor/j-list
+     */
+    @RequestMapping("/job/monitor/list.shtml")
+    public String jobMonitorListWeb() {
+        return "monitor/j-list";
+    }
+
+    /**
+     * 转换监控管理列表页面
+     *
+     * @return /monitor/t-list
+     */
+    @RequestMapping("/trans/monitor/list.shtml")
+    public String transMonitorListWeb() {
+        return "monitor/t-list";
+    }
+
+    //=============================================记录管理=================================================//
+
+    /**
+     * 作业记录管理列表页面
+     *
+     * @return /record/j-list
+     */
+    @RequestMapping("/job/record/list.shtml")
+    public String jobMonitorRecordListWeb(Integer jobId, Model model) {
+        model.addAttribute("jobId", jobId);
+        return "record/j-list";
+    }
+
+    /**
+     * 转换记录管理列表页面
+     *
+     * @return /record/t-list
+     */
+    @RequestMapping("/trans/record/list.shtml")
+    public String transMonitorRecordListWeb(Integer transId, Model model) {
+        model.addAttribute("transId", transId);
+        return "record/t-list";
+    }
 }
