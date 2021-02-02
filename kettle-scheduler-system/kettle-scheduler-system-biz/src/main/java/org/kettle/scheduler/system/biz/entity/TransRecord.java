@@ -24,7 +24,8 @@ public class TransRecord extends BasicEntity implements Serializable {
      * 主键id
      */
     @Id
-    @GeneratedValue(generator = "SEQ_TRANS_RECORD", strategy = GenerationType.SEQUENCE)
+    //@GeneratedValue(generator = "SEQ_TRANS_RECORD", strategy = GenerationType.SEQUENCE)
+    @GeneratedValue( strategy = GenerationType.IDENTITY)
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 

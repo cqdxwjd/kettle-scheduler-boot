@@ -24,9 +24,22 @@
     <properties>
         <kettle-version>8.3.0.0-371</kettle-version>
         <hadoop-shims-api.revision>80.2017.10.00-28</hadoop-shims-api.revision>
+
+
+       <!-- <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>1.6</maven.compiler.target>
+        <maven.compiler.source>1.6</maven.compiler.source>-->
+        <!--<kettle.version>7.1.0.0-12</kettle.version>-->
+       <!-- <kafka.scala.version>2.10</kafka.scala.version>
+        <kafka.version>0.8.2.1</kafka.version>-->
+       <!-- <buildId>${maven.build.timestamp}</buildId>
+        <junit.version>4.12</junit.version>
+        <powermock.version>1.6.6</powermock.version>
+        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>-->
     </properties>
 
     <dependencies>
+
         <!-- 自定义工具类 -->
         <dependency>
             <groupId>org.kettle.scheduler</groupId>
@@ -198,6 +211,26 @@
             <groupId>pentaho</groupId>
             <artifactId>pentaho-metastore-locator-api</artifactId>
             <version>${kettle-version}</version>
+        </dependency>-->
+
+     <!--   <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_${kafka.scala.version}</artifactId>
+            <version>${kafka.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun.jmx</groupId>
+                    <artifactId>jmxri</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sun.jdmk</groupId>
+                    <artifactId>jmxtools</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.jms</groupId>
+                    <artifactId>jms</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>-->
     </dependencies>
 </project>

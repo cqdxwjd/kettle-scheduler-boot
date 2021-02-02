@@ -1,15 +1,16 @@
 spring:
   datasource: # 数据库链接
-    url: jdbc:oracle:thin:@172.16.23.211:8064:orcl
-    username: kettle_scheduler
+    #url: jdbc:mysql://120.79.236.37/kettle-scheduler?serverTimezone=UTC&useSSL=false
+    url: jdbc:mysql://127.0.0.1:3306/kettle-scheduler?serverTimezone=UTC&useSSL=false
+    username: root
     password: 123456
-    driver-class-name: oracle.jdbc.OracleDriver
-    #driver-class-name: com.mysql.jdbc.Driver
+    driver-class-name: com.mysql.jdbc.Driver
   jpa:
     show-sql: true # sql打印
     #database-platform: org.hibernate.dialect.MySQLDialect # 数据库方言
     open-in-view: false # false关闭懒加载
-    database-platform: org.hibernate.dialect.Oracle10gDialect
+    #database-platform: org.hibernate.dialect.Oracle10gDialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl

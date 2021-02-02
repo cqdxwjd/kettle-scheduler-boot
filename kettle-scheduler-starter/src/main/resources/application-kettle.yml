@@ -5,3 +5,4 @@ kettle:
   kettle-home: /apps/var/file-rep
   kettlePluginPackages: /apps/var/file-rep/plugin
   kettlePluginBaseFolder: /apps/var/file-rep/plugin
+  
