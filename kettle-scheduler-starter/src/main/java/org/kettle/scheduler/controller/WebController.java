@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
- * 页面访问层
+ * 页面访问层，统一接口
  *
  * @author lyf
  */
