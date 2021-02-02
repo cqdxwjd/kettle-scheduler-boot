@@ -23,7 +23,8 @@
                 <div class="form-inline  text-left">
                     <div class="form-group ">
                         <label class="control-label m-b-xs" for="repositoryId">资源库：</label>
-                        <select id="repositoryId" name="repositoryId" class="form-control m-b-xs" aria-required="true">
+                        <select id="repositoryId" name="repositoryId" class="form-control m-b-xs" aria-required="true"
+                                onchange="changeRep(this)">
                             <option value="" selected>请选择资源库</option>
                         </select>
                     </div>
@@ -59,6 +60,16 @@
     $(function () {
         getRepository();
     });
+
+    function changeRep(obj) {
+        //获取被选中的option标签选项
+        var value = obj.options[obj.selectedIndex].value;
+        if (value) {
+            var json = $.get('/sys/repository/findRepTreegridById.do?id=' + value,function(data,status){
+                $table.bootstrapTable('load', data.result);
+            });
+        }
+    }
 
     //获取资源库列表并选中第一个
     function getRepository() {
@@ -169,7 +180,7 @@
 
     // 格式化按钮
     function operateFormatter(value, row, index) {
-        if (row.pid != null && row.icon != null) {
+        if (row.objectType == 'transformation') {
             return [
                 '<button type="button" class="RoleOfdetail btn-small btn-primary" style="margin-right:15px;"><i class="fa fa-plus" ></i>&nbsp;详情</button>',
                 '<button type="button" class="RoleOfedit btn-small btn-primary" style="margin-right:15px;"><i class="fa fa-pencil-square-o" ></i>&nbsp;编辑</button>'
@@ -194,7 +205,7 @@
 
     // 格式化状态
     function statusFormatter(value, row, index) {
-        if (row.pid != null && row.icon != null) {
+        if (row.objectType == 'transformation') {
             return '<span><img src=\'/img/trans.png\'/>' + value + '</span>';
             //return '<span '+'style="position: absolute; overflow: hidden; z-index: 3; opacity: 1; background: url(\'/img/folder.png\') center center no-repeat; "'+'>'+value+'</span>';
         } else {
@@ -270,8 +281,8 @@
         var id = row.id;
         var path = row.extra;
         var text = row.text;
-        var transRepositoryId =  $("#repositoryId").val();
-        var url = "jsonData.shtml?repositoryId="+transRepositoryId+"&scriptPath="+path+"&scriptName="+text;
+        var transRepositoryId = $("#repositoryId").val();
+        var url = "jsonData.shtml?repositoryId=" + transRepositoryId + "&scriptPath=" + path + "&scriptName=" + text;
         var index = layer.open({
             type: 2,
             title: '脚本详情',

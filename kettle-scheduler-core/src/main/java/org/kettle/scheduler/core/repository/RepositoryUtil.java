@@ -318,7 +318,7 @@ public class RepositoryUtil {
                     tree.setIcon("jstree-file");
                     tree.setLeaf(true);
                     tree.setExpand(false);
-
+                    tree.setObjectType(element.getObjectType().getTypeDescription());
                     if (rdiPath.endsWith(FileUtil.separator)) {
                         tree.setExtra(rdiPath.concat(element.getName()));
                     } else {

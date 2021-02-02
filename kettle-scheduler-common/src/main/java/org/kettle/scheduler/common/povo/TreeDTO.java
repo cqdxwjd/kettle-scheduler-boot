@@ -49,4 +49,7 @@ public class TreeDTO<T> {
 
     //父级ID
     private String pid;
+
+    //对象类型
+    private String objectType;
 }
