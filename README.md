@@ -7,9 +7,9 @@
 
 |序号|项目|状态|优先级|
 |----|----|----|----|
-|1|在线管理，编辑kettle脚本 ||紧急|
-|2|通过源码实现集群，多线程执行任务 |×|已放弃|
-|2|重构jpa部分，改为mybatis|✔|一般|
+|1|在线管理，编辑kettle脚本 |×|紧急|
+|2|数据库改为MySql，逐步废弃Oracle分支|×|紧急|
+|3|重构jpa部分，改为mybatis|×|一般|
 
 #### 介绍
 基于Spring-boot的kettle调度项目，参考了[zhaxiaodong9860](https://github.com/zhaxiaodong9860)的代码并引用了其中的页面管理，后台代码自行参考了API进行工具化编写，方便使用   
@@ -31,6 +31,13 @@
 [点击下载可运行程序包](https://pan.baidu.com/s/1xnd2bYZ_3cZGmSm4azg8iw) 提取码：e150
 
 #### [点击查看完整更新记录](./docs/md/update.md) 
+
+**2020-0202 更新说明**  
+1、【增加】增加脚本管理返回类型字段objectType，用于前台区分trans和job   
+2、【BUG】解决前台无法切换资源库BUG   
+![avatar](./docs/img/script_bug.jpg)
+根目录转换预览
+
 **2020-12-17 更新说明**  
 1、【新增】增加表输入预览数据   
 ![avatar](./docs/img/dataPreview.png)

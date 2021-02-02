@@ -2,6 +2,12 @@
     
 ## 更新记录
 
+**2020-0202 更新说明**  
+1、【增加】增加脚本管理返回类型字段objectType，用于前台区分trans和job   
+2、【BUG】解决前台无法切换资源库BUG   
+![avatar](./docs/img/script_bug.jpg)
+根目录转换预览
+
 **2020-12-17 更新说明**  
 1、【新增】增加表输入预览数据   
 ![avatar](../img/dataPreview.png)
