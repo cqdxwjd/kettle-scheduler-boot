@@ -25,8 +25,8 @@ public class TransMonitor extends BasicEntity implements Serializable {
      * 主键id
      */
     @Id
-    //@GeneratedValue(generator = "SEQ_TRANS_MONITOR", strategy = GenerationType.SEQUENCE)
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "SEQ_TRANS_MONITOR", strategy = GenerationType.SEQUENCE)
+    //@GeneratedValue( strategy = GenerationType.IDENTITY)
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
     /**

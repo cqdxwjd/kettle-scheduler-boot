@@ -121,7 +121,7 @@
             <artifactId>kettle-sap-plugin-core</artifactId>
             <version>${kettle-version}</version>
         </dependency>
-        <!--<dependency>
+        <dependency>
             <groupId>pentaho-kettle</groupId>
             <artifactId>kettle-ui-swt</artifactId>
             <version>${kettle-version}</version>
@@ -135,7 +135,7 @@
                     <groupId>commons-logging</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>-->
+        </dependency>
         <!-- kettle的hadoop组件依赖 -->
         <!--<dependency>
             <groupId>org.pentaho</groupId>

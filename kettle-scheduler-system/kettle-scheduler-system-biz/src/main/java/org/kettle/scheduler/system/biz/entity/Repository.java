@@ -20,7 +20,8 @@ public class Repository extends BasicEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
+    //@GeneratedValue( strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "SEQ_REPOSITORY", strategy = GenerationType.SEQUENCE)
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
     /**

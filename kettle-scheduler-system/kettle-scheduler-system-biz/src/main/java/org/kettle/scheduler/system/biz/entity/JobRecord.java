@@ -21,8 +21,8 @@ public class JobRecord extends BasicEntity implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
-    //@GeneratedValue(generator = "SEQ_JOB_RECORD", strategy = GenerationType.SEQUENCE)
-    @GeneratedValue( strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "SEQ_JOB_RECORD", strategy = GenerationType.SEQUENCE)
+    //@GeneratedValue( strategy = GenerationType.IDENTITY)
     @Column(name = "id", insertable = false, nullable = false)
     private Integer id;
 
